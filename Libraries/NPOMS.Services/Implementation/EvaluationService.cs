@@ -51,6 +51,20 @@ namespace NPOMS.Services.Implementation
 
         #region Methods
 
+        public async Task<IEnumerable<Response>> GetAllResponses()
+        {
+            var responses = await _responseRepository.GetAllResponses();
+
+            return responses;
+        }
+
+        public async Task<IEnumerable<CapturedResponse>> GetAllCapturedResponses(bool returnInactive)
+        {
+            var responses = await _capturedResponseRepository.GetAllAsync(returnInactive);
+
+            return responses;
+        }
+
         public async Task<IEnumerable<QuestionResponseViewModel>> GetQuestionnaire(int fundingApplicationId, string userIdentifier)
         {
             var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);

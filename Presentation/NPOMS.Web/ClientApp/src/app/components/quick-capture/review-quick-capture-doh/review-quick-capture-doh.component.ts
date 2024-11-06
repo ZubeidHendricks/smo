@@ -388,8 +388,8 @@ export class ReviewQuickCaptureDohComponent implements OnInit {
 
   private qCSteps() {
     this.qcItems = [
-      { label: 'Organisation Details' },   
       { label: 'Applications' },  
+      { label: 'Organisation Details' },        
       { label: 'Application Detail' },
       { label: 'Objectives' },
       { label: 'Activities' },
@@ -445,5 +445,13 @@ export class ReviewQuickCaptureDohComponent implements OnInit {
     }
     else
       this.activeStep = goToStep;
+  }
+
+  public loadActivities() {
+
+  }
+
+  public loadObjectives() {
+    
   }
 }

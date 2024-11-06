@@ -17,6 +17,9 @@ namespace NPOMS.Domain.Core
 		[Column(TypeName = "nvarchar(255)")]
 		public string SystemName { get; set; }
 
+        [Column(TypeName = "nvarchar(255)")]
+        public string DepartmentCode { get; set; }
+
 		public bool IsActive { get; set; }
 
 		public int CreatedUserId { get; set; }

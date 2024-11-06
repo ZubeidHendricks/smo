@@ -15,7 +15,10 @@ namespace NPOMS.Domain.Entities
         public int ApplicationPeriodId { get; set; }
         public int? ProjectInformationId { get; set; }
         public int ApplicationId { get; set; }
-
+        public DateTime CreatedDateTime { get; set; }
+        public int CreatedUserId { get; set; }
+        public DateTime? UpdatedDateTime { get; set; }
+        public int UpdatedUserId { get; set; }
         public int? MonitoringEvaluationId { get; set; }
         public MonitoringEvaluation MonitoringEvaluation { get; set; }
         public int ApplicationDetailId { get; set; }

@@ -206,7 +206,16 @@ namespace NPOMS.Repository.Configurations.Core
                     Location = "FundedNpo",
                     IsActive = true,
                     IsCompulsory = false
-                }
+                },
+                 new DocumentType
+                 {
+                     Id = 33,
+                     Name = "ReportActuals",
+                     Description = "Report Actuals",
+                     Location = "ReportActuals",
+                     IsActive = true,
+                     IsCompulsory = false
+                 }
 
             );
 		}

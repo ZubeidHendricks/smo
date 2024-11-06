@@ -73,12 +73,14 @@
 }
 
 .process4 {
-    background-color: rgb(3, 20, 141);
+    background-color: rgb(228, 232, 237);
     border-radius: 0px;
-    height: 50px;
-    text-transform: uppercase;
-    margin-left: 1%;
-    margin-right: 1%;
+    height: 25px;
+    width: 1155px;
+    text-transform: none;
+    margin-left: 0%;
+    margin-right: 0%;
+    margin-top: 0%;
     padding-top: 0px;
     vertical-align: middle;
     /* text-align: center; */
@@ -104,12 +106,16 @@
 }
 
 .branding1-box {
-    background-color: rgb(3, 20, 141);
+    background-color: rgb(102, 160, 236);
     /* border-radius: 10px; */
     height: 100%;
     text-transform: uppercase;
-    margin: 1%;
+    margin-left: 1%;
+    margin-right: 1%;
+    margin-top: 0%;
+    margin-bottom: 1%;
 }
+
 
 .branding {
     background-image: url("../../../assets/Images/new-branding.png");
@@ -120,7 +126,7 @@
 }
 
 .branding1 {
-    background-image: url("../../../assets/Images/CallForProposals-PortalHeroImage.png");
+    background-image: url("../../../assets/Images/Call for proposal hero image with text-July 2024.png");
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;

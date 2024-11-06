@@ -6,6 +6,7 @@ import { EntityTypeEnum } from 'src/app/models/enums';
 import { IDocumentStore } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 import * as fileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -17,10 +18,15 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class DocumentStoreService {
+  lines = []; //for headings
+  linesR = []; // for rows
+  message: string;
+  records: number;
 
   constructor(
     private _envUrl: EnvironmentUrlService,
-    private _http: HttpClient
+    private _http: HttpClient,
+    private _environmentService: EnvironmentUrlService,
   ) { }
 
   public upload(files: File[], entityType: EntityTypeEnum, entityId: number, entity: string, refNo: string, documentTypeId: number) {
@@ -102,5 +108,79 @@ export class DocumentStoreService {
     }
     console.error(err);
     return throwError(errorMessage);
+  }
+
+  public UploadFileToImportIndicator(files: File[], year: string)
+  {
+      const formData = new FormData();
+
+      if (files.length === 0) {
+
+           return;
+      }
+
+      Array.from(files).map((file, index) => {
+        const f = file;
+        let reader = new FileReader(); 
+        reader.readAsBinaryString(f);        
+        reader.onload = (e: any) => {
+          /* create workbook */
+          const binarystr: string = e.target.result;
+          const wb: XLSX.WorkBook = XLSX.read(binarystr, { type: 'binary' });
+    
+          /* selected the first sheet */
+          const wsname: string = wb.SheetNames[0];
+          const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+    
+          /* save data */
+          const data = XLSX.utils.sheet_to_json(ws);
+          this.message = 'You are uploading file which has total '  + data.length + ' records. \n The number of records may be reduced in sampling page';
+          alert(this.message);
+         
+        };
+        return formData.append('file'+index, file, file.name);
+      });
+
+      return this._http.post(`${this._envUrl.urlAddress}/api/documentStore/uploadIndicator/${year}`, formData, {responseType: 'text'})
+      .pipe(
+             //tap(data=> console.log(data)),
+      );
+  }
+
+  public UploadFileToImportNPOLevel(files: File[], year: string)
+  {
+      const formData = new FormData();
+
+      if (files.length === 0) {
+
+           return;
+      }
+
+      Array.from(files).map((file, index) => {
+        const f = file;
+        let reader = new FileReader(); 
+        reader.readAsBinaryString(f);        
+        reader.onload = (e: any) => {
+          /* create workbook */
+          const binarystr: string = e.target.result;
+          const wb: XLSX.WorkBook = XLSX.read(binarystr, { type: 'binary' });
+    
+          /* selected the first sheet */
+          const wsname: string = wb.SheetNames[0];
+          const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+    
+          /* save data */
+          const data = XLSX.utils.sheet_to_json(ws);
+          this.message = 'You are uploading file which has total '  + data.length + ' records. \n The number of records may be reduced in sampling page';
+          alert(this.message);
+         
+        };
+        return formData.append('file'+index, file, file.name);
+      });
+
+      return this._http.post(`${this._envUrl.urlAddress}/api/documentStore/npouploadIndicator/${year}`, formData, {responseType: 'text'})
+      .pipe(
+             //tap(data=> console.log(data)),
+      );
   }
 }

@@ -9,20 +9,14 @@ using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
 using NPOMS.Domain.Enumerations;
 using NPOMS.Domain.Evaluation;
+using NPOMS.Domain.FundingAssessment;
+using NPOMS.Domain.FundingManagement;
 using NPOMS.Domain.Indicator;
 using NPOMS.Domain.Lookup;
 using NPOMS.Domain.Mapping;
-using NPOMS.Repository.Configurations.Core;
 using NPOMS.Repository.Configurations.Dropdown;
-using NPOMS.Repository.Configurations.Entities;
-using NPOMS.Repository.Configurations.Lookup;
-using NPOMS.Repository.Configurations.Mapping;
 using NPOMS.Repository.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace NPOMS.Repository
 {
@@ -111,9 +105,11 @@ namespace NPOMS.Repository
         public DbSet<Frequency> Frequencies { get; set; }
         public DbSet<FrequencyPeriod> FrequencyPeriods { get; set; }
         public DbSet<SubProgrammeType> SubProgrammeTypes { get; set; }
+        public DbSet<Indicators> Indicators { get; set; }
+        public DbSet<NPOIndicators> NPOIndicators { get; set; }   
         public DbSet<Directorate> Directorates { get; set; }
         public DbSet<Bank> Banks { get; set; }
-        public DbSet<BankDetail> BankDetail { get; set; }
+        public DbSet<Domain.Entities.BankDetail> BankDetail { get; set; }
         public DbSet<Branch> Branches { get; set; }
         public DbSet<AccountType> AccountTypes { get; set; }
         public DbSet<RegistrationStatus> RegistrationStatuses { get; set; }
@@ -124,12 +120,16 @@ namespace NPOMS.Repository
         public DbSet<PropertyType> PropertyTypes { get; set; }
         public DbSet<PropertySubType> PropertySubTypes { get; set; }
         public DbSet<StaffCategory> StaffCategories { get; set; }
+        public DbSet<CalculationType> CalculationTypes { get; set; }
+        public DbSet<FundingType> FundingTypes { get; set; }
 
         /* Entities */
         public DbSet<AccessStatus> AccessStatuses { get; set; }
         public DbSet<Activity> Activities { get; set; }
         public DbSet<AddressInformation> AddressInformation { get; set; }
         public DbSet<Application> Applications { get; set; }
+        public DbSet<Application> PostAudit { get; set; }
+        
         public DbSet<ApplicationApproval> ApplicationApprovals { get; set; }
         public DbSet<ApplicationAudit> ApplicationAudits { get; set; }
         public DbSet<ApplicationComment> ApplicationComments { get; set; }
@@ -144,6 +144,8 @@ namespace NPOMS.Repository
         public DbSet<ProjectInformation> ProjectInformations { get; set; }
         public DbSet<MonitoringEvaluation> MonitoringEvaluations { get; set; }
         public DbSet<ProjectImplementation> ProjectImplementations { get; set; }
+        public DbSet<IndicatorReport> IndicatorReports { get; set; }
+
 
         public DbSet<FinancialMattersIncome> FinancialMattersIncomes { get; set; }
         public DbSet<FinancialMattersExpenditure> FinancialMattersExpenditures { get; set; }
@@ -154,10 +156,10 @@ namespace NPOMS.Repository
         //public DbSet<Status> Statuses { get; set; }
         public DbSet<SustainabilityPlan> SustainabilityPlans { get; set; }
         public DbSet<ServicesRendered> ServicesRendered { get; set; }
-        public DbSet<BankDetail> BankDetails { get; set; }
+        public DbSet<Domain.Entities.BankDetail> BankDetails { get; set; }
         public DbSet<CompliantCycleRule> CompliantCycleRules { get; set; }
         public DbSet<CompliantCycle> CompliantCycles { get; set; }
-        public DbSet<PaymentSchedule> PaymentSchedules { get; set; }
+        public DbSet<Domain.Entities.PaymentSchedule> PaymentSchedules { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<AuditorOrAffiliation> AuditorOrAffiliations { get; set; }
         public DbSet<StaffMemberProfile> StaffMemberProfiles { get; set; }
@@ -166,6 +168,18 @@ namespace NPOMS.Repository
         public DbSet<MyContentLink> MyContentLinks { get; set; }
         public DbSet<SubRecipient> SubRecipients { get; set; }
         public DbSet<SubSubRecipient> SubSubRecipients { get; set; }
+        public DbSet<Area> Areas { get; set; }
+
+        public DbSet<PostReport> PostReports { get; set; }
+        public DbSet<IncomeAndExpenditureReport> IncomeAndExpenditureReports { get; set; }
+        public DbSet<AnyOtherInformationReport> AnyOtherInformationReports { get; set; }
+        public DbSet<GovernanceReport> GovernanceReports { get; set; }
+        public DbSet<SDIPReport> SDIPReports { get; set; }
+        public DbSet<SDIPReportAudit> SDIPReportAudits { get; set; }
+        public DbSet<IndicatorReportAudit> IndicatorReportAudits { get; set; }
+        public DbSet<AnyOtherReportAudit> AnyOtherReportAudits { get; set; }
+        public DbSet<IncomeReportAudit> IncomeReportAudit { get; set; }
+        public DbSet<GovernanceAudit> GovernanceAudits { get; set; }
 
         /* Lookup */
         public DbSet<FacilityList> ActivityList { get; set; }
@@ -218,7 +232,32 @@ namespace NPOMS.Repository
         public DbSet<ProgramContactInformation> ProgramContactInformation { get; set; }
         public DbSet<ProgrammeServiceDelivery> ProgrammeServiceDelivery { get; set; }
         public DbSet<NpoUserTracking> NpoUserTrackings { get; set; }
+        public DbSet<NpoUserSatisfactionTracking> NpoUserSatisfactionTrackings { get; set; } 
+        public DbSet<FacilitySubStructure> FacilitySubStructures { get; set; }
+        public DbSet<ActivityDistrict> ActivityDistricts { get; set; }
+        public DbSet<ActivitySubDistrict> ActivitySubDistricts { get; set; }    
+        public DbSet<ActivitySubStructure> ActivitySubStructures { get; set; }
+        public DbSet<ActivityManicipality> ActivityManicipalities { get; set; }
+        public DbSet<NpoWorkPlanApproverTracking> NpoWorkPlanApproverTrackings { get; set; }
+        public DbSet<NpoWorkPlanReviewerTracking> NpoWorkPlanReviewerTrackings { get; set; }
+        public DbSet<DistrictDemographic> DistrictDemographics { get; set; }
+        public DbSet<ManicipalityDemographic> ManicipalityDemographics { get; set; }
+        public DbSet<SubDistrictDemographic> SubDistrictDemographics { get; set; }
+        public DbSet<SubstructureDemographic> SubstructureDemographics { get; set; }
 
+        /* Funding Management*/
+        public DbSet<Domain.FundingManagement.BankDetail> FMBankDetails { get; set; }
+        public DbSet<Document> Documents { get; set; }
+        public DbSet<FundingDetail> Fundings { get; set; }
+        public DbSet<FundingCapture> FundingCaptures { get; set; }
+        public DbSet<Domain.FundingManagement.PaymentSchedule> FMPaymentSchedules { get; set; }
+        public DbSet<PaymentScheduleItem> PaymentScheduleItems { get; set; }
+        public DbSet<SDA> SDAs { get; set; }
+
+        //Funding Assessment
+        public DbSet<FundingAssessmentForm> FundingAssessmentForms { get; set; }
+        public DbSet<FundingAssessmentFormResponse> FundingAssessmentFormResponses { get; set; }
+        public DbSet<FundingAssessmentFormSDA> FundingAssessmentFormSDAs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

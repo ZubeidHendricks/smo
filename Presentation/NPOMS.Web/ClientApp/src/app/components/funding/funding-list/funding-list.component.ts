@@ -233,22 +233,28 @@ export class FundingListComponent implements OnInit {
   }
 
   private getFunding(npoId: number) {
-    // console.log('npoId', npoId);
+
   }
 
   private filterFunding() {
     this.filteredFunding = this.funding;
 
     if (this.selectedNpo) {
-      // console.log('filter by organisation');
     }
 
     if (this.selectedFinancialYear) {
-      // console.log('filter by financial year');
     }
 
     if (this.selectedProgramme) {
-      // console.log('filter by programme');
+
+    }
+
+    if (this.selectedFinancialYear) {
+
+    }
+
+    if (this.selectedProgramme) {
+
     }
   }
 

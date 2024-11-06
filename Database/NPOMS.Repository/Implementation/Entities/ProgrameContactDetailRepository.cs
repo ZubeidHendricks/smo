@@ -31,5 +31,35 @@ namespace NPOMS.Repository.Implementation.Entities
                            .AsNoTracking()
                            .ToListAsync();
         }
+
+        public async Task<IEnumerable<ProgramContactInformation>> GetContactDetails(int npoProfileId)
+        {
+            return await FindByCondition(x => x.IsActive && x.NpoProfileId == npoProfileId)
+                           .Include(x => x.Title)
+                           .Include(x => x.Position)
+                           .Include(x => x.Gender)
+                           .Include(x => x.Race)
+                           .Include(x => x.Language)
+                           .Include(x => x.ApprovalStatus)
+                           .AsNoTracking()
+                           .ToListAsync();
+        }
+
+        public async Task<IEnumerable<ProgramContactInformation>> GetContactDetailsByIds(int programmeId, int npoProfileId, int subProgramId, int subProgramTypeId)
+        {
+            return await FindByCondition(x => x.IsActive
+                            && x.SubProgrammeId.Equals(subProgramId)
+                            && x.SubProgrammeTypeId.Equals(subProgramTypeId)        
+                            && x.NpoProfileId == npoProfileId)
+                           .Include(x => x.Title)
+                           .Include(x => x.Position)
+                           .Include(x => x.Gender)
+                           .Include(x => x.Race)
+                           .Include(x => x.Language)
+                           .Include(x => x.ApprovalStatus)
+                           .AsNoTracking()
+                           .ToListAsync();
+        }
+
     }
 }

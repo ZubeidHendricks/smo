@@ -64,6 +64,11 @@ export class EvaluationService {
     const url = `${this._envUrl.urlAddress}/api/evaluation/Id/${id}`;
     return this._http.get<IResponseOptions[]>(url, httpOptions);
   } 
+
+  public getAllResponses() {
+    const url = `${this._envUrl.urlAddress}/api/evaluation/getAll`;
+    return this._http.get<IResponseOptions[]>(url, httpOptions);
+  } 
   
   public workflowAssessmentCount(qcId: number) {
     const url = `${this._envUrl.urlAddress}/api/evaluation/QCId/${qcId}`;
@@ -92,6 +97,11 @@ export class EvaluationService {
 
   public getCapturedResponses(fundingApplicationId: number) {
     const url = `${this._envUrl.urlAddress}/api/evaluation/captured-response/fundingApplicationId/${fundingApplicationId}`;
+    return this._http.get<ICapturedResponse[]>(url, httpOptions);
+  }
+
+  public getAllCapturedResponses() {
+    const url = `${this._envUrl.urlAddress}/api/evaluation/captured-responses`;
     return this._http.get<ICapturedResponse[]>(url, httpOptions);
   }
 

@@ -25,7 +25,7 @@ namespace NPOMS.API.Controllers
         private IContactService _contactService;
         private IProgrammeService _programmeService;
         private IProgrameDeliveryService _programeDeliveryService;
-
+        private INpoProfileService _npoProfilService;
         #endregion
 
         #region Constructors
@@ -37,7 +37,8 @@ namespace NPOMS.API.Controllers
             IBankService bankService,
             IContactService contactService,
             IProgrammeService programmeService,
-            IProgrameDeliveryService programeDeliveryService
+            IProgrameDeliveryService programeDeliveryService,
+            INpoProfileService npoProfilService
             )
         {
             _logger = logger;
@@ -47,6 +48,7 @@ namespace NPOMS.API.Controllers
             _contactService = contactService;
             _programmeService = programmeService;
             _programeDeliveryService = programeDeliveryService;
+            _npoProfilService = npoProfilService;
         }
         #endregion
 
@@ -55,12 +57,30 @@ namespace NPOMS.API.Controllers
         {
             try
             {
+                var npoId = await _npoProfilService.GetById(npoProfileId);
                 var results = await _bankService.GetBankDetailsByProgramId(programmeId, npoProfileId);
                 return Ok(results);
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Something went wrong inside GetBankDetailsByProgramId action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("bank/npoProfileId/{npoProfileId}", Name = "GetProgrammeBankDetails")]
+        public async Task<IActionResult> GetProgrammeBankDetails(int npoProfileId)
+        {
+            try
+            {
+                var npo = await _applicationService.GetApplicationById(npoProfileId);
+                var npoProfile = await _npoProfilService.GetByNpoId(npo.NpoId);
+                var results = await _bankService.GetBankDetailsByIds(npoProfile.Id);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetBankDetailsById action: {ex.Message} Inner Exception: {ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -80,11 +100,27 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpGet("contact/npoProfileId/{npoProfileId}", Name = "GetContactDetails")]
+        public async Task<IActionResult> GetContactDetails(int npoProfileId)
+        {
+            try
+            {
+                var results = await _contactService.GetContactDetails(npoProfileId);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetContactDetails action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpGet("delivery/programmeId/{programmeId}/npoProfileId/{npoProfileId}", Name = "GetDeliveryDetailsByProgramId")]
         public async Task<IActionResult> GetDeliveryDetailsByProgramId(int programmeId, int npoProfileId)
         {
             try
             {
+                var npoId = await _npoProfilService.GetById(npoProfileId);
                 var results = await _programeDeliveryService.GetDeliveryDetailsByProgramId(programmeId, npoProfileId);
                 return Ok(results);
             }
@@ -94,6 +130,71 @@ namespace NPOMS.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        //[HttpGet("delivery", Name = "GetProgrammeDeliveryArea")]
+        //public async Task<IActionResult> GetProgrammeDeliveryArea()
+        //{
+        //    try
+        //    {
+        //        var results = await _programeDeliveryService.GetDeliveryDetailsByProgramId(programmeId, npoProfileId);
+        //        return Ok(results);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Something went wrong inside GetDeliveryDetailsByProgramId action: {ex.Message} Inner Exception: {ex.InnerException}");
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
+
+        [HttpGet("delivery/selectedApplicationId/{selectedApplicationId}", Name = "GetDeliveryDetails")]
+        public async Task<IActionResult> GetDeliveryDetails(int selectedApplicationId)
+        {
+            try
+            {
+                var npo = await _applicationService.GetApplicationById(selectedApplicationId);
+                var npoProfile = await _npoProfilService.GetByNpoId(npo.NpoId);
+                var results = await _programeDeliveryService.GetDeliveryDetails(npoProfile.Id);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetDeliveryDetails action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        
+
+        [HttpGet("deliveryDetailQC/npoId/{npoId}", Name = "GetDeliveryDetailsQC")]
+        public async Task<IActionResult> GetDeliveryDetailsQC(int npoId)
+        {
+            try
+            {
+                var npoProfile = await _npoProfilService.GetByNpoId(npoId);
+                var results = await _programeDeliveryService.GetDeliveryDetails(npoProfile.Id);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetDeliveryDetails action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        //[HttpGet("contact/npoProfileId/{npoProfileId}", Name = "GetContactDetails")]
+        //public async Task<IActionResult> GetContactDetails(int npoProfileId)
+        //{
+        //    try
+        //    {
+        //        var npoProfile = await _applicationService.GetApplicationById(npoProfileId);
+        //        var results = await _contactService.GetContactDetailsByProgramId(npoProfile.NpoId);
+        //        return Ok(results);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Something went wrong inside GetContactDetails action: {ex.Message} Inner Exception: {ex.InnerException}");
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
 
         [HttpPost("create-contact/{npoProfileId}", Name = "CreateProgrameContact")]
         public async Task<IActionResult> CreateProgrameContact([FromBody] ProgramContactInformation model, int npoProfileId)
@@ -132,6 +233,7 @@ namespace NPOMS.API.Controllers
         {
             try
             {
+                //var npo = await _applicationService.GetApplicationById(applicationId);
                 await _programmeService.CreateBankDetails(model, base.GetUserIdentifier(), npoProfileId);
                 return Ok(model);
             }
@@ -185,6 +287,37 @@ namespace NPOMS.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Something went wrong inside UpdateProgrameDelivery action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("update-DeliveryServiceAreaSelection/id/{id}/selection/{selection}", Name = "DeliveryServiceAreaSelection")]
+        public async Task<IActionResult> DeliveryServiceAreaSelection( int id, bool selection)
+        {
+            try
+            {
+                 await _programmeService.UpdateDeliveryAreaSelection(base.GetUserIdentifier(), id, selection);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside DeliveryServiceAreaSelection action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("update-BankSelection/id/{id}/selection/{selection}/npoId/{npoId}", Name = "UpdateBankSelection")]
+        public async Task<IActionResult> UpdateBankSelection(int id, bool selection, int npoId)
+        {
+            try
+            {
+                var npoProfile = await _npoProfilService.GetByNpoId(npoId);
+                await _programmeService.UpdateBankSelection(base.GetUserIdentifier(), id, selection, npoProfile.Id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateBankSelection action: {ex.Message} Inner Exception: {ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }

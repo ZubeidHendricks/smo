@@ -1,11 +1,11 @@
 {
-  "name": "NPOMSweb",
+  "name": "NPOMSWeb",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "echo Starting... && ng serve",
     "build": "ng build",
-    "build:ssr": "ng run ETrack.Web:server:dev",
+    "build:ssr": "ng run NPOMSWeb:server:dev",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -28,6 +28,7 @@
     "exceljs": "^4.3.0",
     "file-saver": "^2.0.5",
     "font-awesome": "^4.7.0",
+    "html2pdf.js": "^0.10.2",
     "moment": "^2.29.4",
     "ngx-powerbi": "^3.0.0",
     "ngx-quill": "^22.0.0",
@@ -36,7 +37,6 @@
     "primeflex": "^2.0.0",
     "primeicons": "^4.1.0",
     "primeng": "^11.3.2",
-    "primeng-lts": "^12.2.5",
     "quill": "^1.3.7",
     "rxjs": "~6.6.0",
     "tslib": "^2.4.0",

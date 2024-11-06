@@ -60,6 +60,11 @@ export class BidService {
     return this.http.post<IPlace[]>(url, JSON.stringify(sdas), httpOptions);
   }
 
+  getSdaPlaces(sdas: ISDA[], applicationId: number, programId: number, subProgramId: number, subProgramTypeId: number): Observable<IPlace[]> {
+    const url = `${this.bidUrl}/places/applicationId/${applicationId}/programId/${programId}/subProgramId/${subProgramId}/subProgramTypeId/${subProgramTypeId}`;
+    return this.http.post<IPlace[]>(url, JSON.stringify(sdas), httpOptions);
+  }
+
   getSubPlaces(places: IPlace[]): Observable<ISubPlace[]> {
     const url = `${this.bidUrl}/subplaces`;
     return this.http.post<ISubPlace[]>(url, JSON.stringify(places), httpOptions);

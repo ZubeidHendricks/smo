@@ -30,7 +30,14 @@ namespace NPOMS.Repository.Implementation
 
 		public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
 		{
-			return RepositoryContext.Set<T>().Where(expression).AsNoTracking();
+			try
+			{
+                return RepositoryContext.Set<T>().Where(expression).AsNoTracking();
+            }
+			catch(Exception x) {
+				return null;
+			}
+
 		}
 
 		public void Create(T entity)
@@ -93,7 +100,7 @@ namespace NPOMS.Repository.Implementation
 			else
 			{
 				this.RepositoryContext.Set<T>().Update(newEntity);
-				await this.RepositoryContext.SaveChangesAsync();
+                await this.RepositoryContext.SaveChangesAsync();
 			}
 		}
 
@@ -115,7 +122,22 @@ namespace NPOMS.Repository.Implementation
 			}
 		}
 
-		public async Task DeleteAsync(T entity)
+        public async Task UpdateRangeAsync(IEnumerable<T> newEntities, int currentUserId)
+		{
+			try {
+                // Update the entities in the DbContext
+                this.RepositoryContext.Set<T>().UpdateRange(newEntities);
+
+                // Save changes to the database
+                await this.RepositoryContext.SaveChangesAsync();
+            } catch(Exception ex) {
+			throw ex;
+			}
+
+        }
+
+
+        public async Task DeleteAsync(T entity)
 		{
 			this.RepositoryContext.Set<T>().Remove(entity);
 			await this.RepositoryContext.SaveChangesAsync();
@@ -126,11 +148,17 @@ namespace NPOMS.Repository.Implementation
 			await this.RepositoryContext.SaveChangesAsync();
 		}
 
-		public void InsertMultiItemsAsync(List<T> entity)
+		public async Task InsertMultiItemsAsync(List<T> entity)
 		{
-			this.RepositoryContext.Set<T>().AddRange(entity);
-			this.RepositoryContext.SaveChangesAsync();
-		}
+			try {
+                this.RepositoryContext.Set<T>().AddRange(entity);
+                await this.RepositoryContext.SaveChangesAsync();
+            }
+			catch (Exception ex)
+			{
+				return;
+			}
+        }
 
 
 		public async Task UpdateAsync(T entity)

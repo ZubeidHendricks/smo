@@ -55,9 +55,9 @@ export class NpoListComponent implements OnInit {
 
     this.cols = [
       { field: 'refNo', header: 'Ref. No.', width: '15%' },
-      { field: 'name', header: 'Name', width: '50%' },
-      { field: 'organisationType.name', header: 'Organisation Type', width: '13%' },
-      { field: 'approvalStatus.name', header: 'Organisation Status', width: '12%' }
+      { field: 'name', header: 'Name', width: '42%' },
+      { field: 'organisationType.name', header: 'Organisation Type', width: '15%' },
+      { field: 'approvalStatus.name', header: 'Organisation Status', width: '15%' }
     ];
   }
 

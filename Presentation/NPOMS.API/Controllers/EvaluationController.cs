@@ -63,11 +63,26 @@ namespace NPOMS.API.Controllers
 
         }
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		[HttpGet("fundingApplicationId/{fundingApplicationId}")]
+        [HttpGet("getAll")]
+        public async Task<IActionResult> GetAll()
+        {
+            try
+            {
+                var results = await _evaluationService.GetAllResponses();
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetAll action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("fundingApplicationId/{fundingApplicationId}")]
 		public async Task<IActionResult> GetQuestionnaire(int fundingApplicationId)
 		{
 			try
@@ -311,6 +326,21 @@ namespace NPOMS.API.Controllers
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
+
+        [HttpGet("captured-responses", Name = "GetAllCapturedResponses")]
+        public async Task<IActionResult> GetAllCapturedResponses(bool returnInactive)
+        {
+            try
+            {
+                var results = await this._evaluationService.GetAllCapturedResponses(returnInactive);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetCapturedResponses action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
         [HttpPost("captured-scorecardResponse", Name = "CreateScorecardResponse")]
         public async Task<IActionResult> CreateScorecardResponse([FromBody] CapturedResponse model)

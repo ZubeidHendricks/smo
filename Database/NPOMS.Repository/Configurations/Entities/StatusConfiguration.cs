@@ -150,7 +150,13 @@ namespace NPOMS.Repository.Configurations.Entities
 					Id = 23,
 					Name = "Pending Reviewer Satisfaction",
 					SystemName = "PendingReviewerSatisfaction"
-				}
+				},
+                new Status
+                {
+                    Id = 24,
+                    Name = "Completed",
+                    SystemName = "Completed"
+                }
             );
 		}
 	}

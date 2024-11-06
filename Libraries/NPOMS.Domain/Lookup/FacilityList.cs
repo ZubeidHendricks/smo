@@ -10,7 +10,7 @@ namespace NPOMS.Domain.Lookup
 	{
 		public int FacilityTypeId { get; set; }
 
-		public int FacilitySubDistrictId { get; set; }
+        public int FacilitySubDistrictId { get; set; }
 
 		[Required]
 		[Column(TypeName = "nvarchar(50)")]

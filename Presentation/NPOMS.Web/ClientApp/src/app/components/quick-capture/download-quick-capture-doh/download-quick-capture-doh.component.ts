@@ -452,4 +452,12 @@ export class DownloadQuickCaptureDohComponent implements OnInit {
     else
       this.activeStep = goToStep;
   }
+
+  public loadActivities() {
+
+  }
+
+  public loadObjectives() {
+    
+  }
 }

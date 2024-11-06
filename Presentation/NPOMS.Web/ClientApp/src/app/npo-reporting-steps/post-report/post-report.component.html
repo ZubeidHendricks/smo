@@ -1,0 +1,548 @@
+<p-toast></p-toast>
+<p-panel [style]="{'font-size':'12px'}" header=" Post Report">
+    <!-- <div class="p-grid p-nogutter p-justify-end">
+        <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="Reviewer Satisfaction - All Activities" (click)="reviewAllItems()"></button>
+    </div>     -->
+    <div style="height: 10px;"></div>
+    <!-- <p-table [value]="filteredposts" [editable]="true" styleClass="p-datatable-sm">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Post Classification</th>
+            <th>Number of Posts</th>
+            <th>Number Filled</th>
+            <th>Months Filled</th>
+            <th>Vacant</th>
+            <th>Date of Vacancies</th>
+            <th>Vacancy Reasons</th>
+            <th>Plans</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </ng-template>
+      
+        <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+          <tr>
+            <td pEditableColumn>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <p-dropdown [options]="staffCategories" [(ngModel)]="rowData.staffCategoryId" 
+                              (onChange)="onBlurAdjustedPost(rowData)">
+                  </p-dropdown>
+                </ng-template>
+                <ng-template pTemplate="output">
+                  <p-dropdown [options]="staffCategories" [(ngModel)]="rowData.staffCategoryId" 
+                              [disabled]="true" (onChange)="onBlurAdjustedPost(rowData)">
+                  </p-dropdown>
+                </ng-template>
+              </p-cellEditor>
+            </td>   
+            <td pEditableColumn>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText [(ngModel)]="rowData.numberOfPosts" type="number" 
+                  (blur)="onBlurAdjustedPost(rowData)"/>
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ rowData.numberOfPosts }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td pEditableColumn>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText [(ngModel)]="rowData.numberFilled" type="number"
+                  (blur)="onBlurAdjustedPost(rowData)" />
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ rowData.numberFilled }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td pEditableColumn>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText [(ngModel)]="rowData.monthsFilled" type="text"
+                  (blur)="onBlurAdjustedPost(rowData)" />
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ rowData.monthsFilled }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td pEditableColumn>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText [(ngModel)]="rowData.vacant" type="text"
+                  (blur)="onBlurAdjustedPost(rowData)" />
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ rowData.vacant }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td pEditableColumn>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <p-calendar [(ngModel)]="rowData.dateOfVacancies" dateFormat="yy-mm-dd" (onSelect)="onBlurAdjustedPost(rowData)"  (blur)="onBlurAdjustedPost(rowData)"></p-calendar>
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ rowData.dateOfVacancies | date: 'yyyy-MM-dd' }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td pEditableColumn>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText [(ngModel)]="rowData.vacancyReasons"  (blur)="onBlurAdjustedPost(rowData)"/>
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ rowData.vacancyReasons }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td pEditableColumn>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText [(ngModel)]="rowData.plans"  (blur)="onBlurAdjustedPost(rowData)" />
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ rowData.plans }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td>{{status(rowData)}}</td>
+            <td style="text-align: center;">
+              <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="selectedPost=rowData; menu.toggle($event); updateButtonItems()" pTooltip="Options" tooltipPosition="top"></button>
+              <p-menu #menu [popup]="true" [model]="buttonItems" appendTo="body"></p-menu></td>
+          </tr>
+        </ng-template>
+      
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="10" style="text-align: center;">No results found</td>
+          </tr>
+        </ng-template>
+      </p-table> -->
+
+      <p-table [value]="filteredposts" [editable]="true" styleClass="p-datatable-sm">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Post Classification</th>
+            <th>Number of Posts</th>
+            <th>Number Filled</th>
+            <th>Months Filled</th>
+            <th>Vacant</th>
+            <th>Date of Vacancies</th>
+            <th>Vacancy Reasons</th>
+            <th>Plans</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </ng-template>
+      
+        <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+          <tr>
+            <!-- Post Classification -->
+            <td pEditableColumn>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <p-dropdown [options]="staffCategories" [(ngModel)]="rowData.staffCategoryId" 
+                              (onChange)="onBlurAdjustedPost(rowData)"  [disabled]="!rowData.isEditable">
+                  </p-dropdown>
+                </ng-template>
+                <ng-template pTemplate="output">
+                  <p-dropdown [options]="staffCategories" [(ngModel)]="rowData.staffCategoryId" 
+                              [disabled]="true">
+                  </p-dropdown>
+                </ng-template>
+              </p-cellEditor>
+            </td>
+      
+            <!-- Number of Posts -->
+            <td pEditableColumn>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText [(ngModel)]="rowData.numberOfPosts" type="number" 
+                         (blur)="onBlurAdjustedPost(rowData)"  [disabled]="!rowData.isEditable" />
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ rowData.numberOfPosts }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+      
+            <!-- Number Filled -->
+            <td pEditableColumn>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText [(ngModel)]="rowData.numberFilled" type="number" 
+                         (blur)="onBlurAdjustedPost(rowData)" [disabled]="!rowData.isEditable" />
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ rowData.numberFilled }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+      
+            <!-- Months Filled -->
+            <td pEditableColumn>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText [(ngModel)]="rowData.monthsFilled" type="text" 
+                         (blur)="onBlurAdjustedPost(rowData)" [disabled]="!rowData.isEditable"/>
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ rowData.monthsFilled }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+      
+            <!-- Vacant -->
+            <td pEditableColumn>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText [(ngModel)]="rowData.vacant" type="text" 
+                         (blur)="onBlurAdjustedPost(rowData)"  [disabled]="!rowData.isEditable" />
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ rowData.vacant }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+      
+            <!-- Date of Vacancies -->
+            <td pEditableColumn>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <p-calendar [(ngModel)]="rowData.dateOfVacancies" dateFormat="yy-mm-dd" 
+                              (onSelect)="onBlurAdjustedPost(rowData)" (blur)="onBlurAdjustedPost(rowData)" 
+                              [disabled]="!rowData.isEditable">
+                  </p-calendar>
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ rowData.dateOfVacancies | date: 'yyyy-MM-dd' }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+      
+            <!-- Vacancy Reasons -->
+            <td pEditableColumn>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText [(ngModel)]="rowData.vacancyReasons" 
+                         (blur)="onBlurAdjustedPost(rowData)"  [disabled]="!rowData.isEditable" />
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ rowData.vacancyReasons }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+      
+            <!-- Plans -->
+            <td pEditableColumn>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText [(ngModel)]="rowData.plans" 
+                         (blur)="onBlurAdjustedPost(rowData)"  [disabled]="!rowData.isEditable"/>
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ rowData.plans }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+      
+            <!-- Status Column -->
+            <td>{{ status(rowData) }}</td>
+      
+            <!-- Actions Column with Edit Button -->
+            <td style="text-align: center;">
+              <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="selectedPost=rowData; menu.toggle($event); updateButtonItems()" pTooltip="Options" tooltipPosition="top"></button>
+              <p-menu #menu [popup]="true" [model]="buttonItems" appendTo="body"></p-menu></td>
+          </tr>
+        </ng-template>
+      
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="10" style="text-align: center;">No results found</td>
+          </tr>
+        </ng-template>
+      </p-table>
+      
+
+
+      <div class="button-container">
+        <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" *ngIf="quarterId > 0"  (click)="addNewRow()"></button>
+        <button pButton pRipple type="button" label="Complete" class="p-button-text" icon="fa fa-check" (click)="completeAction()" style="margin-left: auto;"></button>
+      </div>
+    <div style="height: 10px;"></div>
+</p-panel>
+
+<p-dialog header="Audit History" 
+          [(visible)]="displayVieHistoryDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+        <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="auditCols" [paginator]="true" [rows]="10" [value]="selectedPost?.postAudits" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="default-font">
+                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                <td>{{rowData.statusName}}</td>
+                <td>{{rowData.createdUser}}</td>
+                <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<p-dialog header="Add Comment" 
+          [(visible)]="displayCommentDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Comment</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="comment" [ngModelOptions]="{standalone: true}"></textarea>
+        </div>
+    </div>        
+    <ng-template pTemplate="footer">
+        <button *ngIf="canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(false, 'allComments')"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="Post Report" 
+          [(visible)]="displayPostDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+
+          <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Post Classification</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText [(ngModel)]="post.staffCategoryId" [ngModelOptions]="{standalone: true}" >
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Number of Posts</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText [(ngModel)]="post.numberOfPosts" [ngModelOptions]="{standalone: true}" >
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Number filled </span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText [(ngModel)]="post.numberFilled" [ngModelOptions]="{standalone: true}" >
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="non-mandatory-content"> Months in which filled</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText [(ngModel)]="post.monthsFilled
+                " [ngModelOptions]="{standalone: true}" >
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Vacant</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText [(ngModel)]="post.vacant" [ngModelOptions]="{standalone: true}" >
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Date of vacancies</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <p-calendar [(ngModel)]="post.dateofVacancies" placeholder="Select a Date"  [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'100%'}" [monthNavigator]="true" [yearNavigator]="true" [yearRange]="yearRange" ></p-calendar>
+         
+            </div>
+        </div>   <div class="p-grid">
+            <div class="p-col-fixed form-label">
+                <div class="box">
+                    <span class="non-mandatory-content">Reason for vacancies</span>
+                </div>
+            </div>
+            <div class="p-col">
+                <input type="text" class="form-text" pInputText [(ngModel)]="post.vacancyReasons" [ngModelOptions]="{standalone: true}" >
+            </div>
+        </div>
+      <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Plan to fill vacancies</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="post.plans" [ngModelOptions]="{standalone: true}" >
+        </div>
+    </div>
+    <ng-template pTemplate="footer" >
+        <button  pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o"  (click)="savePost(post)"></button>
+        <!-- <button *ngIf="!canEdit" pButton pRipple type="button" label="Add Comment" class="p-button-text" icon="fa fa-comment-o" (click)="addComment()"></button> -->
+    </ng-template>
+</p-dialog>
+
+
+<p-dialog header="View Comments" 
+          [(visible)]="displayAllCommentDialog" 
+          [style]="{width: '70vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="commentCols" [paginator]="true" [rows]="10" [value]="applicationComments" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="default-font">
+                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                <td>{{rowData.comment}}</td>
+                <td>{{rowData.createdUser.fullName}}</td>
+                <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="4" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary" let-rowData *ngIf="canEdit">
+            <div style="text-align:right">
+                <button pButton pRipple type="button" label="Add Comment" class="p-button-text" icon="fa fa-comment-o" (click)="addComment()"></button>
+            </div>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<p-dialog header="Reviewer Satisfaction" 
+          [(visible)]="displayReviewerSatisfactionDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="reviewerSatisfactionCols" [paginator]="true" [rows]="10" [value]="applicationReviewerSatisfaction" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="default-font">
+                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                <td style="text-align: center;" [ngClass]="rowData.isSatisfied === true ? 'green' : 'default' && rowData.isSatisfied === false ? 'red' : 'default'">
+                    <span>{{rowData.isSatisfied ? 'Yes' : 'No'}}</span>
+                </td>
+                <td>{{rowData.createdUser.fullName}}</td>
+                <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="4" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary" let-rowData>
+            <div class="p-grid p-nogutter p-justify-between">
+                <span class="mandatory-content">Are you satisfied with the details contained in this Activity?</span>
+
+                <div>
+                    <p-button label="Yes" icon="fa fa-thumbs-o-up" styleClass="p-button-success" (onClick)="createReviewerSatisfaction(true)"></p-button>
+                    &nbsp; &nbsp;
+                    <p-button label="No" icon="fa fa-thumbs-o-down" styleClass="p-button-danger" (onClick)="createReviewerSatisfaction(false)"></p-button>
+                </div>
+            </div>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<p-dialog header="Deleted Activities" 
+          [(visible)]="displayDeletedActivityDialog" 
+          [style]="{width: '90vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <p-table [rowHover]="true" [columns]="postCols" [value]="deletedActivities" styleClass="p-datatable-sm">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="heading">
+                <td *ngIf="deletedRowGroupMetadata[rowIndex].itemExists === false" [attr.colspan]="5">
+                    <span><span class="p-text-bold">Objective:</span> {{rowData.objective.name}}</span>
+                </td>
+            </tr>
+            <tr class="default-font">
+                <td>{{rowData.activityList.name}}</td>
+                <td>{{rowData.activityType.name}}</td>
+                <td>{{rowData.timelineStartDate | date: 'yyyy-MM-dd'}} to {{rowData.timelineEndDate | date: 'yyyy-MM-dd'}}</td>
+                <td>{{rowData.target}}</td>
+                <td>{{rowData.facilityListText}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="5" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<div class="content-section implementation">
+    <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
+        <p-footer>
+            <button type="button" pButton icon="fa fa-check" class="ui-button-info" label="Yes" (click)="cd.accept()"></button>
+            <button type="button" pButton icon="fa fa-times" class="ui-button-info" label="No" (click)="cd.reject()"></button>
+        </p-footer>
+    </p-confirmDialog>
+</div>

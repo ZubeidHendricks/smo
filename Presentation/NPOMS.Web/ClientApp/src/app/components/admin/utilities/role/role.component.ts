@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MenuItem, MessageService } from 'primeng/api';
 import { Table } from 'primeng/table';
-import { DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
+import { DepartmentEnum, DropdownTypeEnum, PermissionsEnum } from 'src/app/models/enums';
 import { IRole, IUser } from 'src/app/models/interfaces';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -39,6 +39,9 @@ export class RoleComponent implements OnInit {
   showDialog: boolean;
   inActive: boolean;
 
+  departmentCodes: any[];
+  selectedDepartmentCode: any;
+
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
 
@@ -66,9 +69,18 @@ export class RoleComponent implements OnInit {
     });
 
     this.cols = [
-      { field: 'name', header: 'Name', width: '50%' },
-      { field: 'systemName', header: 'System Name', width: '30%' }
+      { field: 'name', header: 'Name', width: '30%' },
+      { field: 'systemName', header: 'System Name', width: '25%' },
+      { field: 'departmentCode', header: 'Department Code', width: '25%' }
     ];
+
+    // Get the name of the enum
+    // Found at https://stackoverflow.com/questions/18111657/how-to-get-names-of-enum-entries
+    this.departmentCodes = [
+      { name: DepartmentEnum[DepartmentEnum.ALL], value: DepartmentEnum[DepartmentEnum.ALL] },
+      { name: DepartmentEnum[DepartmentEnum.DOH], value: DepartmentEnum[DepartmentEnum.DOH] },
+      { name: DepartmentEnum[DepartmentEnum.DSD], value: DepartmentEnum[DepartmentEnum.DSD] }
+    ]
   }
 
   private loadEntities() {
@@ -100,6 +112,7 @@ export class RoleComponent implements OnInit {
     this.isNew = true;
     this.entity = {} as IRole;
     this.inActive = null;
+    this.selectedDepartmentCode = null;
     this.showDialog = true;
   }
 
@@ -118,12 +131,13 @@ export class RoleComponent implements OnInit {
       entity[prop] = data[prop];
 
     this.inActive = !entity.isActive;
+    this.selectedDepartmentCode = this.departmentCodes.find(x => x.value === entity.departmentCode);
 
     return entity;
   }
 
   disableSave() {
-    if (!this.entity.name || !this.entity.systemName)
+    if (!this.entity.name || !this.entity.systemName || !this.selectedDepartmentCode)
       return true;
 
     return false;
@@ -131,6 +145,7 @@ export class RoleComponent implements OnInit {
 
   save() {
     this.entity.isActive = !this.inActive;
+    this.entity.departmentCode = this.selectedDepartmentCode.value;
     this.isNew ? this.createEntity() : this.updateEntity();
     this.showDialog = false;
   }

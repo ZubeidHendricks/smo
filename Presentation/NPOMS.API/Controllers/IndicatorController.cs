@@ -6,6 +6,7 @@ using NPOMS.Services.Email;
 using NPOMS.Services.Email.EmailTemplates;
 using NPOMS.Services.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -60,7 +61,50 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpPost("workplan-target", Name = "ManageTarget")]
+        [HttpPost("workplan-target/targetactivityIds", Name = "GetTargetsByActivityIds")]
+        public async Task<IActionResult> GetTargetsByActivityIds([FromBody] List<int> activityIds)
+        {
+            try
+            {
+                // Ensure activityIds is not null or empty
+                if (activityIds == null || !activityIds.Any())
+                {
+                    return BadRequest("Activity IDs cannot be null or empty.");
+                }
+
+                var results = await _indicatorService.GetTargetsByActivityIds(activityIds);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetTargetsByActivityIds action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("workplan-actual/actualactivityIds", Name = "GetActualsByActivityIds")]
+        public async Task<IActionResult> GetActualsByActivityIds([FromBody] List<int> activityIds)
+        {
+            try
+            {
+                // Ensure activityIds is not null or empty
+                if (activityIds == null || !activityIds.Any())
+                {
+                    return BadRequest("Activity IDs cannot be null or empty.");
+                }
+
+                var results = await _indicatorService.GetActualsByActivityIds(activityIds);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetActualsByActivityIds action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+        [HttpPost("workplan-target", Name = "ManageTarget")]
 		public async Task<IActionResult> ManageTarget([FromBody] WorkplanTarget model)
 		{
 			try

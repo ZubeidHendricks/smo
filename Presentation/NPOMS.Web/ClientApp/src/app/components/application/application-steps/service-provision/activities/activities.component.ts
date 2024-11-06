@@ -1,20 +1,47 @@
 import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityFacilityList, IActivityList, IActivityRecipient, IActivitySubProgramme, IActivityType, IApplication, IApplicationComment, IApplicationReviewerSatisfaction, IFacilityList, INpo, IObjective, IRecipientType, ISubProgramme } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationReviewerSatisfaction, IArea, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IManicipalityDemographic, INpo, IObjective, IRecipientType, ISubDistrictDemographic, ISubProgramme, ISubstructureDemographic } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+import { FilterService } from 'primeng/api';
 
 @Component({
   selector: 'app-activities',
   templateUrl: './activities.component.html',
-  styleUrls: ['./activities.component.css']
+  styleUrls: ['./activities.component.css'],
+  providers: [FilterService]
 })
 export class ActivitiesComponent implements OnInit {
+
+  // districts: any[] = [
+  //   { name: 'District 1', code: 'D1' },
+  //   { name: 'District 2', code: 'D2' }
+  // ];
+
+  // subDistricts: any[] = [];
+  // subStructures: any[] = [];
+
+  // allSubDistricts: any[] = [
+  //   { name: 'Sub District 1-1', code: 'SD1', districtCode: 'D1' },
+  //   { name: 'Sub District 1-2', code: 'SD2', districtCode: 'D1' },
+  //   { name: 'Sub District 2-1', code: 'SD3', districtCode: 'D2' }
+  // ];
+
+  // allSubStructures: any[] = [
+  //   { name: 'Sub Structure 1-1-1', code: 'SS1', subDistrictCode: 'SD1' },
+  //   { name: 'Sub Structure 1-1-2', code: 'SS2', subDistrictCode: 'SD1' },
+  //   { name: 'Sub Structure 2-1-1', code: 'SS3', subDistrictCode: 'SD3' }
+  // ];
+
+  // selectedDistricts: any[] = [];
+  // selectedSubDistricts: any[] = [];
+  // selectedSubStructures: any[] = [];
 
   public get RoleEnum(): typeof RoleEnum {
     return RoleEnum;
@@ -29,6 +56,7 @@ export class ActivitiesComponent implements OnInit {
 
   allActivities: IActivity[];
   activeActivities: IActivity[];
+  originalActiveActivities: IActivity[];
   deletedActivities: IActivity[];
 
   activityCols: any[];
@@ -47,7 +75,13 @@ export class ActivitiesComponent implements OnInit {
   deletedRowGroupMetadata: any[];
 
   facilities: IFacilityList[];
+  facilitiesList: IFacilityList[];
   selectedFacilities: IFacilityList[];
+
+
+  filteredFacilities: IFacilityList[] = [];
+
+
   selectedFacilitiesText: string;
 
   allSubProgrammes: ISubProgramme[];
@@ -67,6 +101,7 @@ export class ActivitiesComponent implements OnInit {
 
   activityList: IActivityList[];
   selectedActivity: IActivityList;
+  SubDistrictDemographicsBeforeFilter: ISubDistrictDemographic[];
 
   maxChars = 50;
 
@@ -84,9 +119,49 @@ export class ActivitiesComponent implements OnInit {
   selectedRecipients: IActivityRecipient[] = [];
   selectedRecipientsText: string;
 
+  facilityDistricts: IFacilityDistrict[];
+  selectedDistricts: IFacilityDistrict;
+
+  allFacilitySubDistricts: IFacilitySubDistrict[];
+  facilitySubDistricts: IFacilitySubDistrict[];
+  selectedSubDistricts: IFacilitySubDistrict[];
+
+  allFacilitySubStructures: IFacilitySubStructure[];
+  facilitySubStructures: IFacilitySubStructure[];
+  selectedFacilitySubStructures: IFacilitySubStructure;
+
+  
+  allIDistrictDemographics: IDistrictDemographic[];
+  selectedIDistrictDemographics: IDistrictDemographic;
+
+  allSubDistrictDemographics: ISubDistrictDemographic[];
+  allAreas : IArea[];
+  selectedAreas: IArea[];
+  AreaDemographics: IArea[];
+  SubDistrictDemographics: ISubDistrictDemographic[];
+  selectedSubDistrictDemographics: ISubDistrictDemographic[];
+
+  allSubstructureDemographics: ISubstructureDemographic[];
+  SubstructureDemographics: ISubstructureDemographic[];
+  selectedSubstructureDemographics: ISubstructureDemographic[];
+
+  allManicipalityDemographics: IManicipalityDemographic[];
+  ManicipalityDemographics: IManicipalityDemographic[];
+  selectedManicipalityDemographics: IManicipalityDemographic[];
+
+  showSubstructureDemographics: boolean = false;  // Control visibility for Sub Structures
+  showAreaDemographics: boolean = false;  // Control visibility for Area
+
+  //activeActivities: any[] = []; // All activities
+  filteredActivities: any[] = []; // Filtered activities
+  filteredData: any[] = [];
+
   public get FacilityTypeEnum(): typeof FacilityTypeEnum {
     return FacilityTypeEnum;
   }
+  //
+  // Used for table filtering
+  @ViewChild('dt') dt: Table | undefined;
 
   constructor(
     private _dropdownRepo: DropdownService,
@@ -96,12 +171,13 @@ export class ActivitiesComponent implements OnInit {
     private _applicationRepo: ApplicationService,
     private _datepipe: DatePipe,
     private _loggerService: LoggerService,
-    private _npoRepo: NpoService
+    private _npoRepo: NpoService,
+    private filterService: FilterService
   ) { }
 
   ngOnInit(): void {
     this._spinner.show();
-
+    this.registerCustomFilters();
     this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
       this.application.statusId === StatusEnum.PendingApproval ||
       this.application.statusId === StatusEnum.ApprovalInProgress ||
@@ -119,13 +195,28 @@ export class ActivitiesComponent implements OnInit {
     this.loadFacilities();
     this.setYearRange();
     this.loadAllSubProgrammes();
+    this.loadFacilityDistricts();
+    this.loadFacilitySubDistricts();
+    this.loadFacilitySubStructures();
+    this.loadDemographicDistricts();
+    this.loadDemographicSubStructures();
+    this.loadDemographicManicipalities();
+    this.loadDemographicSubDistricts();
+    this.loadAreas();
 
     this.activityCols = [
-      { header: 'Activity Name', width: '20%' },
+      { header: 'Activity Name', width: '15%' },
       { header: 'Activity Type', width: '10%' },
       { header: 'Timeline', width: '10%' },
       { header: 'Target', width: '10%' },
-      { header: 'Facilities and/or Community Places', width: '36%' }
+      { header: 'Facilities and/or Community Places', width: '15%' },
+
+
+      { header: 'District Name', width: '10%' },
+      { header: 'Municipalities', width: '10%' },
+      { header: 'Areas', width: '10%' },
+      { header: 'Sub Structures ', width: '10%' },
+      { header: 'Sub Districts', width: '10%' },
     ];
 
     this.commentCols = [
@@ -142,6 +233,302 @@ export class ActivitiesComponent implements OnInit {
       { header: 'Created Date', width: '35%' }
     ];
   }
+  
+  registerCustomFilters() {
+    this.filterService.register('custom', (value: string, filter: any[]) => {
+      // If no filter selected, allow all results (true)
+      if (!filter || filter.length === 0) {
+        return true;
+      }
+  
+      // If the value being filtered is a string, it needs to be handled as such
+      if (!value || typeof value !== 'string') {
+        return false;
+      }
+  
+      // Convert the value into an array of items (e.g., if values are comma-separated)
+      const rowItems = value.split(',').map((item: string) => item.trim());
+  
+      // Compare the selected filter values (array) to the row items (array of strings)
+      return filter.some(selectedItem => rowItems.includes(selectedItem.name));
+    });
+  }
+
+
+  onCustomFilterChange(selectedItems: any[], field: string) {
+    const filterFields = [field];
+  
+    // Reset the table when no items are selected (i.e., deselect all)
+    if (!selectedItems || selectedItems.length === 0) {
+      this.filteredData = [...this.originalActiveActivities];  // Reset to the original data
+    } else {
+      // Apply the filter
+      this.filteredData = this.filterService.filter(this.originalActiveActivities, filterFields, selectedItems, 'custom');
+    }
+  
+    // Reapply filters
+    this.applyCustomFilters();
+  }
+  
+
+  // onCustomFilterChange(selectedItems: any[], field: string) {
+  //   const filterFields = [field];
+  //   this.filteredData = this.filterService.filter(this.activeActivities, filterFields, selectedItems || [], 'custom');
+
+  //   this.applyCustomFilters();
+  // }
+  
+  applyCustomFilters() {
+    this.activeActivities = this.filteredData;
+    this.updateRowGroupMetaData();  // Update metadata based on the filtered data
+  }
+
+  applyFilterGlobal($event: any, stringVal: any) {
+    this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
+  }
+
+  private loadDemographicDistricts() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicDistrict, false).subscribe(
+      (results) => {
+        this.allIDistrictDemographics = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadDemographicManicipalities() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicManicipality, false).subscribe(
+      (results) => {
+        this.allManicipalityDemographics = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+  
+  private loadDemographicSubStructures() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicSubStructure, false).subscribe(
+      (results) => {
+        this.allSubstructureDemographics = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  filterFacilityDistrict(selectedSubDistricts: any): void {
+    this.loadFacilities();
+    if (selectedSubDistricts && selectedSubDistricts.length > 0) {
+        // Extract LinkIds from the selected ISubDistrictDemographic objects
+        const selectedLinkIds = selectedSubDistricts.map(subDistrict => subDistrict.linkId);
+        // Filter facilities based on the selected LinkIds
+        this.facilitiesList = this.facilities.filter(facility =>
+            selectedLinkIds.includes(facility.facilitySubDistrictId)
+        );
+        // if (this.selectedFacilities.length === 0) {
+        //     this.facilities = [];
+        // }
+        
+    // let allFacilities: string = "";
+    // this.selectedFacilities.forEach(item => {
+    //   allFacilities += item.name + "\n";
+    // });
+    // this.selectedFacilitiesText = allFacilities;
+
+
+    } else {
+
+    }
+}
+
+preventChange(event: any): void {
+  event.originalEvent.preventDefault(); 
+  event.value = [...this.selectedFacilities];
+}
+
+  private loadDemographicSubDistricts() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicSubDistrict, false).subscribe(
+      (results) => {
+        this.allSubDistrictDemographics = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadAreas() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Area, false).subscribe(
+      (results) => {
+        this.allAreas = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+// Method to handle changes when Demographic District is changed
+onDemographicDistrictChange() {
+  if(this.selectedIDistrictDemographics.isSubParent)
+  {
+    this.showSubstructureDemographics = false;
+    this.showAreaDemographics = true;
+  }
+  else {
+    this.showSubstructureDemographics = true;
+    this.showAreaDemographics = false;
+  }
+
+  this.selectedManicipalityDemographics = [];
+  this.selectedSubstructureDemographics = [];
+  this.selectedSubDistrictDemographics = [];
+  this.selectedAreas = [];
+
+  if (this.selectedIDistrictDemographics) {
+    // Filter ManicipalityDemographics based on selected District
+
+  if(this.selectedIDistrictDemographics.isSubParent) {
+      this.ManicipalityDemographics = this.allManicipalityDemographics.filter(md =>
+        md.subParentiId === this.selectedIDistrictDemographics.id
+      );
+  } else {
+    this.ManicipalityDemographics = this.allManicipalityDemographics.filter(md =>
+      md.districtDemographicId === this.selectedIDistrictDemographics.id
+    );
+  }
+
+  this.AreaDemographics = this.allAreas.filter(md =>
+    md.districtId === this.selectedIDistrictDemographics.id
+  );
+
+    // Reset other arrays
+    this.SubDistrictDemographics = [];
+    this.SubstructureDemographics = [];
+  } else {
+    // Reset all arrays if no district is selected
+    this.ManicipalityDemographics = [];
+    this.AreaDemographics = [];
+    this.SubDistrictDemographics = [];
+    this.SubstructureDemographics = [];
+  }
+}
+
+onAreaChange() {
+  this.selectedSubDistrictDemographics = [];
+  if (this.selectedAreas && this.selectedAreas.length > 0) {
+    this.SubDistrictDemographics = this.allSubDistrictDemographics.filter(sd =>
+      this.selectedAreas.some(ss => ss.id === sd.areaId)
+    );
+  } else {
+    this.SubDistrictDemographics = [];
+  }
+}
+
+onDemographicSubStructuresChange() {
+  this.selectedSubDistrictDemographics = [];
+  if (this.selectedSubstructureDemographics && this.selectedSubstructureDemographics.length > 0) {
+    this.SubDistrictDemographics = this.allSubDistrictDemographics.filter(sd =>
+      this.selectedSubstructureDemographics.some(ss => ss.id === sd.subSctrcureDemographicId)
+    );
+  } else {
+    // Reset all arrays if no sub-structure demographic is selected
+    this.SubDistrictDemographics = [];
+  }
+}
+
+onDemographicManicipalitiesChange() {
+  this.selectedSubstructureDemographics = [];
+  this.selectedSubDistrictDemographics = [];
+
+  if (this.selectedManicipalityDemographics && this.selectedManicipalityDemographics.length > 0) {
+    this.SubstructureDemographics = this.allSubstructureDemographics.filter(ss =>
+      this.selectedManicipalityDemographics.some(md => md.id === ss.manicipalityDemographicId)
+    );
+
+    // Reset other arrays
+    this.SubDistrictDemographics = [];
+  } else {
+    // Reset all arrays if no manicipality demographic is selected
+    this.SubstructureDemographics = [];
+    this.SubDistrictDemographics = [];
+  }
+}
+
+
+  private loadFacilitySubStructures() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.FacilitySubStructure, false).subscribe(
+      (results) => {
+        this.allFacilitySubStructures = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadFacilityDistricts() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.FacilityDistricts, false).subscribe(
+      (results) => {
+        this.facilityDistricts = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  getSubDistrictNames(activityDemoName: any): string {
+    if (!activityDemoName || !activityDemoName) {
+      return '';
+    }
+
+    return activityDemoName.map((subDistrict: any) => subDistrict.name).join(', ');
+  }
+
+  private loadFacilitySubDistricts() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.FacilitySubDistricts, false).subscribe(
+      (results) => {
+        this.allFacilitySubDistricts = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+
+  onDistrictChange() {
+    this.selectedSubDistricts = [];
+    this.selectedFacilitySubStructures  = null;
+    
+    if (this.selectedDistricts) {
+      this.facilitySubDistricts = this.allFacilitySubDistricts.filter(sd => 
+        sd.facilityDistrictId === this.selectedDistricts.id
+      );
+  
+      this.facilitySubStructures = this.allFacilitySubStructures.filter(ss => 
+        ss.facilityDistrictId === this.selectedDistricts.id
+      );
+
+    } else {
+      this.selectedSubDistricts = [];
+      this.selectedFacilitySubStructures = null;
+    }
+  }
+  
 
   private loadNpo() {
     this._npoRepo.getNpoById(this.application.npoId).subscribe(
@@ -200,6 +587,16 @@ export class ActivitiesComponent implements OnInit {
       (results) => {
         this.allActivities = results;
         this.activeActivities = this.allActivities.filter(x => x.isActive === true);
+        this.activeActivities.forEach(item => {
+          item.mappedDistrict = this.getSubDistrictNames(item?.activityDistrict),
+          item.mappedManicipality = this.getSubDistrictNames(item?.activityManicipality),
+          item.mappedSubstructure = this.getSubDistrictNames(item?.activitySubStructure),
+          item.mappedSubdistrict =this.getSubDistrictNames(item?.activitySubDistrict),
+          item.mappedArea =this.getSubDistrictNames(item?.activityArea)
+        });
+
+        this.originalActiveActivities =  this.activeActivities;
+
         this.getFacilityListText(results);
         this.updateRowGroupMetaData();
         this._spinner.hide();
@@ -295,8 +692,13 @@ export class ActivitiesComponent implements OnInit {
     this.newActivity = true;
     this.activity = {
       activitySubProgrammes: [] as IActivitySubProgramme[],
-      activityFacilityLists: [] as IActivityFacilityList[]
+      activityFacilityLists: [] as IActivityFacilityList[],
+      activityDistrict: [] as IActivityDistrict[],
+      activityManicipality: [] as IActivityManicipality[],
+      activitySubDistrict: [] as IActivitySubDistrict[],
+      activitySubStructure: [] as IActivitySubStructure[],
     } as IActivity;
+    
     this.selectedObjective = null;
     this.selectedActivityType = null;
     this.selectedFacilities = [];
@@ -352,7 +754,85 @@ export class ActivitiesComponent implements OnInit {
     });
 
     this.getTextValues();
+    // Handle selected district
+    const districtId = data?.activityDistrict?.find(district => district.isActive)?.demographicDistrictId;
+    this.selectedIDistrictDemographics = this.allIDistrictDemographics.find(item => item.id === districtId);
+    
+    if (this.selectedIDistrictDemographics) {
+      this.ManicipalityDemographics = this.allManicipalityDemographics.filter(md =>
+        md.districtDemographicId === this.selectedIDistrictDemographics.id
+      );
 
+      this.AreaDemographics = this.allAreas.filter(md =>
+        md.districtId === this.selectedIDistrictDemographics.id
+      );
+
+      if(this.selectedIDistrictDemographics.isSubParent)
+        {
+          this.showSubstructureDemographics = false;
+          this.showAreaDemographics = true;
+        }
+        else {
+          this.showSubstructureDemographics = true;
+          this.showAreaDemographics = false;
+        }
+
+      if(this.selectedIDistrictDemographics.isSubParent) {
+        this.ManicipalityDemographics = this.allManicipalityDemographics
+        ?.filter(md =>
+          md.subParentiId === this.selectedIDistrictDemographics.id
+        );
+        } else {
+          this.ManicipalityDemographics = this.allManicipalityDemographics?.filter(md =>
+            md.districtDemographicId === this.selectedIDistrictDemographics.id
+          );
+        }
+      this.SubDistrictDemographics = [];
+      this.SubstructureDemographics = [];
+    } else {
+      this.ManicipalityDemographics = [];
+      this.SubDistrictDemographics = [];
+      this.SubstructureDemographics = [];
+    }
+
+    const demographicDistrictIds = data?.activityManicipality?.map(({ demographicDistrictId }) => demographicDistrictId);
+    this.selectedManicipalityDemographics = this.ManicipalityDemographics?.filter(item =>
+        demographicDistrictIds.includes(item.districtDemographicId) && 
+        data.activityManicipality.some(({ name }) => name === item.name)
+    );
+    const demographicDistrictIds1 = data?.activityArea?.map(({ demographicDistrictId }) => demographicDistrictId);
+    this.selectedAreas = this.AreaDemographics?.filter(item =>
+      demographicDistrictIds1.includes(item.districtId) && 
+        data.activityArea?.some(({ name }) => name === item.name)
+    );
+    
+    this.onDemographicManicipalitiesChange();
+    if(this.selectedIDistrictDemographics?.isSubParent) {
+      this.onAreaChange();
+      }
+
+    const subStructureIds = data?.activitySubStructure?.map(({ municipalityId }) => municipalityId);
+    this.selectedSubstructureDemographics = this.SubstructureDemographics?.filter(item =>
+        subStructureIds.includes(item.manicipalityDemographicId) && 
+        data.activitySubStructure.some(({ name }) => name === item.name)
+    );
+    if(!this.selectedIDistrictDemographics?.isSubParent) {
+      this.onDemographicSubStructuresChange();
+      }
+    const substructureId = data?.activitySubDistrict?.map(({ substructureId }) => substructureId);
+    const areaid = data?.activitySubDistrict?.map(({ areaId }) => areaId);
+
+    if(areaid.length > 0) {
+      this.selectedSubDistrictDemographics = this.SubDistrictDemographics?.filter(item =>
+        areaid.includes(item.areaId) && 
+      data.activitySubDistrict.some(({ name }) => name === item.name)
+     );
+    }else{
+      this.selectedSubDistrictDemographics = this.SubDistrictDemographics?.filter(item =>
+        substructureId.includes(item.subSctrcureDemographicId) && 
+      data.activitySubDistrict.some(({ name }) => name === item.name)
+     );
+    }
     return activity;
   }
 
@@ -454,16 +934,16 @@ export class ActivitiesComponent implements OnInit {
     this.activity.timelineStartDate = this._datepipe.transform(this.activity.timelineStartDate, 'yyyy-MM-dd');
     this.activity.timelineEndDate = this._datepipe.transform(this.activity.timelineEndDate, 'yyyy-MM-dd');
 
-    this.activity.activitySubProgrammes = [];
-    this.selectedSubProgrammes.forEach(item => {
-      let activitySubProgramme = {
-        activityId: this.activity.id,
-        subProgrammeId: item.id,
-        isActive: true
-      } as IActivitySubProgramme;
+    // this.activity.activitySubProgrammes = [];
+    // this.selectedSubProgrammes.forEach(item => {
+    //   let activitySubProgramme = {
+    //     activityId: this.activity.id,
+    //     subProgrammeId: item.id,
+    //     isActive: true
+    //   } as IActivitySubProgramme;
 
-      this.activity.activitySubProgrammes.push(activitySubProgramme);
-    });
+    //   this.activity.activitySubProgrammes.push(activitySubProgramme);
+    // });
 
     this.activity.activityFacilityLists = [];
     this.selectedFacilities.forEach(item => {
@@ -476,20 +956,105 @@ export class ActivitiesComponent implements OnInit {
       this.activity.activityFacilityLists.push(activityFacilityList);
     });
 
-    this.activity.activityRecipients = this.selectedRecipients;
+this.activity.activityRecipients = this.selectedRecipients;
 
-    this._dropdownRepo.createActivityList({ name: this.activity.name, description: this.activity.description, isActive: true } as IActivityList).subscribe(
-      (resp) => {
-        this.activity.activityListId = resp.id;
-        this.newActivity ? this.createActivity() : this.updateActivity();
-        this.displayActivityDialog = false;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
+// Initialize the array
+this.activity.activityDistrict = [];
+
+//Check if selectedIDistrictDemographics is not null
+if (this.selectedIDistrictDemographics) {
+  // Create the IActivityDistrict object from the selected district
+  let activityDistrict = {
+    demographicDistrictId: this.selectedIDistrictDemographics.id,
+    name: this.selectedIDistrictDemographics.name,
+    isActive: this.selectedIDistrictDemographics.isActive,
+    activityId: this.activity.id,
+  } as IActivityDistrict;
+
+//   // Push the object into the array
+  this.activity.activityDistrict.push(activityDistrict);
+}
+
+  this.activity.activityManicipality = [];
+
+  this.selectedManicipalityDemographics.forEach(item => {
+    let activityManicipality = {
+      demographicDistrictId: item.districtDemographicId,
+      name: item.name,
+      isActive: item.isActive,
+      activityId: this.activity.id,
+    } as IActivityManicipality;
+
+    this.activity.activityManicipality.push(activityManicipality);
+  });
+  
+  this.activity.activitySubStructure = [];
+  this.selectedSubstructureDemographics.forEach(item => {
+    let selectedSubStructure = {
+      name: item.name,
+      municipalityId: item.manicipalityDemographicId,
+      isActive: item.isActive,
+      activityId: this.activity.id,
+    } as IActivitySubStructure;
+
+    this.activity.activitySubStructure.push(selectedSubStructure);
+  });
+  
+  this.activity.activityArea = [];
+  this.selectedAreas.forEach(item => {
+    let selectedArea = {
+      name: item.name,
+      isActive: item.isActive,
+      activityId: this.activity.id,
+      demographicDistrictId: item.districtId,
+    } as IArea;
+
+    this.activity.activityArea.push(selectedArea);
+  });
+  
+
+  this.activity.activitySubDistrict = [];
+  this.selectedSubDistrictDemographics.forEach(item => {
+    if(item.areaId > 0)
+    {
+      let selectedSubDistrict = {
+        name: item.name,
+        areaId: item.areaId,
+        isActive: item.isActive,
+        activityId: this.activity.id
+      } as IActivitySubDistrict;
+      this.activity.activitySubDistrict.push(selectedSubDistrict);
+    }
+    else {
+      let selectedSubDistrict = {
+        name: item.name,
+        substructureId: item.subSctrcureDemographicId,
+        isActive: item.isActive,
+        activityId: this.activity.id
+      } as IActivitySubDistrict;
+      this.activity.activitySubDistrict.push(selectedSubDistrict);
+    }
+  });
+
+
+this._dropdownRepo.createActivityList({ name: this.activity.name, description: this.activity.description, isActive: true } as IActivityList).subscribe(
+  (resp) => {
+    this.activity.activityListId = resp.id;
+    this.newActivity ? this.createActivity() : this.updateActivity();
+    this.displayActivityDialog = false;
+
+    let allFacilities: string = "";
+    this.selectedFacilities.forEach(item => {
+      allFacilities += item.name + "\n";
+    });
+    this.selectedFacilitiesText = allFacilities;
+  },
+  (err) => {
+    this._loggerService.logException(err);
+    this._spinner.hide();
   }
+);
+}
 
   private createActivity() {
     this._applicationRepo.createActivity(this.activity, this.application).subscribe(
@@ -685,7 +1250,7 @@ export class ActivitiesComponent implements OnInit {
   }
 
   public getColspan() {
-    return this.application.isCloned && this.isReview ? 7 : 6;
+    return this.application.isCloned && this.isReview ? 12 : 15;
   }
 
   public viewDeletedActivities() {

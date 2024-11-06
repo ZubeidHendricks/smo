@@ -1,0 +1,21 @@
+<p-toast></p-toast>
+<p-panel [style]="{'font-size':'12px'}" header="Edit Funding Capture">
+    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}" *ngIf="IsAuthorized(PermissionsEnum.ShowFundingCaptureActions)"></p-menubar>
+    <p-messages [(value)]="validationErrors" [closable]="false" [enableService]="false"></p-messages>
+    <div style="height: 10px;"></div>
+
+    <app-fc-funding-detail [toggleable]="true" [isEdit]="true" [npo]="npo" [fundingDetail]="fundingDetail" (paymentFrequencyChanged)="updatePaymentFrequency($event)" (startDateChanged)="updateStartDate($event)" (amountAwardedChanged)="updateAmountAwarded($event)" [validated]="validated" *ngIf="npo && fundingDetail"></app-fc-funding-detail>
+    <app-fc-sda [toggleable]="true" [isEdit]="true" [sda]="sda" [npo]="npo" [fundingDetail]="fundingDetail" [validated]="validated" *ngIf="sda && npo && fundingDetail"></app-fc-sda>
+    <app-fc-payment-schedule [toggleable]="true" [isEdit]="true" [paymentSchedule]="paymentSchedule" (paymentScheduleChanged)="updatePaymentSchedule($event)" [fundingCapture]="fundingCapture" [paymentFrequencyId]="paymentFrequencyId" [startDate]="startDate" [amountAwarded]="amountAwarded" [validated]="validated" *ngIf="paymentSchedule && fundingCapture"></app-fc-payment-schedule>
+    <app-fc-bank-detail [toggleable]="true" [isEdit]="true" [bankDetail]="bankDetail" [npo]="npo" [fundingDetail]="fundingDetail" [validated]="validated" *ngIf="bankDetail && npo && fundingDetail"></app-fc-bank-detail>
+    <app-fc-document [toggleable]="true" [isEdit]="true" [document]="document" [validated]="validated" *ngIf="document"></app-fc-document>
+</p-panel>
+
+<div class="content-section implementation">
+    <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
+        <p-footer>
+            <button type="button" pButton icon="fa fa-check" class="ui-button-info" label="Yes" (click)="cd.accept()"></button>
+            <button type="button" pButton icon="fa fa-times" class="ui-button-info" label="No" (click)="cd.reject()"></button>
+        </p-footer>
+    </p-confirmDialog>
+</div>

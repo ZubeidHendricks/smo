@@ -7,6 +7,8 @@ namespace NPOMS.Domain.Entities
     public class ProgramBankDetails : BaseEntity
     {
         public int ProgramId { get; set; }
+        public int SubProgrammeId { get; set; }
+        public int SubProgrammeTypeId { get; set; }
         public int NpoProfileId { get; set; }
         public int BankId { get; set; }
 
@@ -18,7 +20,8 @@ namespace NPOMS.Domain.Entities
         public string AccountNumber { get; set; }
 
         public bool IsActive { get; set; }
-
+        public bool IsSelected { get; set; }
+        public bool IsSubmitted { get; set; }
         public int CreatedUserId { get; set; }
 
         public DateTime CreatedDateTime { get; set; }

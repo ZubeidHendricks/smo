@@ -147,7 +147,6 @@ export class AdjudicateNpoComponent implements OnInit {
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
-
         this.userId = this.profile.id;
         this.loadCapturedResponses();
       }
@@ -155,9 +154,10 @@ export class AdjudicateNpoComponent implements OnInit {
 
     this.getQuestionCategory();
     this.getResponseType();
-    this.loadApplications();
-    this.selectedResponses();
+   // this.loadApplications();
+   
     this.loadQuestionnaire();
+    this.selectedResponses();
   }
 
   private loadQuestionnaire() {
@@ -165,15 +165,8 @@ export class AdjudicateNpoComponent implements OnInit {
       (results) => {
         this.allQuestionnaires = results;
         this.npoAdjudication = this.allQuestionnaires.filter(x => x.questionCategoryName === "Adjudication2");
-        // console.log('npoAdjudication', this.npoAdjudication);
-        // this.engagementQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Engagement");
-        // this.timeWorkPlanQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Timely Work Plan Submission");
-        // this.impactQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Impact");
-        // this.riskMitigationQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Risk Mitigation");
-        // this.appropriationOfResourcesQuestionnaire = this.allQuestionnaires.filter(x => x.questionCategoryName === "Appropriation of Resources");
         this.loadResponseOptions();
         this.updateRowGroupMetaDataAct();
-        // console.log('this.npoAdjudication',this.npoAdjudication);
       },
       (err) => {
         this._loggerService.logException(err);
@@ -387,17 +380,20 @@ export class AdjudicateNpoComponent implements OnInit {
     if (Number(questionValue) > 0 && Number(questionValue) <= 20) {
       legend = 'Very Poor';
     }
-    if (Number(questionValue) > 20 && Number(questionValue) <= 40) {
+    else if (Number(questionValue) > 20 && Number(questionValue) <= 40) {
       legend = 'Poor';
     }
-    if (Number(questionValue) > 40 && Number(questionValue) <= 60) {
+    else if (Number(questionValue) > 40 && Number(questionValue) <= 60) {
       legend = 'Average';
     }
-    if (Number(questionValue) > 60 && Number(questionValue) <= 80) {
+    else if (Number(questionValue) > 60 && Number(questionValue) <= 80) {
       legend = 'Good';
     }
-    if (Number(questionValue) > 80) {
+    else if (Number(questionValue) > 80 && Number(questionValue) <= 100) {
       legend = 'Excellent';
+    }
+    else {
+      legend = '';
     }
     
     return legend;
@@ -548,8 +544,11 @@ export class AdjudicateNpoComponent implements OnInit {
         else if (Number(questionnaire.responseOption.name) > 3 && Number(questionnaire.responseOption.name) <= 4 ) {
           ragText = 'Good';
         }
-        else{
+        else if (Number(questionnaire.responseOption.name) > 4 && Number(questionnaire.responseOption.name) <= 5 ) {
           ragText = 'Excellent';
+        }
+        else{
+          ragText = '';
         }
       }
       if(questionnaire.responseTypeId ===  ResponseTypeEnum.Score3)
@@ -566,8 +565,11 @@ export class AdjudicateNpoComponent implements OnInit {
         else if (Number(questionnaire.responseOption.name) >= 7 && Number(questionnaire.responseOption.name) < 9 ) {
           ragText = 'Good';
         }
-        else{
+        else if (Number(questionnaire.responseOption.name) >= 9 && Number(questionnaire.responseOption.name) == 10 ) {
           ragText = 'Excellent';
+        }
+        else{
+          ragText = '';
         }
       }
      

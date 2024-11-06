@@ -26,162 +26,150 @@ export class QcDocumentUploadComponent implements OnInit {
   @Input() activeStep: number;
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
   @Input() application: IApplication;
-  @Input() isView: boolean;
-
-  // @Input() newlySavedApplicationId: number;
-  // @Output() newlySavedApplicationIdChange: EventEmitter<number> = new EventEmitter<number>();
-
-  // @Input() applnPeriodId: number;
-  // @Output() applnPeriodIdChange: EventEmitter<number> = new EventEmitter<number>();
-
-  /* Permission logic */
-  // public IsAuthorized(permission: PermissionsEnum): boolean {
-  //   if (this.profile != null && this.profile.permissions.length > 0) {
-  //     return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
-  //   }
-  // }
-  // @ViewChild('fileAdDoc') el: ElementRef;
-
-
-  // Used for table filtering
-  // @ViewChild('dt') dt: Table | undefined;
-  // acutalGrid: string;
-  // downloadButtonColor: string;
-  // uploadButtonDisabled: boolean = false;
-
-  // Document upload element
-  // @ViewChild('addDoc') element: ElementRef;
-
-  // displayUploadedFilesDialog: boolean;
-
-  // public get PermissionsEnum(): typeof PermissionsEnum {
-  //   return PermissionsEnum;
-  // }
-
-  // @Input() activeStep: number;
-  // @Input() fundingApplicationDetails: IFundingApplicationDetails;
-  // @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
-  // application: IApplication;
+  @Output() applicationChange: EventEmitter<IApplication> = new EventEmitter<IApplication>();
 
   profile: IUser;
-  // documents: IDocumentStore[] = [];
-  // fundAppdocuments: IDocumentStore[] = [];
   documentCols: any[];
-  // uploadedFileCols: any[];
-  // documentTypeCols: any[];
   documentTypes: IDocumentType[];
-  // compulsoryDocuments: IDocumentType[] = [];
-  // nonCompulsoryDocuments: IDocumentType[] = [];
-  // docTypeNames: any[];
-  // documentTypeName: string;
+  uploadedFileCols: any[];
+  documentTypeCols: any[];
+  compulsoryDocuments: IDocumentType[] = [];
+  nonCompulsoryDocuments: IDocumentType[] = [];
+  docTypeNames: any[];
+  userId: number;
+  _profile: IUser;
+  isViewMode: boolean;
+  
 
-  // validationErrors: Message[];
-  // menuActions: MenuItem[];
-  // getFiles: any;
-  // //uploadedFiles: boolean = false;
-  // indicatorDetailsId: number;
-  // selectedDocTypeId: number;
-  // selectedDocumentType: IDocumentType;
-  // userId: number;
-  // _profile: IUser;
-  // list: any[];
-  // selectedFile: any;
-  // selectedFilename: string;
-
-  // selectedApplicationId: string;
-
+   selectedApplicationId: string;
+   headerTitle: string;
   documents: IMyContentLink[];
   filteredDocuments: IMyContentLink[];
   document: IMyContentLink = {} as IMyContentLink;
 
   displayAddDialog: boolean;
   displayViewDialog: boolean;
-
+  selectClass: string = "non-mandatory-content";
   constructor(
     private _spinner: NgxSpinnerService,
     // private _documentStore: DocumentStoreService,
     private _confirmationService: ConfirmationService,
-    // private _messageService: MessageService,
+    private _messageService: MessageService,
     private _dropdownRepo: DropdownService,
     private _loggerService: LoggerService,
     // private http: HttpClient,
     // private fb: FormBuilder,
     // private envUrl: EnvironmentUrlService,
     private _authService: AuthService,
-    // private _activeRouter: ActivatedRoute,
+     private _activeRouter: ActivatedRoute,
     private _applicationRepo: ApplicationService
     // private _bidService: BidService,
     // private _router: Router
   ) { }
 
   ngOnInit(): void {
-    this._authService.profile$.subscribe(profile => {
-      if (profile != null && profile.isActive) {
-        this._spinner.show();
-        this.profile = profile;
+    this._spinner.show();
+    var splitUrl = window.location.href.split('/');
+    this.headerTitle = splitUrl[5];
 
-        this.loadDocumentTypes();
+    if(this.headerTitle === 'view' )
+    {
+      this.isViewMode = true;
+    }
+
+    if(this.headerTitle === 'pre-evaluate')
+    {
+      this.isViewMode = true;
+    }
+    
+    if(this.headerTitle === 'evaluate')
+    {
+      this.isViewMode = true;
+    }
+
+    if(this.headerTitle === 'adjudicate')
+    {
+    
+      this.isViewMode = true;
+    }
+
+    if(this.headerTitle === 'approval')
+    {
+      this.isViewMode = true;
+    }
+
+    this._activeRouter.paramMap.subscribe(params => {
+      this.selectedApplicationId = params.get('id');
+    });
+
+    this._authService.profile$.subscribe(x => {
+
+      if (x) {
+        this._profile = x;
+        this.userId = x.id;
       }
     });
-    // this.loadfundingDropdowns();
-    // this._spinner.show();
-
-    // this._activeRouter.paramMap.subscribe(params => {
-    //   this.selectedApplicationId = params.get('id');
-    // });
-    // this._authService.profile$.subscribe(x => {
-    //   if (profile != null && profile.isActive) {
-
-    //   }
-    //   if (x) {
-    //     this._profile = x;
-    //     this.userId = x.id;
-    //   }
-    // });
-
-    // this._spinner.hide();
     this.documentCols = [
-      { field: 'name', header: 'Document Type', width: '70%' },
-      { header: 'No. of Linked Document(s)', width: '15%' }
+      // { header: 'Id', width: '5%' },
+      // { field: 'name', header: 'Document Type', width: '35%' },
+      { header: 'URL', width: '45%' },
+      // { header: 'Size', width: '10%' },
+      // { header: 'Uploaded Date', width: '10%' },
+       { header: 'Actions', width: '10%' }
     ];
-    // this.uploadedFileCols = [
-    //   // { header: '', width: '5%' },
-    //   { header: 'Document Type', width: '25%' },
-    //   { header: 'Document Name', width: '40%' },
-    //   { header: 'Size', width: '10%' },
-    //   { header: 'Uploaded Date', width: '10%' },
-    //   { header: 'Actions', width: '15%' }
-    // ];
-    // this.documentTypeCols = [
-    //   { header: '', width: '5%' },
-    //   { header: 'Document Type', width: '20%' },
-    //   { header: 'Document Type Description', width: '75%' }
-    // ];
+    this.uploadedFileCols = [
+      // { header: '', width: '5%' },
+      { header: 'Document Type', width: '25%' },
+      { header: 'Document Name', width: '40%' },
+      { header: 'Size', width: '10%' },
+      { header: 'Uploaded Date', width: '10%' },
+      { header: 'Actions', width: '15%' }
+    ];
+    this.documentTypeCols = [
+      { header: '', width: '5%' },
+      { header: 'Document Type', width: '20%' },
+      { header: 'Document Type Description', width: '75%' }
+    ];
 
-    // this.docTypeNames = [
-    //   { name: 'Type1' },
-    //   { name: 'Type2' },
-    //   { name: 'Type3' },
-    //   { name: 'Type4' },
-    //   { name: 'Type5' }
-    // ];
-    // this.loadDocumentTypes();
-    // this.loadApplication();
+    this.docTypeNames = [
+      { name: 'Type1' },
+      { name: 'Type2' },
+      { name: 'Type3' },
+      { name: 'Type4' },
+      { name: 'Type5' }
+    ];
+   this.loadDocumentTypes();
+   // this.loadApplication();
   }
 
+  // private loadDocumentTypes() {
+
+  //   this._dropdownRepo.GetEntitiesForDoc(DropdownTypeEnum.DocumentTypes, Number(this.selectedApplicationId), false).subscribe(
+  //     (results) => {
+  //       this.compulsoryDocuments = results.filter(x => x.isCompulsory === true && x.location === DocumentUploadLocationsEnum.NpoProfile);
+  //       this.nonCompulsoryDocuments = results.filter(x => x.isCompulsory === false && x.location === DocumentUploadLocationsEnum.NpoProfile);
+  //       this.documentTypes = results.filter(x => x.location === DocumentUploadLocationsEnum.FundApp);
+
+  //       this.documentTypes.forEach(element => {
+  //         if (element.isCompulsory) {
+  //           if (element.isCompulsory === true)
+  //             this.selectClass = "mandatory-content";
+  //           else
+  //             this.selectClass = "non-mandatory-content";
+  //         }
+  //       });
+  //     },
+  //     (err) => {
+  //       this._loggerService.logException(err);
+  //       this._spinner.hide();
+  //     }
+  //   );
+  // }
+
   private loadDocumentTypes() {
-    // this._dropdownRepo.GetEntitiesForDoc(DropdownTypeEnum.DocumentTypes, this.application.id, false).subscribe(
-    //   (results) => {
-    //     this.documentTypes = results.filter(x => x.location === DocumentUploadLocationsEnum.FundApp);
-    //   },
-    //   (err) => {
-    //     this._loggerService.logException(err);
-    //     this._spinner.hide();
-    //   }
-    // );
     this._dropdownRepo.getEntities(DropdownTypeEnum.DocumentTypes, false).subscribe(
       (results) => {
-        this.documentTypes = results.filter(x => x.location === DocumentUploadLocationsEnum.QuickCapture);
+        this.documentTypes = results.filter(x => x.location === DocumentUploadLocationsEnum.NpoProfile);
         this.getMyContentLinks();
       },
       (err) => {
@@ -193,13 +181,20 @@ export class QcDocumentUploadComponent implements OnInit {
 
   private getMyContentLinks() {
     if (this.application) {
-      this._applicationRepo.getMyContentLinks(this.application.id).subscribe(
+      this._applicationRepo.getMyContentLinks(Number(this.selectedApplicationId)).subscribe(
         (results) => {
-          this.documents = results;
+          if(results.length > 0)
+          {
+            this.documents = results;
 
-          this.documents.forEach(item => {
-            item.documentType = this.documentTypes.find(x => x.id === item.documentTypeId);
-          });
+            this.documents.forEach(item => {
+              item.documentType = this.documentTypes.find(x => x.id === item.documentTypeId);
+            });
+          }
+          else
+          {
+            this.documents = [];
+          }        
 
           this._spinner.hide();
         },
@@ -225,10 +220,9 @@ export class QcDocumentUploadComponent implements OnInit {
     this.displayViewDialog = true;
   }
 
-  public add(documentType: IDocumentType) {
+  public add() {
     this.document = {
-      applicationId: this.application.id,
-      documentTypeId: documentType.id,
+      applicationId: Number(this.selectedApplicationId),
       url: null,
       isActive: true
     } as IMyContentLink;
@@ -247,7 +241,10 @@ export class QcDocumentUploadComponent implements OnInit {
     this._spinner.show();
     this._applicationRepo.createMyContentLink(this.document).subscribe(
       (results) => {
-        this.getMyContentLinks();
+        
+        this.loadDocumentTypes();
+        this.applicationChange.emit(this.application);
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Link successfully added.' });
       },
       (err) => {
         this._loggerService.logException(err);
@@ -263,6 +260,8 @@ export class QcDocumentUploadComponent implements OnInit {
   }
 
   public deleteDocument(document: IMyContentLink) {
+  //   this.updateDocument(document);
+  //  this.getMyContentLinks();   
     this._confirmationService.confirm({
       message: 'Are you sure that you want to delete this item?',
       header: 'Confirmation',
@@ -277,10 +276,13 @@ export class QcDocumentUploadComponent implements OnInit {
   }
 
   private updateDocument(document: IMyContentLink) {
-    this._applicationRepo.updateMyContentLink(document).subscribe(
+    this._spinner.show();
+    this._applicationRepo.updateMyContentLinks(document).subscribe(
       (results) => {
-        this.getMyContentLinks();
-        this.filteredDocuments = this.documents.filter(x => x.documentTypeId === document.documentTypeId && x.isActive);
+        this.getMyContentLinks(); 
+        this.loadDocumentTypes();
+        this.applicationChange.emit(this.application);
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Link successfully deleted.' });
       },
       (err) => {
         this._loggerService.logException(err);
@@ -289,23 +291,17 @@ export class QcDocumentUploadComponent implements OnInit {
     );
   }
 
-  // private loadApplication() {
-  //   this._spinner.show();
-  //   this._applicationRepo.getApplicationById(Number(this.selectedApplicationId)).subscribe(
-  //     (results) => {
-  //       if (results != null) {
-  //         this.application = results;
-  //         this._bidService.getApplicationBiId(results.id).subscribe(response => {
-  //           if (response.id != null) {
-  //             this.getFundingApplicationDetails(response);
-  //           }
-  //         });
-  //       }
-  //       this._spinner.hide();
-  //     },
-  //     (err) => this._spinner.hide()
-  //   );
-  // }
+  private loadApplication() {
+    this._spinner.show();
+    this._applicationRepo.getApplicationById(Number(this.selectedApplicationId)).subscribe(
+      (results) => {
+        this.getMyContentLinks();   
+        this._spinner.hide();
+      },
+      (err) => this._spinner.hide()
+    );
+  }
+
   // private getFundingApplicationDetails(data) {
   //   this._bidService.getBid(data.id).subscribe(response => {
 

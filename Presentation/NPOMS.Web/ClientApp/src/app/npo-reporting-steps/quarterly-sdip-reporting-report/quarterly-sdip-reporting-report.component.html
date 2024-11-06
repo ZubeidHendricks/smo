@@ -1,0 +1,364 @@
+<p-toast></p-toast>
+<p-panel [style]="{'font-size':'12px'}" header=" Quarterly SDIP Reporting " *ngIf="activeActivities">
+    <!-- <div class="p-grid p-nogutter p-justify-end">
+        <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="Reviewer Satisfaction - All Activities" (click)="reviewAllItems()"></button>
+    </div>     -->
+    <div style="height: 10px;"></div>
+    <p-table [value]="filteredsdips" [editable]="true" styleClass="p-datatable-sm">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Standard/ Performance Area</th>
+            <th>Corrective Action/Recommendation</th>
+            <th>Responsibility</th>
+            <th>Target Date</th>
+            <th>Means of Verification</th>
+            <th>Progress</th>
+            <th>Status</th>
+            <th style="width: 6%;">Actions</th>
+          </tr>
+        </ng-template>
+      
+        <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+          <tr>
+            <td pEditableColumn>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText [(ngModel)]="rowData.standardPerformanceArea"
+                         (blur)="onBlurAdjustedSDIP(rowData)" 
+                         [disabled]="!rowData.isEditable && !rowData.inEditMode" />
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ rowData.standardPerformanceArea }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td pEditableColumn>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText [(ngModel)]="rowData.correctiveAction"
+                         (blur)="onBlurAdjustedSDIP(rowData)" 
+                         [disabled]="!rowData.isEditable && !rowData.inEditMode" />
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ rowData.correctiveAction }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+      
+            <td pEditableColumn>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText [(ngModel)]="rowData.responsibility"
+                         (blur)="onBlurAdjustedSDIP(rowData)" 
+                         [disabled]="!rowData.isEditable && !rowData.inEditMode" />
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ rowData.responsibility }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+      
+            <td pEditableColumn>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText [(ngModel)]="rowData.targetDate" type="date"
+                         (blur)="onBlurAdjustedSDIP(rowData)" 
+                         [disabled]="!rowData.isEditable && !rowData.inEditMode" />
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ rowData.targetDate | date: 'yyyy-MM-dd' }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+      
+            <td pEditableColumn>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText [(ngModel)]="rowData.meansOfVerification" 
+                         (blur)="onBlurAdjustedSDIP(rowData)" 
+                         [disabled]="!rowData.isEditable && !rowData.inEditMode" />
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ rowData.meansOfVerification }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+      
+            <td pEditableColumn>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText [(ngModel)]="rowData.progress" 
+                         (blur)="onBlurAdjustedSDIP(rowData)" 
+                         [disabled]="!rowData.isEditable && !rowData.inEditMode" />
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ rowData.progress }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+
+            <td>{{status(rowData)}}</td>
+
+            <!-- Actions column -->
+            <td style="text-align: center;">
+              <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="selectedsdips=rowData; menu.toggle($event); updateButtonItems()" pTooltip="Options" tooltipPosition="top"></button>
+              <p-menu #menu [popup]="true" [model]="buttonItems" appendTo="body"></p-menu>
+             </td>
+            <!-- <td style="text-align: center;">
+              <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o"></button>
+              <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash"></button>
+            </td> -->
+          </tr>
+        </ng-template>
+      
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="8" style="text-align: center;">No data available</td>
+          </tr>
+        </ng-template>
+
+      </p-table>
+      <div class="button-container">
+        <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus"  *ngIf="quarterId > 0"  (click)="addNewRow()"></button>
+        <button pButton pRipple type="button" label="Complete" class="p-button-text" icon="fa fa-check" (click)="completeAction()" style="margin-left: auto;"></button>
+      </div>
+    <div style="height: 10px;"></div>
+</p-panel>
+
+<p-dialog header="Quartely SDIP Reporting" 
+          [(visible)]="displayActivityDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+
+ 
+
+      <!-- Department Dropdown -->
+<div class="p-grid">
+    <div class="p-col-fixed form-label">
+        <div class="box">
+            <span class="mandatory-content">Standard/Performance Area</span>
+        </div>
+    </div>
+    <div class="p-col">
+        <p-dropdown [options]="departments1" 
+            placeholder="Select a Department" 
+            optionLabel="name" 
+            [(ngModel)]="selectedDepartment" 
+            [ngModelOptions]="{standalone: true}" 
+            [style]="{'width':'100%'}" 
+            appendTo="body"  
+            (onChange)="loadDepartmentPrograms($event.value.id)" 
+            [filter]="true" 
+            filterBy="name" 
+            #department="ngModel" 
+            [ngClass]="{'ng-dirty': (department.invalid && validated) || (department.dirty && department.invalid)}" 
+            required>
+        </p-dropdown>
+        <small *ngIf="(department.invalid && validated) || (department.dirty && department.invalid)" class="p-error">
+            Department is required.
+        </small>
+    </div>
+</div>
+
+
+        
+  
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Corrective Action/ Recommendation</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="activity.successIndicator" [ngModelOptions]="{standalone: true}" >
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Responsibility</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="activity.successIndicator" [ngModelOptions]="{standalone: true}">
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Target Date</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="activity.successIndicator" [ngModelOptions]="{standalone: true}" >
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Means of verification</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="activity.successIndicator" [ngModelOptions]="{standalone: true}" >
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Progress</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <input type="text" class="form-text" pInputText [(ngModel)]="activity.successIndicator" [ngModelOptions]="{standalone: true}" >
+        </div>
+    </div>
+  
+    <ng-template pTemplate="footer" >
+        <button  pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o"  (click)="saveActivity()"></button>
+        <!-- <button *ngIf="!canEdit" pButton pRipple type="button" label="Add Comment" class="p-button-text" icon="fa fa-comment-o" (click)="addComment()"></button> -->
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="Add Comment" 
+          [(visible)]="displayCommentDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Comment</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="comment" [ngModelOptions]="{standalone: true}"></textarea>
+        </div>
+    </div>        
+    <ng-template pTemplate="footer">
+        <button *ngIf="canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(false, 'allComments')"></button>
+           </ng-template>
+</p-dialog>
+
+<p-dialog header="View Comments" 
+          [(visible)]="displayAllCommentDialog" 
+          [style]="{width: '70vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="commentCols" [paginator]="true" [rows]="10" [value]="applicationComments" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="default-font">
+                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                <td>{{rowData.comment}}</td>
+                <td>{{rowData.createdUser.fullName}}</td>
+                <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="4" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary" let-rowData *ngIf="canEdit">
+            <div style="text-align:right">
+                <button pButton pRipple type="button" label="Add Comment" class="p-button-text" icon="fa fa-comment-o" (click)="addComment()"></button>
+            </div>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<p-dialog header="Reviewer Satisfaction" 
+          [(visible)]="displayReviewerSatisfactionDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="reviewerSatisfactionCols" [paginator]="true" [rows]="10" [value]="applicationReviewerSatisfaction" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="default-font">
+                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                <td style="text-align: center;" [ngClass]="rowData.isSatisfied === true ? 'green' : 'default' && rowData.isSatisfied === false ? 'red' : 'default'">
+                    <span>{{rowData.isSatisfied ? 'Yes' : 'No'}}</span>
+                </td>
+                <td>{{rowData.createdUser.fullName}}</td>
+                <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="4" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary" let-rowData>
+            <div class="p-grid p-nogutter p-justify-between">
+                <span class="mandatory-content">Are you satisfied with the details contained in this Activity?</span>
+
+                <div>
+                    <p-button label="Yes" icon="fa fa-thumbs-o-up" styleClass="p-button-success" (onClick)="createReviewerSatisfaction(true)"></p-button>
+                    &nbsp; &nbsp;
+                    <p-button label="No" icon="fa fa-thumbs-o-down" styleClass="p-button-danger" (onClick)="createReviewerSatisfaction(false)"></p-button>
+                </div>
+            </div>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+
+<p-dialog header="Audit History" 
+          [(visible)]="displayVieHistoryDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+        <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="auditCols" [paginator]="true" [rows]="10" [value]="selectedsdips?.sdipReportAudits" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="default-font">
+                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                <td>{{rowData.statusName}}</td>
+                <td>{{rowData.createdUser}}</td>
+                <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+
+
+<div class="content-section implementation">
+    <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
+        <p-footer>
+            <button type="button" pButton icon="fa fa-check" class="ui-button-info" label="Yes" (click)="cd.accept()"></button>
+            <button type="button" pButton icon="fa fa-times" class="ui-button-info" label="No" (click)="cd.reject()"></button>
+        </p-footer>
+    </p-confirmDialog>
+</div>

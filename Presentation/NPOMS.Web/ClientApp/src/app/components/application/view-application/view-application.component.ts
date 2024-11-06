@@ -1,8 +1,8 @@
 import { ProjectImplementationComponent } from './../application-steps/funding-application/project-implementation/project-implementation.component';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
 import { IActivity, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationDetails, IDepartment, IDocumentStore, IFacilityList, IMonitoringAndEvaluation, INpo, INpoProfile, IObjective, IProgramme, IProjectImplementation, IProjectInformation, IRecipientType, IResource, ISubProgramme, ISubSubRecipient, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
@@ -45,6 +45,10 @@ export class ViewApplicationComponent implements OnInit {
     return FacilityTypeEnum;
   }
 
+  @Input() programId: number;
+  @Input() subProgramId: number;
+  @Input() subProgramTypeId: number;
+
   paramSubcriptions: Subscription;
   id: string;
 
@@ -58,6 +62,8 @@ export class ViewApplicationComponent implements OnInit {
   applicationDetailView: IApplicationDetails;
   projInfoView: IProjectInformation;
   projImplView: IProjectImplementation;
+
+  menuActions: MenuItem[];
 
   isObjectivesAvailable: boolean;
   isActivitiesAvailable: boolean;
@@ -150,6 +156,8 @@ export class ViewApplicationComponent implements OnInit {
 
   rowGroupMetadata: any[];
   recipientTypes: IRecipientType[];
+  allActivities: IActivity[];
+  activeActivities: IActivity[];
 
   constructor(
     private _router: Router,
@@ -207,7 +215,11 @@ export class ViewApplicationComponent implements OnInit {
       { header: 'Activity Type', width: '10%' },
       { header: 'Timeline', width: '15%' },
       { header: 'Target', width: '10%' },
-      { header: 'Facilities and/or Community Places', width: '38%' }
+      { header: 'Facilities and/or Community Places', width: '38%' },
+      // { header: 'District Name', width: '10%' },
+      // { header: 'Municipalities', width: '10%' },
+      // { header: 'Sub Structures ', width: '10%' },
+      // { header: 'Sub Districts', width: '10%' }
     ];
 
     this.sustainabilityPlanCols = [
@@ -256,6 +268,9 @@ export class ViewApplicationComponent implements OnInit {
     ];
 
   }
+
+  
+  
 
   private loadApplication() {
     this._spinner.show();
@@ -342,6 +357,13 @@ export class ViewApplicationComponent implements OnInit {
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
         this.activities = results.filter(x => x.isActive === true);
+        this.activities.forEach(item => {
+          item.mappedDistrict = this.getSubDistrictNames(item?.activityDistrict),
+          item.mappedManicipality = this.getSubDistrictNames(item?.activityManicipality),
+          item.mappedSubstructure = this.getSubDistrictNames(item?.activitySubStructure),
+          item.mappedSubdistrict =this.getSubDistrictNames(item?.activitySubDistrict)
+        });
+
         this.getFacilityListText(results);
         this.updateRowGroupMetaData(ServiceProvisionStepsEnum.Activities);
         this.isActivitiesAvailable = true;
@@ -352,6 +374,15 @@ export class ViewApplicationComponent implements OnInit {
       }
     );
   }
+
+  getSubDistrictNames(activityDemoName: any): string {
+    if (!activityDemoName || !activityDemoName) {
+      return '';
+    }
+
+    return activityDemoName.map((subDistrict: any) => subDistrict.name).join(', ');
+  }
+
 
   private getFacilityListText(activities: IActivity[]) {
     activities.forEach(activity => {
@@ -753,7 +784,7 @@ export class ViewApplicationComponent implements OnInit {
     this._applicationRepo.getApplicationApprovals(this.application.id).subscribe(
       (results) => {
         this.approveFromCoCT = results.filter(x => x.approvedFrom === 'CoCT')[0];
-        this.approveFromDoH = results.filter(x => x.approvedFrom === 'DoH')[0];
+        this.approveFromDoH = results.filter(x => x.approvedFrom === 'DHW')[0];
       },
       (err) => {
         this._loggerService.logException(err);

@@ -25,5 +25,7 @@ namespace NPOMS.Domain.Evaluation
 		public int? UpdatedUserId { get; set; }
 
 		public DateTime? UpdatedDateTime { get; set; }
+
+		public ResponseType ResponseType { get; set; }
 	}
 }

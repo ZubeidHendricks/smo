@@ -20,7 +20,7 @@
     <p-panel header="Adjudication" [style]="{'font-size':'12px', 'width':'100%'}" >
     <p-table [value]="npoAdjudication" *ngIf="npoAdjudication" [rowHover]="true" 
         styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
-        <p-inplace [closable]="true">
+        <!-- <p-inplace [closable]="true"> -->
             <ng-template pTemplate="header">
                 <tr>
                     <th style="width: 5%; text-align: center;">#</th>
@@ -84,7 +84,7 @@
                     </tr>
                 </ng-template>
             
-        </p-inplace>
+        <!-- </p-inplace> -->
     </p-table>
     </p-panel>
     <div style="height: 10px;"></div>

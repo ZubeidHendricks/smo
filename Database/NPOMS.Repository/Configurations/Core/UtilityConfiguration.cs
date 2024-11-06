@@ -245,7 +245,16 @@ namespace NPOMS.Repository.Configurations.Core
 					AngularRedirectUrl = "utilities/account-type",
 					SystemAdminUtility = false
 				}
-			);
+                ,
+                new Utility
+                {
+                    Id = 30,
+                    Name = "Performance",
+                    Description = "Performance management",
+                    AngularRedirectUrl = "utilities/importReports",
+                    SystemAdminUtility = false
+                }
+            );
 		}
 	}
 }

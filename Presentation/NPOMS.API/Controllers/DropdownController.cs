@@ -51,6 +51,10 @@ namespace NPOMS.API.Controllers
             {
                 switch (dropdownType)
                 {
+                    case DropdownTypeEnum.HighLevelNPO:
+                        var npoindicators = await _dropdownService.NPOIndicators(returnInactive);
+                        return Ok(npoindicators);
+
                     case DropdownTypeEnum.Roles:
                         var roles = await _dropdownService.GetRoles(returnInactive);
                         return Ok(roles);
@@ -102,6 +106,34 @@ namespace NPOMS.API.Controllers
                     case DropdownTypeEnum.FacilitySubDistricts:
                         var facilitySubDistricts = await _dropdownService.GetFacilitySubDistricts(returnInactive);
                         return Ok(facilitySubDistricts);
+                    case DropdownTypeEnum.FacilitySubStructure:
+                        var subStructures = await _dropdownService.GetFacilitySubStructures(returnInactive);
+                        return Ok(subStructures);
+
+                    case DropdownTypeEnum.DemographicDistrict:
+                        var demographicDistricts = await _dropdownService.DemographicDistricts(returnInactive);
+                        return Ok(demographicDistricts);
+
+                    case DropdownTypeEnum.DemographicSubStructure:
+                        var demographicSubStructures = await _dropdownService.DemographicSubStructures(returnInactive);
+                        return Ok(demographicSubStructures);
+
+                    case DropdownTypeEnum.DemographicManicipality:
+                        var demographicManicipalities = await _dropdownService.DemographicManicipalities(returnInactive);
+                        return Ok(demographicManicipalities);
+
+                    case DropdownTypeEnum.DemographicSubDistrict:
+                        var demographicSubDistricts = await _dropdownService.DemographicSubDistricts(returnInactive);
+                        return Ok(demographicSubDistricts);
+                    
+                    case DropdownTypeEnum.Area:
+                        var areas = await _dropdownService.Areas(returnInactive);
+                        return Ok(areas);
+
+                    case DropdownTypeEnum.Indicator:
+                        var indicators = await _dropdownService.Indicators(returnInactive);
+                        return Ok(indicators);
+
                     case DropdownTypeEnum.FacilityClasses:
                         var facilityClasses = await _dropdownService.GetFacilityClasses(returnInactive);
                         return Ok(facilityClasses);
@@ -152,6 +184,9 @@ namespace NPOMS.API.Controllers
                     case DropdownTypeEnum.FrequencyPeriods:
                         var frequencyPeriods = await _dropdownService.GetFrequencyPeriods(returnInactive);
                         return Ok(frequencyPeriods);
+                    //case DropdownTypeEnum.QuarterPeriods:
+                    //    var quarterPeriods = await _dropdownService.GetFrequencyPeriods(returnInactive);
+                    //    return Ok(quarterPeriods);
                     case DropdownTypeEnum.SubProgrammeTypes:
                         var subProgrammeTypes = await _dropdownService.GetSubProgrammeTypes(returnInactive);
                         return Ok(subProgrammeTypes);
@@ -407,6 +442,10 @@ namespace NPOMS.API.Controllers
                     case DropdownTypeEnum.FacilitySubDistricts:
                         var facilitySubDistrict = JsonConvert.DeserializeObject<FacilitySubDistrict>(Convert.ToString(entity));
                         await _dropdownService.CreateFacilitySubDistrict(facilitySubDistrict, base.GetUserIdentifier());
+                        break;
+                    case DropdownTypeEnum.FacilitySubStructure:
+                        var facilitySubStructure = JsonConvert.DeserializeObject<FacilitySubStructure>(Convert.ToString(entity));
+                        await _dropdownService.CreateFacilitySubStructures(facilitySubStructure, base.GetUserIdentifier());
                         break;
                     case DropdownTypeEnum.FacilityClasses:
                         var facilityClass = JsonConvert.DeserializeObject<FacilityClass>(Convert.ToString(entity));
@@ -750,6 +789,21 @@ namespace NPOMS.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Something went wrong inside GetActivityByName action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("facility/facilityName/{searchText}", Name = "SearchFacilityList")]
+        public async Task<IActionResult> SearchFacilityList(string searchText)
+        {
+            try
+            {
+                var results = await _dropdownService.SearchFacilityByName(searchText);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetFacilityListByModel action: {ex.Message} Inner Exception: {ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }

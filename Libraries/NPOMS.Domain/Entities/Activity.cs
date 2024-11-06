@@ -57,5 +57,13 @@ namespace NPOMS.Domain.Entities
 		public List<ActivityFacilityList> ActivityFacilityLists { get; set; } = new List<ActivityFacilityList>();
 
 		public List<ActivityRecipient> ActivityRecipients { get; set; } = new List<ActivityRecipient>();
-	}
+
+        public List<ActivityDistrict> ActivityDistrict { get; set; } = new List<ActivityDistrict>();
+        public List<ActivitySubDistrict> ActivitySubDistrict { get; set; } = new List<ActivitySubDistrict>();
+        public List<ActivitySubStructure> ActivitySubStructure { get; set; } = new List<ActivitySubStructure>();
+        public List<ActivityManicipality> ActivityManicipality { get; set; } = new List<ActivityManicipality>();
+
+        public List<ActivityArea> ActivityArea { get; set; } = new List<ActivityArea>();
+    }
 }
+

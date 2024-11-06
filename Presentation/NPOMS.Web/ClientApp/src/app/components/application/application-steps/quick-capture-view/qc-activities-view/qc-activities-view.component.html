@@ -1,6 +1,10 @@
 <p-toast></p-toast>
 <p-panel [style]="{'font-size':'12px'}" header="Activities" *ngIf="activeActivities">
-  
+    <div class="p-grid p-nogutter p-justify-end">
+        <button *ngIf="showReviewerSatisfaction && (RoleEnum.SystemAdmin || RoleEnum.Admin || RoleEnum.Reviewer || RoleEnum.MainReviewer)" pButton type="button" class="p-button-success" icon="fa fa-handshake-o" label="Reviewer Satisfaction - All Activities" (click)="reviewAllItems()"></button>
+    </div>    
+    <div style="height: 10px;"></div>
+
     <p-table [rowHover]="true" [columns]="activityCols" [value]="activeActivities" styleClass="p-datatable-sm">
         <ng-template pTemplate="header" let-columns>
             <tr>
@@ -17,7 +21,7 @@
                     <span><span class="p-text-bold">Objective:</span> {{rowData.objective.name}}</span>
                 </td>
             </tr>
-            <tr [ngClass]="default" class="default-font">
+            <tr class="default-font default">
                 <td>{{rowData.activityList.name}}</td>
                 <td>{{rowData.activityType.name}}</td>                
                 <td>{{rowData.successIndicator}}</td>
@@ -25,6 +29,7 @@
                 <td>{{rowData.quarter}}</td>
                 <td style="text-align: center;">
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editActivity(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
+                    <!-- <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteActivity(rowData)" pTooltip="Delete" tooltipPosition="top"></button> -->
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, 'allComments')" pTooltip="Comments" tooltipPosition="top"></button>
                 </td>
                 <td *ngIf="application.isCloned && isReview">
@@ -37,10 +42,14 @@
                 <td colspan="6" style="text-align: center;">No results found</td>
             </tr>
         </ng-template>
-       
+        <ng-template pTemplate="summary" let-rowData *ngIf="canEdit">
+            <div style="text-align:left">
+                <!-- <button pButton pRipple type="button" label="Add Activity" class="p-button-text" icon="fa fa-plus" (click)="addActivity()"></button> -->
+            </div>
+        </ng-template>
         <ng-template pTemplate="summary" let-rowData *ngIf="application.isCloned && isReview">
             <div style="text-align:left">
-                <button pButton pRipple type="button" label="View Deleted Activities" class="p-button-text" icon="fa fa-info-circle" (click)="viewDeletedActivities()"></button>
+                <!-- <button pButton pRipple type="button" label="View Deleted Activities" class="p-button-text" icon="fa fa-info-circle" (click)="viewDeletedActivities()"></button> -->
             </div>
         </ng-template>
     </p-table>
@@ -58,6 +67,75 @@
           showEffect="fade"
           [transitionOptions]="'0ms'"
           [modal]="true">
+
+          <div class="p-grid p-nogutter" style="margin-bottom: 0.5rem;">
+            <div class="p-col-3 dropdown-column">
+                <div class="box">
+                    <span class="mandatory-content">District</span>
+                </div>
+                <p-dropdown 
+                    [options]="allIDistrictDemographics" 
+                    placeholder="Select District" 
+                    optionLabel="name"
+                    [(ngModel)]="selectedIDistrictDemographics" 
+                    [ngModelOptions]="{standalone: true}" 
+                    [style]="{'width':'100%'}"
+                    appendTo="body" 
+                    (onChange)="onDemographicDistrictChange()">
+                </p-dropdown>
+            </div>
+        
+            <div class="p-col-3 dropdown-column">
+                <div class="box">
+                    <span class="mandatory-content">Municipality</span>
+                </div>
+                <p-multiSelect 
+                    [options]="ManicipalityDemographics" 
+                    defaultLabel="Select Manicipality Demographics"
+                    optionLabel="name" 
+                    [(ngModel)]="selectedManicipalityDemographics" 
+                    [ngModelOptions]="{standalone: true}"
+                    [style]="{'width':'100%'}" 
+                    appendTo="body" 
+                    selectedItemsLabel="{0} items selected"
+                    (onChange)="onDemographicManicipalitiesChange()">
+                </p-multiSelect>
+            </div>
+        
+            <div class="p-col-3 dropdown-column">
+                <div class="box">
+                    <span class="mandatory-content">Sub Structures</span>
+                </div>
+                <p-multiSelect 
+                    [options]="SubstructureDemographics" 
+                    defaultLabel="Select Sub Structures" 
+                    optionLabel="name"
+                    [(ngModel)]="selectedSubstructureDemographics" 
+                    [ngModelOptions]="{standalone: true}" 
+                    [style]="{'width':'100%'}"
+                    appendTo="body" 
+                    selectedItemsLabel="{0} items selected"
+                    (onChange)="onDemographicSubStructuresChange()">
+                </p-multiSelect>
+            </div>
+        
+            <div class="p-col-3 dropdown-column">
+                <div class="box">
+                    <span class="mandatory-content">Sub District</span>
+                </div>
+                <p-multiSelect 
+                    [options]="SubDistrictDemographics" 
+                    defaultLabel="Select Sub District(s)" 
+                    optionLabel="name"
+                    [(ngModel)]="selectedSubDistrictDemographics" 
+                    [ngModelOptions]="{standalone: true}" 
+                    [style]="{'width':'100%'}"
+                    appendTo="body" 
+                    selectedItemsLabel="{0} items selected">
+                </p-multiSelect>
+            </div>
+        </div>
+        
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -130,7 +208,7 @@
             <p-dropdown [options]="activityTypes" placeholder="Select an Activity Type" optionLabel="name" [(ngModel)]="selectedActivityType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="!canEdit"></p-dropdown>
         </div>
     </div>
-    
+   
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -151,10 +229,9 @@
             <input type="text" class="form-text" pInputText [(ngModel)]="activity.successIndicator" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit">
         </div>
     </div>
-   
     <ng-template pTemplate="footer">
         <!-- <button *ngIf="canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveActivity() (click)="saveActivity()"></button> -->
-        <!-- <button *ngIf="!canEdit" pButton pRipple type="button" label="Add Comment" class="p-button-text" icon="fa fa-comment-o" (click)="addComment()"></button> -->
+         <button *ngIf="!canEdit" pButton pRipple type="button" label="Add Comment" class="p-button-text" icon="fa fa-comment-o" (click)="addComment()"></button>
     </ng-template>
 </p-dialog>
 
@@ -177,7 +254,7 @@
     </div>        
     <ng-template pTemplate="footer">
         <button *ngIf="canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(false, 'allComments')"></button>
-        <button *ngIf="!canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(true, 'singleComment')"></button>
+        <button  *ngIf="!canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(true, 'singleComment')"></button>
     </ng-template>
 </p-dialog>
 
@@ -209,8 +286,8 @@
                 <td colspan="4" style="text-align: center;">No results found</td>
             </tr>
         </ng-template>
-        <ng-template pTemplate="summary">
-            <div style="text-align:right" *ngIf="headerTitle !== 'view'" >
+        <ng-template pTemplate="summary" let-rowData *ngIf="canEdit">
+            <div style="text-align:right">
                 <button pButton pRipple type="button" label="Add Comment" class="p-button-text" icon="fa fa-comment-o" (click)="addComment()"></button>
             </div>
         </ng-template>

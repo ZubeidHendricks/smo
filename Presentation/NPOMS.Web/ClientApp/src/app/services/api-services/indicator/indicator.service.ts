@@ -20,6 +20,18 @@ export class IndicatorService {
     private _http: HttpClient
   ) { }
 
+
+  
+  public getTargetsByActivityIds(activityIds: number[]) {
+    const url = `${this._envUrl.urlAddress}/api/indicators/workplan-target/targetactivityIds`;
+    return this._http.post<IWorkplanTarget[]>(url, activityIds, httpOptions);
+  }
+  
+  public getActualsByActivityIds(activityIds: number[]) {
+    const url = `${this._envUrl.urlAddress}/api/indicators/workplan-actual/actualactivityIds`;
+    return this._http.post<IWorkplanActual[]>(url, activityIds, httpOptions);
+  }
+  
   public getTargetsByActivityId(activityId: number) {
     const url = `${this._envUrl.urlAddress}/api/indicators/workplan-target/activityId/${activityId}`;
     return this._http.get<IWorkplanTarget[]>(url, httpOptions);

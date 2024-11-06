@@ -17,11 +17,18 @@ namespace NPOMS.Repository.Implementation.Evaluation
 
 		}
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		public async Task<IEnumerable<Response>> GetByIdsWithDetail(int fundingApplicationId, int currentUserId)
+        public async Task<IEnumerable<Response>> GetAllResponses()
+        {
+            return await FindAll()
+                            .Include(x => x.ResponseOption)
+                            .AsNoTracking().ToListAsync();
+        }
+
+        public async Task<IEnumerable<Response>> GetByIdsWithDetail(int fundingApplicationId, int currentUserId)
 		{
 			return await FindByCondition(x => x.FundingApplicationId.Equals(fundingApplicationId))
 											  //&&

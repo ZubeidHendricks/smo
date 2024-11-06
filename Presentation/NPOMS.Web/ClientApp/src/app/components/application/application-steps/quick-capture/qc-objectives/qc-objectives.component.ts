@@ -175,7 +175,7 @@ export class QcObjectivesComponent implements OnInit {
   
 	onSelected(value:string): void {
 		this.selectedQuarter = value;
-    alert(this.selectedQuarter);
+    //alert(this.selectedQuarter);
 	}
 
 
@@ -286,7 +286,8 @@ export class QcObjectivesComponent implements OnInit {
   editObjective(data: IObjective) {
     this.newObjective = false;
     this.objective = this.cloneObjective(data);
-
+    this.selectedFinancialYear = this.financialYears.find(x => x.name === data.financialYear);
+    this.selectedQuarterlyPeriod = this.quarterlyPeriod.find(x=> x.name === data.quarter);
     this.updateRowGroupMetaData(this.objective);
 
     if (this.application.isCloned)

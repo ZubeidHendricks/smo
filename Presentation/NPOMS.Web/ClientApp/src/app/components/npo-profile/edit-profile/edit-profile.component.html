@@ -278,6 +278,13 @@
     </p-panel>
     <div style="height: 10px;"></div>
     <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="Services Rendered">
+        <p-table>
+            <ng-template pTemplate="header">
+                <tr>                   
+                    <th style="color: rgb(248, 10, 10);">To add or amend Programme Bank Details, Service Delivery Area(s) and Contact Details, click on the relevant Programme Name below.</th>
+                </tr>
+            </ng-template>
+        </p-table>
         <p-table [rowHover]="true" [columns]="serviceRenderedCols" [value]="servicesRendered" styleClass="p-datatable-sm">
             <ng-template pTemplate="header" let-columns>
                 <tr>
@@ -289,7 +296,7 @@
             </ng-template>
             <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
                 <tr class="default-font" [ngClass]="{'selected-row': selectedRowIndex === rowIndex}">
-                  <td (click)="onFirstTdClick(rowIndex); toggleBankingDetailsPanel(rowData.programme)">{{rowData.programme.name}}</td>
+                  <td (click)="onFirstTdClick(rowIndex); toggleBankingDetailsPanel(rowData.programme,rowData.subProgramme,rowData.subProgrammeType)">{{rowData.programme.name}}</td>
                   <td>{{rowData.subProgramme.name}}</td>
                   <td>{{rowData.subProgrammeType.name}}</td>
                   <td style="text-align: center;">
@@ -319,7 +326,7 @@
               <th>Bank Name</th>
               <th>Account Number</th>
               <th>Branch</th>
-              <th>Status</th>
+              <th>Account Type</th>
               <th style="width: 7%;">Actions</th>
             </tr>
           </ng-template>
@@ -328,7 +335,7 @@
               <td>{{detail?.bank?.name}}</td>
               <td>{{detail?.accountNumber}}</td>
               <td>{{detail?.branch?.name}}</td>
-              <td>{{detail?.approvalStatus?.name}}</td>
+              <td>{{detail?.accountType?.name}}</td>
               <td style="text-align: center;">
                 <button *ngIf="canEdit()"  pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editProgrammeBankDetail(detail)" pTooltip="Edit" tooltipPosition="top"></button>
                 <button *ngIf="canEdit()" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteProgrammeBankDetail(detail)" pTooltip="Delete" tooltipPosition="top"></button>
@@ -350,7 +357,7 @@
                     <th>Last Name</th>
                     <th>Email</th>
                     <th>Phone</th>
-                    <th>Status</th>
+                    <!-- <th>Status</th> -->
                     <th style="width: 7%;">Actions</th>
                   </tr>
                 </ng-template>
@@ -360,7 +367,7 @@
                     <td>{{contact.lastName}}</td>
                     <td>{{contact.emailAddress}}</td>
                     <td>{{contact.cellphone}}</td>
-                    <td>{{contact?.approvalStatus?.name}}</td>
+                    <!-- <td>{{contact?.approvalStatus?.name}}</td> -->
                     <td style="text-align: center;">
                       <button *ngIf="canEdit()" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editProgramContactInformation(contact)" pTooltip="Edit" tooltipPosition="top"></button>
                       <button *ngIf="canEdit()" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteProgramContactInformation(contact)" pTooltip="Delete" tooltipPosition="top"></button>
@@ -383,8 +390,8 @@
                   <th>Region</th>
                   <th>District Council</th>
                   <th>Local Municipality</th>
-                  <th>Servive delivery address</th>
-                  <th>Status</th>
+                  <th>Service delivery address</th>
+                  <!-- <th>Status</th> -->
                   <th style="width: 7%;">Actions</th>
                 </tr>
               </ng-template>
@@ -394,7 +401,7 @@
                   <td>{{delivery.districtCouncil?.name}}</td>
                   <td>{{delivery.localMunicipality?.name}}</td>
                   <td>{{getNames(delivery?.serviceDeliveryAreas)}}</td>
-                  <td>{{delivery?.approvalStatus?.name}}</td>
+                  <!-- <td>{{delivery?.approvalStatus?.name}}</td> -->
                   <td style="text-align: center;">
                     <button *ngIf="canEdit()" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editProgrammeServiceDelivery(delivery)" pTooltip="Edit" tooltipPosition="top"></button>
                     <button *ngIf="canEdit()" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteProgrammeServiceDelivery(delivery)" pTooltip="Delete" tooltipPosition="top"></button>
@@ -638,7 +645,7 @@
                         [(ngModel)]="selectedDenodoFacility"
                         [style]="{'width':'100%'}"
                         [inputStyle]="{'width':'100%'}"
-                        [suggestions]="denodoFacilities"
+                        [suggestions]="facilityLists"
                         field="name"
                         (completeMethod)="search($event)"
                         [size]="20"
@@ -667,7 +674,7 @@
                     <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}" [(ngModel)]="mapping.facilityList.facilityFound" [ngModelOptions]="{standalone: true}" (onChange)="facilityFoundChange($event.value)" [disabled]="!newFacilityInformation"></p-selectButton>
                 </div>
             </div>
-            <div *ngIf="mapping.facilityList.facilityFound == false">
+            <div *ngIf="mapping.facilityList.facilityFound == false || newFacilityInformation === false">
                 <div class="p-grid">
                     <div class="p-col-fixed form-label">
                         <div class="box">
@@ -807,14 +814,18 @@
           [transitionOptions]="'0ms'"
           [modal]="true">
 
-        <div *ngIf="isApplicant || isAdmin || isSystemAdmin" class="p-grid">
+        <div class="p-grid">
             <div class="p-col-fixed form-label">
                 <div class="box">
                     <span class="mandatory-content">Department</span>
                 </div>
             </div>
             <div class="p-col">
-                <p-dropdown [options]="departments1" placeholder="Select a Department" optionLabel="name" [(ngModel)]="selectedDepartment" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"  (onChange)="loadDepartmentPrograms($event.value.id)" [filter]="true" filterBy="name"></p-dropdown>
+                <p-dropdown [options]="departments1" 
+                placeholder="Select a Department" optionLabel="name"
+                 [(ngModel)]="selectedDepartment" [ngModelOptions]="{standalone: true}" 
+                 [style]="{'width':'100%'}" appendTo="body"  
+                 (onChange)="loadDepartmentPrograms($event.value.id)" [filter]="true" filterBy="name"></p-dropdown>
             </div>
         </div>
     
@@ -848,7 +859,9 @@
                 </div>
             </div>
             <div class="p-col">
-                <p-dropdown [options]="filteredSubProgrammes" placeholder="Select a Sub-Programme" optionLabel="name" [(ngModel)]="selectedSubProgramme" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="subProgrammeChange($event.value)" [disabled]="disableSubProgramme()"></p-dropdown>
+                <p-dropdown [options]="filteredSubProgrammes" placeholder="Select a Sub-Programme" optionLabel="name" 
+                [(ngModel)]="selectedSubProgramme" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" 
+                appendTo="body" (onChange)="subProgrammeChange($event.value)" [disabled]="disableSubProgramme()"></p-dropdown>
             </div>
         </div>
         <div class="p-grid">
@@ -858,7 +871,9 @@
                 </div>
             </div>
             <div class="p-col">
-                <p-dropdown [options]="filteredSubProgrammeTypes" placeholder="Select a Sub-Programme Type" optionLabel="name" [(ngModel)]="selectedSubProgrammeType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="disableSubProgrammeType()"></p-dropdown>
+                <p-dropdown [options]="filteredSubProgrammeTypes" placeholder="Select a Sub-Programme Type" optionLabel="name"
+                 [(ngModel)]="selectedSubProgrammeType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
+                  appendTo="body" [disabled]="disableSubProgrammeType()"></p-dropdown>
             </div>
         </div>
 
@@ -1394,7 +1409,9 @@
                 </div>
             </div>
             <div class="p-col">
-                <p-dropdown (onChange)="onLocalMunicipalityChange($event.value)" [options]="localMunicipalities" placeholder="Select a Local Municipality" optionLabel="name" [(ngModel)]="selectedLocalMunicipality" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+                <p-dropdown (onChange)="onLocalMunicipalityChange($event.value)" [options]="localMunicipalities" 
+                placeholder="Select a Local Municipality" optionLabel="name" [(ngModel)]="selectedLocalMunicipality" 
+                [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
             </div>
         </div>
     
@@ -1405,24 +1422,24 @@
                 </div>
             </div>
             <div class="p-col">
-                <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="regions"
+                <p-dropdown defaultLabel="Choose" optionLabel="name" [options]="regions"
                 [(ngModel)]="selectedRegions" [ngModelOptions]="{standalone: true}" appendTo="body"
                 (onChange)="onRegionChange($event.value)" [style]="{'width':'100%'}"
-                ></p-multiSelect>
+                ></p-dropdown>
             </div>
-
         </div>
 
         <div class="p-grid">
             <div class="p-col-fixed form-label">
                 <div class="box">
-                    <span class="mandatory-content">Servive delivery address</span>
+                    <span class="mandatory-content">Service delivery address</span>
                 </div>
             </div>
             <div class="p-col">
-                <p-multiSelect defaultLabel="Choose" optionLabel="name" [options]="sdas" [(ngModel)]="selectedSdas"
+                <p-dropdown defaultLabel="Choose" optionLabel="name" [options]="sdas" [(ngModel)]="selectedSdas"
+                [filter]="true" filterBy="name"
                 [ngModelOptions]="{standalone: true}" appendTo="body" (onChange)="onSdaChange($event.value)"
-                [style]="{'width':'100%'}"></p-multiSelect>
+                [style]="{'width':'100%'}"></p-dropdown>
             </div>
         </div>
         

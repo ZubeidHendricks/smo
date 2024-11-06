@@ -20,6 +20,8 @@ export class ViewProfileComponent implements OnInit {
   @Input() npoId: number;
   @Input() source: string;
   @Input() programId: number;
+  @Input() subProgramId: number;
+  @Input() subProgramTypeId: number;
   @Output() retrievedNpoProfile = new EventEmitter<INpoProfile>();
 
   npoProfile: INpoProfile;
@@ -82,9 +84,12 @@ export class ViewProfileComponent implements OnInit {
 
   programBankDetails : IProgramBankDetails [];
   programContactInformation: IProgramContactInformation[];
+  programContactInformation1: IProgramContactInformation[];
   programBankDetail: IProgramBankDetails = {} as IProgramBankDetails;
   programDeliveryDetails : IProgrammeServiceDelivery [];
   selectedRowIndex: number | null = null;
+  headerTitle: string;
+  viewHeader:boolean;
 
   constructor(
     private _spinner: NgxSpinnerService,
@@ -96,6 +101,14 @@ export class ViewProfileComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
+    var splitUrl = window.location.href.split('/');
+    this.headerTitle = splitUrl[5];
+    if(this.headerTitle === "view")
+    {
+      this.viewHeader = true;
+    }
+  
     this.loadDocumentTypes();
     this.loadProgrammes();
     this.loadSubProgrammes();
@@ -104,6 +117,7 @@ export class ViewProfileComponent implements OnInit {
     this.loadAccountTypes();
     this.loadStaffCategories();
     this.loadNpoProfile();
+    
 
     this.stateOptions = [
       {
@@ -140,9 +154,9 @@ export class ViewProfileComponent implements OnInit {
     ];
 
     this.serviceRenderedCols = [
-      { header: 'Programme', width: '30%' },
-      { header: 'Sub-Programme', width: '30%' },
-      { header: 'Sub-Programme Type', width: '30%' },
+      { header: 'Programme', width: '33%' },
+      { header: 'Sub-Programme', width: '33%' },
+      { header: 'Sub-Programme Type', width: '33%' },
     ];
 
     this.bankDetailCols = [
@@ -163,31 +177,9 @@ export class ViewProfileComponent implements OnInit {
     ];
   }
   onFirstTdClick(rowIndex: number) {
-    this.selectedRowIndex = rowIndex;
+    if(this.headerTitle !== 'view')
+      this.selectedRowIndex = rowIndex;
   }
-  toggleBankingDetailsPanel(program: any) {
-    console.log(program);
-    // if (this.selectedProgram && this.selectedProgram.id === program.id) {
-    //   this.displayBankingDetailsPanel = true;
-    // } else {
-    //   this.selectedProgram = program;
-    //   this.loadProgrammeDetails(program.id);
-    //   this.displayBankingDetailsPanel = true;
-    // }
-    this.selectedProgram = program;
-    this.loadProgrammeDetails(program.id);
-    this.displayBankingDetailsPanel = true;
-  }
-  // toggleBankingDetailsPanel(program: any) {
-  //   if (this.selectedProgram && this.selectedProgram.id === program.id) {
-  //     this.displayBankingDetailsPanel = !this.displayBankingDetailsPanel;
-  //   } else {
-  //     this.selectedProgram = program;
-  //     this.loadProgrammeDetails(program.id);
-  //     this.displayBankingDetailsPanel = true;
-  //   }
-  // }
-
   getNames(array: any[]): string {
     const names = array.map(item => item.name) // Access 'name' directly
                        .filter(name => name !== undefined && name.trim() !== '') // Filter out undefined or empty strings
@@ -196,64 +188,17 @@ export class ViewProfileComponent implements OnInit {
     return names; // Return the joined names as a string
   }
 
-  loadProgrammeDetails(progId: number): void {
-    forkJoin({
-      contacts: this._npoProfileRepo.getProgrammeContactsById(progId,Number(this.npoProfile.id)),
-      bankDetails: this._npoProfileRepo.getProgrammeBankDetailsById(progId,Number(this.npoProfile.id)),
-      deliveryDetails: this._npoProfileRepo.getProgrammeDeliveryDetailsById(progId,Number(this.npoProfile.id))
-    }).subscribe({
-      next: (result) => {
-        this.programContactInformation = result.contacts.filter(contact => contact.approvalStatus.id === AccessStatusEnum.Approved);
-        this.programBankDetails = result.bankDetails.filter(bankDetail => bankDetail.approvalStatus.id === AccessStatusEnum.Approved);
-        this.programDeliveryDetails = result.deliveryDetails.filter(deliveryDetail => deliveryDetail.approvalStatus.id === AccessStatusEnum.Approved);
-        this.updateProgramBankDetailObjects();
-      },
-      error: (err) => {
-        console.error(err);
-      }
-    });
-  }
-  
-
-  // loadProgrammeDetails(progId: number): void {
-  //   forkJoin({
-  //     contacts: this._npoProfileRepo.getProgrammeContactsById(progId),
-  //     bankDetails: this._npoProfileRepo.getProgrammeBankDetailsById(progId),
-  //     deliveryDetails : this._npoProfileRepo.getProgrammeDeliveryDetailsById(progId)
-  //   }).subscribe({
-  //     next: (result) => {
-  //       this.programContactInformation = result.contacts;
-  //       this.programBankDetails = result.bankDetails;
-  //       this.programDeliveryDetails = result.deliveryDetails;
-  //       this.updateProgramBankDetailObjects();
-  //     },
-  //     error: (err) => {
-  //       console.error(err);
-  //     }
-  //   });
-  // }
-
-  private updateProgramBankDetailObjects() {
-    if (this.banks && this.accountTypes && this.programBankDetails) {
-      this.programBankDetails.forEach(item => {
-        item.bank = this.banks.find(x => x.id === item.bankId);
-        this.loadProgrammeBranch(item);
-        item.accountType = this.accountTypes.find(x => x.id === item.accountTypeId);
-      });
-    }
-  }
-
-  private loadProgrammeBranch(bankDetail: IProgramBankDetails) {
-    this._dropdownRepo.getBranchById(bankDetail.branchId).subscribe(
+  private getProgrammeDeliveryDetails(npoProfileId: number) {
+    this._npoProfileRepo.getProgrammeContacts(Number(npoProfileId), this.source).subscribe(
       (results) => {
-        bankDetail.branch = results;
-        bankDetail.branchCode = bankDetail.branch.branchCode != null ? bankDetail.branch.branchCode : bankDetail.bank.code;
+
+        if (results != null) {
+          this.programContactInformation1 = results.filter(contact => contact.programmeId === this.programId);
+        } this._spinner.hide();//
       },
       (err) => {
         this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
+      });
   }
 
   private loadStaffCategories() {
@@ -280,6 +225,7 @@ export class ViewProfileComponent implements OnInit {
 
           this.loadFacilities(this.npoProfile.id);
           this.loadServicesRendered(this.npoProfile.id);
+          this.getProgrammeDeliveryDetails(this.npoProfile.id);
           this.loadBankDetails(this.npoProfile.id);
           this.loadStaffMemberProfiles();
 
@@ -609,5 +555,13 @@ export class ViewProfileComponent implements OnInit {
       object[prop] = data[prop];
 
     return object;
+  }
+
+  public facilityFoundChange(value) {
+
+  }
+
+  public updatePostalAddress(value) {
+
   }
 }

@@ -60,6 +60,14 @@
 		QuarterlyPeriod = 56,
 		FilteredProgrammesByDepartment = 57,
         FilteredRolesByDepartment = 58,
-        SegmentCode = 59
+        SegmentCode = 59,
+        FacilitySubStructure = 60,
+        DemographicSubStructure = 61,
+        DemographicDistrict = 62,
+        DemographicManicipality = 63,
+        DemographicSubDistrict = 64,
+		Area = 65,
+		Indicator = 66,
+        HighLevelNPO = 67
     }
 }

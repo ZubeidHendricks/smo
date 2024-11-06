@@ -16,7 +16,7 @@
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns">
-            <tr [ngClass]="default" class="default-font">
+            <tr class="default-font default">
                 <td>{{rowData.name}}</td>
                 <td>{{rowData.description}}</td>
                 <td>{{rowData.recipientType.name}}</td>
@@ -39,16 +39,6 @@
                 <td colspan="6" style="text-align: center;">No results found</td>
             </tr>
         </ng-template>
-        <!-- <ng-template pTemplate="summary" let-rowData *ngIf="canEdit">
-            <div style="text-align:left">
-                <button pButton pRipple type="button" label="Add Objective" class="p-button-text" icon="fa fa-plus" (click)="addObjective()"></button>
-            </div>
-        </ng-template>
-        <ng-template pTemplate="summary" let-rowData *ngIf="application.isCloned && isReview">
-            <div style="text-align:left">
-                <button pButton pRipple type="button" label="View Deleted Objectives" class="p-button-text" icon="fa fa-info-circle" (click)="viewDeletedObjectives()"></button>
-            </div>
-        </ng-template> -->
     </p-table>
     <div style="height: 10px;"></div>
     <div class="p-grid p-nogutter p-justify-between" *ngIf="headerTitle !== 'reviewAdjudicatedNpo'">
@@ -106,42 +96,6 @@
             <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="objective.description" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit"></textarea>
         </div>
     </div>
-    <!-- <div class="p-grid">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="non-mandatory-content">Funding Source</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <input type="text" class="form-text" pInputText [(ngModel)]="objective.fundingSource" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit">
-        </div>
-    </div> -->
-    <!-- <div class="p-grid">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="non-mandatory-content">Programme</span>
-            </div>
-        </div>
-        <div class="p-col" *ngIf="canEdit">
-            <p-multiSelect [options]="programmes" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="selectedProgrammes" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" (onChange)="programmeChange($event.value)" selectedItemsLabel="{0} items selected"></p-multiSelect>
-        </div>
-        <div class="p-col" *ngIf="!canEdit">
-            <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedProgrammesText" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit"></textarea>
-        </div>
-    </div> 
-    <div class="p-grid">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="non-mandatory-content">Sub-Programme</span>
-            </div>
-        </div>
-        <div class="p-col" *ngIf="canEdit">
-            <p-multiSelect [options]="subProgrammes" defaultLabel="Select option(s)" optionLabel="name" [(ngModel)]="selectedSubProgrammes" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="disableSubProgramme()" selectedItemsLabel="{0} items selected"></p-multiSelect>
-        </div>
-        <div class="p-col" *ngIf="!canEdit">
-            <textarea class="form-text" [rows]="1" [cols]="30" pInputTextarea [(ngModel)]="selectedSubProgrammesText" [ngModelOptions]="{standalone: true}" [disabled]="!canEdit"></textarea>
-        </div>
-    </div>-->
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
@@ -152,28 +106,6 @@
             <p-dropdown [options]="getFilteredRecipientTypes(RecipientTypeEnum.Primary)" placeholder="Select a Recipient Type" optionLabel="name" [(ngModel)]="selectedRecipientType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="!canEdit"></p-dropdown>
         </div>
     </div>
-    <!-- <div class="p-grid">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="non-mandatory-content">Funding Period</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <p-calendar [(ngModel)]="objective.fundingPeriodStartDate" placeholder="Select a Start Date" inputId="time" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'47%'}" [monthNavigator]="true" [yearNavigator]="true" [yearRange]="yearRange" [disabled]="!canEdit"></p-calendar>
-            &nbsp; to &nbsp;
-            <p-calendar [(ngModel)]="objective.fundingPeriodEndDate" placeholder="Select a End Date" inputId="time" [ngModelOptions]="{standalone: true}" dateFormat="yy-mm-dd" appendTo="body" [style]="{'width':'46%'}" [monthNavigator]="true" [yearNavigator]="true" [yearRange]="yearRange" [disabled]="!canEdit"></p-calendar>
-        </div>
-    </div>
-    <div class="p-grid">
-        <div class="p-col-fixed form-label">
-            <div class="box">
-                <span class="non-mandatory-content">Budget</span>
-            </div>
-        </div>
-        <div class="p-col">
-            <p-inputNumber [(ngModel)]="objective.budget" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" [style]="{'width':'100%'}" [disabled]="!canEdit"></p-inputNumber>
-        </div>
-    </div> -->
     <hr>
      <p>Recipient Details</p>
     <p-table [rowHover]="true" [value]="getActiveSRs(objective)" styleClass="p-datatable-sm">
@@ -191,7 +123,7 @@
                 <td><span class="p-text-bold">{{recipient.organisationName}}</span></td>
                 <td><span class="p-text-bold" *ngIf="recipient.recipientType">{{recipient.recipientType.name}}</span></td>
                 <td><span class="p-text-bold">{{recipient.fundingPeriodStartDate}} to {{recipient.fundingPeriodEndDate}}</span></td>
-                <td><span class="p-text-bold">{{recipient.budget}}</span></td>
+                <td><span class="p-text-bold">{{recipient.budget   | currency:'ZAR'}}</span></td>
                 <td style="text-align: center;">
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editSR(recipient)" pTooltip="{{tooltip}} SR" tooltipPosition="top"></button>
                     <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteSR(recipient)" pTooltip="Delete SR" tooltipPosition="top"></button>

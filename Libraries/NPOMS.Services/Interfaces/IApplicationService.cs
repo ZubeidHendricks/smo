@@ -15,7 +15,9 @@ namespace NPOMS.Services.Interfaces
 
 		Task<Application> GetApplicationByNpoIdAndPeriodId(int NpoId, int applicationPeriodId);
 
-		Task<IEnumerable<Application>> GetApplicationsByNpoId(int npoId);
+        Task<Application> GetApplicationByNpoIdAndPeriodIdAndYear(int NpoId, int applicationPeriodId, string Year);
+
+        Task<IEnumerable<Application>> GetApplicationsByNpoId(int npoId);
 
         Task<Application> GetById(int ApplicationId);
 
@@ -63,8 +65,11 @@ namespace NPOMS.Services.Interfaces
 		Task CreateFundingApplicationDetails(FundingApplicationDetail model, string userIdentifier);
 
 		Task UpdateFundingApplicationDetails(FundingApplicationDetail model, string userIdentifier);
+		//Task AddProjectImplementation(ProjectImplementationViewModel model, string userIdentifier);
 
-		Task<IEnumerable<Region>> GetRegions(int fundAppSDADetailId);
+  //      Task UpdateProjectImplementation(ProjectImplementationViewModel model, string userIdentifier);
+
+        Task<IEnumerable<Region>> GetRegions(int fundAppSDADetailId);
 
 		Task<IEnumerable<ServiceDeliveryArea>> GetServiceDeliveryAreas(int fundAppSDADetailId);
 
@@ -138,5 +143,7 @@ namespace NPOMS.Services.Interfaces
 		Task UpdateMyContentLink(MyContentLink model, string userIdentifier);
 
 		Task<ApplicationPeriod> GetApplicationPeriodById(int id);
-	}
+        Task<IEnumerable<Activity>> AllActivitiesAsync();
+        Task SubmitReport(Application model, string userIdentifier);
+    }
 }

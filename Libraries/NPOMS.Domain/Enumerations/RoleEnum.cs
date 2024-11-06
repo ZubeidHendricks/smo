@@ -14,6 +14,7 @@
 		ViewOnly = 10,
         ProgrammeCapturer = 11,
         ProgrammeApprover = 12,
-        ProgrammeViewOnly = 13
+        ProgrammeViewOnly = 13,
+        DOHApprover = 14
     }
 }

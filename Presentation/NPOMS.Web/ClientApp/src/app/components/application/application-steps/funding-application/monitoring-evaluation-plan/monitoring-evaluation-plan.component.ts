@@ -62,6 +62,7 @@ export class MonitoringEvaluationPlanComponent implements OnInit {
   private bidForm(status: StatusEnum) {
     this.application.status = null;
       this.application.statusId = status;
+      //this.fundingApplicationDetails.implementations = null;
       const applicationIdOnBid = this.fundingApplicationDetails;
 
       if (applicationIdOnBid.id == null) {

@@ -11,91 +11,96 @@ using System.Threading.Tasks;
 
 namespace NPOMS.Services.Implementation
 {
-	public class EmailService : IEmailService
-	{
-		#region Fields
+    public class EmailService : IEmailService
+    {
+        #region Fields
 
-		private ILogger<EmailService> _logger;
-		private IMapper _mapper;
-		private IEmailQueueService _emailQueueService;
+        private ILogger<EmailService> _logger;
+        private IMapper _mapper;
+        private IEmailQueueService _emailQueueService;
 
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Constructors
 
-		public EmailService(
-			ILogger<EmailService> logger,
-			IMapper mapper,
-			IEmailQueueService emailQueueService
-			)
-		{
-			_logger = logger;
-			_mapper = mapper;
-			_emailQueueService = emailQueueService;
-		}
+        public EmailService(
+            ILogger<EmailService> logger,
+            IMapper mapper,
+            IEmailQueueService emailQueueService
+            )
+        {
+            _logger = logger;
+            _mapper = mapper;
+            _emailQueueService = emailQueueService;
+        }
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		public async Task SendEmailFromQueue()
-		{
-			try
-			{
-				var emailQueueResourceParameters = new EmailQueueResourceParameters();
-				emailQueueResourceParameters.OnlyNotSent = true;
+        public async Task SendEmailFromQueue(bool useNewFormat = false)
+        {
+            try
+            {
+                var emailQueueResourceParameters = new EmailQueueResourceParameters();
+                emailQueueResourceParameters.OnlyNotSent = true;
 
-				var queuedEmails = _emailQueueService.Get(emailQueueResourceParameters).ToListAsync().Result;
+                var queuedEmails = _emailQueueService.Get(emailQueueResourceParameters).ToListAsync().Result;
 
-				var httpClient = PrepareClient();
+                var httpClient = PrepareClient();
 
-				foreach (var queuedEmail in queuedEmails)
-				{
+                foreach (var queuedEmail in queuedEmails)
+                {
                     using (var request = new HttpRequestMessage(new HttpMethod("POST"), queuedEmail.EmailTemplate.EmailAccount.Host))
                     {
-						request.Headers.TryAddWithoutValidation("accept", "*/*"); 
+                        request.Headers.TryAddWithoutValidation("accept", "*/*");
 
                         var content = "\"to\":\"{0}\",\"from\":\"{1}\",\"from_text\":\"{2}\",\"subject\":\"{3}\",\"body\":\"{4}\",\"attachments\":[]";
-						content = string.Format(content, queuedEmail.RecipientEmail, queuedEmail.FromEmailAddress, queuedEmail.RecipientName, queuedEmail.Subject, queuedEmail.Message.Replace("\"", "'"));
-						request.Content = new StringContent("{" + content + "}");
-						request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json-patch+json");
 
-						var response = await _httpClient.SendAsync(request);
+                        if (!useNewFormat)
+                            content = string.Format(content, queuedEmail.RecipientEmail, queuedEmail.FromEmailAddress, queuedEmail.RecipientName, queuedEmail.Subject, queuedEmail.Message.Replace("\"", "'"));
+                        else
+                            content = string.Format(content, queuedEmail.RecipientEmail, queuedEmail.EmailTemplate.EmailAccount.FromEmail, queuedEmail.EmailTemplate.EmailAccount.FromDisplayName, queuedEmail.Subject, queuedEmail.Message.Replace("\"", "'"));
 
-						if (response.StatusCode == System.Net.HttpStatusCode.OK)
-						{
-							queuedEmail.SentDateTime = DateTime.Now;
+                        request.Content = new StringContent("{" + content + "}");
+                        request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json-patch+json");
 
-							var viewModel = _mapper.Map<EmailQueueViewModel>(queuedEmail);
-							await _emailQueueService.Update(viewModel);
-						}
-						else
-						{
-							_logger.LogError($"The following email cannot be send: {content}. Sending Email Failed");
-						}
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError($"Something went wrong inside SendEmailFromQueue action: {ex.Message} Inner Exception: { ex.InnerException}");
-				throw;
-			}
-		}
+                        var response = await _httpClient.SendAsync(request);
 
-		private static HttpClient _httpClient = null;
+                        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+                            queuedEmail.SentDateTime = DateTime.Now;
 
-		private static HttpClient PrepareClient()
-		{
-			if (_httpClient == null)
-			{
-				_httpClient = new HttpClient();
-				_httpClient.DefaultRequestHeaders.Accept.Clear();
-			}
+                            var viewModel = _mapper.Map<EmailQueueViewModel>(queuedEmail);
+                            await _emailQueueService.Update(viewModel);
+                        }
+                        else
+                        {
+                            _logger.LogError($"The following email cannot be send: {content}. Sending Email Failed");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside SendEmailFromQueue action: {ex.Message} Inner Exception: {ex.InnerException}");
+                throw;
+            }
+        }
 
-			return _httpClient;
-		}
+        private static HttpClient _httpClient = null;
 
-		#endregion
-	}
+        private static HttpClient PrepareClient()
+        {
+            if (_httpClient == null)
+            {
+                _httpClient = new HttpClient();
+                _httpClient.DefaultRequestHeaders.Accept.Clear();
+            }
+
+            return _httpClient;
+        }
+
+        #endregion
+    }
 }

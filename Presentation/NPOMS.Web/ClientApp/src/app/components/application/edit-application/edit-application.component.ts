@@ -1,12 +1,12 @@
 import { NpoProfileService } from './../../../services/api-services/npo-profile/npo-profile.service';
 import { FundingApplicationService } from './../../../services/api-services/funding-application/funding-application.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Console } from 'console';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { FinancialMatters } from 'src/app/models/FinancialMatters';
+import { FinancialMatters, IFinancialMattersIncome } from 'src/app/models/FinancialMatters';
 import { ApplicationTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, FundingApplicationStepsEnum, PermissionsEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
 import { IActivity, IApplication, IApplicationDetails, IApplicationPeriod, IDocumentType, 
   IFundingApplicationDetails, IMonitoringAndEvaluation, IObjective, IPlace, IProjectImplementation, 
@@ -26,6 +26,7 @@ import { UserService } from 'src/app/services/api-services/user/user.service';
   providers: [MessageService, ConfirmationService]
 })
 export class EditApplicationComponent implements OnInit {
+  
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -49,11 +50,13 @@ export class EditApplicationComponent implements OnInit {
   public get FundingApplicationStepsEnum(): typeof FundingApplicationStepsEnum {
     return FundingApplicationStepsEnum;
   }
-
+  @Input() source: string;
+  @Input() programId: number;
+  
   applicationPeriodId: number;
   paramSubcriptions: Subscription;
   id: string;
-
+  financialMattersIncome: IFinancialMattersIncome[];
   bidId: number;
   placeAll: IPlace[] = [];
   subPlacesAll: ISubPlace[] = [];
@@ -123,7 +126,6 @@ export class EditApplicationComponent implements OnInit {
     this.loadfundingSteps();
     this.applicationPeriodId = +this.id;
     this.fundingApplicationDetails.applicationPeriodId = +this.id;
-
     this._authService.profile$.subscribe(profile => {
       if (profile != null && profile.isActive) {
         this.profile = profile;
@@ -137,7 +139,6 @@ export class EditApplicationComponent implements OnInit {
   }
 
   getfinFund(event: FinancialMatters) {
-    // console.log('event from Edit', JSON.stringify(event));
   }
 
   private loadApplication() {
@@ -210,7 +211,7 @@ export class EditApplicationComponent implements OnInit {
     }
   }
 
-  private loadObjectives() {
+  public loadObjectives() {
     this._applicationRepo.getAllObjectives(this.application).subscribe(
       (results) => {
         this.objectives = results.filter(x => x.isActive === true);
@@ -222,7 +223,7 @@ export class EditApplicationComponent implements OnInit {
     );
   }
 
-  private loadActivities() {
+  public loadActivities() {
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
         this.activities = results.filter(x => x.isActive === true);
@@ -234,7 +235,7 @@ export class EditApplicationComponent implements OnInit {
     );
   }
 
-  private loadSustainabilityPlans() {
+  public loadSustainabilityPlans() {
     this._applicationRepo.getAllSustainabilityPlans(this.application).subscribe(
       (results) => {
         this.sustainabilityPlans = results.filter(x => x.isActive === true);
@@ -246,7 +247,7 @@ export class EditApplicationComponent implements OnInit {
     );
   }
 
-  private loadResources() {
+  public loadResources() {
     this._applicationRepo.getAllResources(this.application).subscribe(
       (results) => {
         this.resources = results.filter(x => x.isActive === true);
@@ -351,10 +352,26 @@ export class EditApplicationComponent implements OnInit {
     this.application.status = null;
     if (this.bidCanContinue(status)) {
       this.application.statusId = status;
+      this.fundingApplicationDetails.implementations = null;
       const applicationIdOnBid = this.fundingApplicationDetails;
+      this.fundingApplicationDetails.programId = this.application.applicationPeriod.programmeId;
+      this.fundingApplicationDetails.subProgramId = this.application.applicationPeriod.subProgrammeId
+      this.fundingApplicationDetails.subProgramTypeId = this.application.applicationPeriod.subProgrammeTypeId
+      this.fundingApplicationDetails.applicationPeriodId = this.application.applicationPeriodId;
+      this.fundingApplicationDetails.applicationId = Number(this.id);
 
-      this._applicationRepo.updateApplication(this.application).subscribe(resp => { this._applicationRepo.getApplicationById(Number(this.id)) });
-      this.application.statusId = status;
+      if (status == StatusEnum.PendingReview) {
+        this.application.statusId = status;
+        this._applicationRepo.updateApplication(this.application).subscribe();
+        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
+        this._router.navigateByUrl('applications');
+        this.fundingApplicationDetails.implementations = null;
+      };
+
+      this._applicationRepo.updateApplication(this.application).subscribe(resp => 
+      { 
+        this._applicationRepo.getApplicationById(Number(this.id)) });
+        this.application.statusId = status;    
 
       if (applicationIdOnBid.id == null) {
         this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
@@ -363,27 +380,24 @@ export class EditApplicationComponent implements OnInit {
           resp;
         });
       }
-
       else {
         this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
           if (resp) {
-            this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`);
-            this.loadfundingSteps();
-            //this.getBidFullObject(resp);            
-            this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-            this.fundingApplicationDetails.implementations = null;
+            if(status === StatusEnum.PendingReview)
+            {
+              this._router.navigateByUrl('applications');
+            }
+            else{
+              this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`);
+              this.loadfundingSteps();
+              //this.getBidFullObject(resp);  //          
+              this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+              this.fundingApplicationDetails.implementations = null;
+            }
+           
           }
         });
-      }
-
-      if (status == StatusEnum.PendingReview) {
-
-        this.application.statusId = status;
-        this._applicationRepo.updateApplication(this.application).subscribe();
-        this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
-        this._router.navigateByUrl('applications');
-        this.fundingApplicationDetails.implementations = null;
-      };
+      }      
     }
   }
   // bid continue form
@@ -399,7 +413,6 @@ export class EditApplicationComponent implements OnInit {
 
   //funding drop downs
   private loadfundingSteps() {
-
     this._spinner.show();
     this._applicationRepo.getApplicationById(Number(this.id)).subscribe(
       (results) => {
@@ -421,10 +434,8 @@ export class EditApplicationComponent implements OnInit {
 
   private getFundingApplicationDetails(data) {
     this._bidService.getBid(data.id).subscribe(response => {
-
-      this.getBidFullObject(response)
+      this.getBidFullObject(response);
     });
-
   }
 
   private getBidFullObject(data) {
@@ -462,8 +473,7 @@ export class EditApplicationComponent implements OnInit {
 
   private formValidate() {
     this.validationErrors = [];
-    if (this.application.applicationPeriodId === ApplicationTypeEnum.SP) {
-
+    if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP) {
       if (this.objectives.length === 0)
         this.validationErrors.push({ severity: 'error', summary: "Objectives:", detail: "Objective table cannot be empty." });
 
@@ -542,15 +552,28 @@ export class EditApplicationComponent implements OnInit {
 
     if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
 
+      // if (this.fundingApplicationDetails.implementations.length === 0)
+      //   this.validationErrors.push({ severity: 'error', summary: "Implementations:", detail: "Please capture implementations." });
+      // if (this.fundingApplicationDetails.projectInformation.initiatedQuestion == null && this.fundingApplicationDetails.projectInformation.considerQuestion == null &&
+      //   this.fundingApplicationDetails.projectInformation.purposeQuestion == null)
+      //   this.validationErrors.push({ severity: 'error', summary: "Project Info:", detail: "Please capture Project Information." });
+
+      // if (this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription == null)
+      //   this.validationErrors.push({ severity: 'error', summary: "Monitoring:", detail: "Please capture Monitoring and Evaluation." });
+      if (this.fundingApplicationDetails.applicationDetails.amountApplyingFor == undefined)
+        this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Please specify the Rand amount you applying for." });
+      // if (this.financialMattersIncome.length === 0)
+      //   this.validationErrors.push({ severity: 'error', summary: "Financial Matters:", detail: "Please capture financial matters." });
+
       if (this.fundingApplicationDetails.implementations.length === 0)
         this.validationErrors.push({ severity: 'error', summary: "Implementations:", detail: "Please capture implementations." });
-      if (this.fundingApplicationDetails.projectInformation.initiatedQuestion == null && this.fundingApplicationDetails.projectInformation.considerQuestion == null &&
-        this.fundingApplicationDetails.projectInformation.purposeQuestion == null)
+      if (this.fundingApplicationDetails.projectInformation?.purposeQuestion == undefined)
         this.validationErrors.push({ severity: 'error', summary: "Project Info:", detail: "Please capture Project Information." });
 
-      if (this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription == null)
+      if (this.fundingApplicationDetails.monitoringEvaluation?.monEvalDescription == undefined)
         this.validationErrors.push({ severity: 'error', summary: "Monitoring:", detail: "Please capture Monitoring and Evaluation." });
-
+  
+    
     }
 
     // if (this.validationErrors.length == 0)
@@ -609,4 +632,10 @@ export class EditApplicationComponent implements OnInit {
 
     return false;
   }
+
+  public saveFundingApplication()
+  {
+    this.bidForm(StatusEnum.Saved);
+  }
+  
 }

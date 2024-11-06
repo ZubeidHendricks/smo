@@ -79,6 +79,8 @@ import { CreateQuickCaptureComponent } from './components/quick-capture/create-q
 import { EditQuickCaptureComponent } from './components/quick-capture/edit-quick-capture/edit-quick-capture.component';
 import { ApplicationDetailsComponent } from './components/application/application-steps/funding-application/application-details/application-details.component';
 import { QcApplicationPeriodsComponent } from './components/application/application-steps/quick-capture/qc-application-periods/qc-application-periods.component';
+import { QcApplicationPeriodsDohComponent } from './components/application/application-steps/quick-capture/qc-application-periods-doh/qc-application-periods-doh.component';
+import { QcApplicationPeriodsDohViewComponent } from './components/application/application-steps/quick-capture-view/qc-application-periods-doh-view/qc-application-periods-doh-view.component';
 
 import { QuestionComponent } from './components/admin/utilities/question/question.component';
 import { ResponseTypeComponent } from './components/admin/utilities/response-type/response-type.component';
@@ -102,14 +104,18 @@ import { ScorecardActionComponent } from './components/application/scorecard-act
 import { AdjudicateNpoComponent } from './components/application/adjudicate-npo/adjudicate-npo.component';
 import { ReviewAdjudicatedNpoComponent } from './components/application/review-adjudicated-npo/review-adjudicated-npo.component';
 
-import { QcConfirmationComponent } from './components/application/application-steps/quick-capture-view/qc-confirmation/qc-confirmation.component';
-import { QCActivitiesViewComponent } from './components/application/application-steps/quick-capture-view/qc-activities-view/qc-activities-view.component';
-import { QcApplicationDetailViewComponent } from './components/application/application-steps/quick-capture-view/qc-application-detail-view/qc-application-detail-view.component';
-import { QcApplicationPeriodsViewComponent } from './components/application/application-steps/quick-capture-view/qc-application-periods-view/qc-application-periods-view.component';
-import { QcFundedDocumentUploadViewComponent } from './components/application/application-steps/quick-capture-view/qc-funded-document-upload-view/qc-funded-document-upload-view.component';
-import { QcObjectivesViewComponent } from './components/application/application-steps/quick-capture-view/qc-objectives-view/qc-objectives-view.component';
 import { BudgetSummaryComponent } from './components/admin/budgets/budget-summary/budget-summary.component';
 import { UploadBudgetComponent } from './components/admin/budgets/upload-budget/upload-budget.component';
+import { DownloadWorkplanComponent } from './components/application/download-workplan/download-workplan.component';
+import { FundingCaptureListComponent } from './components/funding-capture/funding-capture-list/funding-capture-list.component';
+import { EditFundingCaptureComponent } from './components/funding-capture/edit-funding-capture/edit-funding-capture.component';
+import { ApproveFundingCaptureComponent } from './components/funding-capture/approve-funding-capture/approve-funding-capture.component';
+import { ViewFundingCaptureComponent } from './components/funding-capture/view-funding-capture/view-funding-capture.component';
+import { NpoReportCaptureComponent } from './reporting/npo-report-capture/npo-report-capture.component';
+import { ReportReviewComponent } from './reporting/report-review/report-review.component';
+import { IndicatorImportComponent } from './reporting/indicator-import/indicator-import.component';
+import { ReportDownloadComponent } from './reporting/report-download/report-download.component';
+import { FundingAssessmentListComponent } from './components/funding-assessment/funding-assessment-list/funding-assessment-list.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -125,11 +131,18 @@ const routes: Routes = [
   { path: 'print/:id/1', outlet: 'print', component: PrintWorkflowApplicationComponent },
   { path: 'print/:id/2', outlet: 'print', component: PrintScorecardComponent },
   { path: 'print/:id/3', outlet: 'print', component: DownloadQuickCaptureDohComponent },
+  { path: 'print/:id/4', outlet: 'print', component: DownloadWorkplanComponent },
+  { 
+    path: 'print/:id/:year/:qtr/5', 
+    outlet: 'print', 
+    component: ReportDownloadComponent 
+  },
+
   { path: 'access-request', component: AccessRequestComponent },
   { path: 'access-review', component: AccessReviewComponent },
 
   { path: 'quick-captures', component: QuickCaptureListComponent },
-  { path: 'quick-captures-editList/edit/:id', component: QuickCaptureEditListComponent },
+  { path: 'quick-captures-editList/edit/:id/:activeStep', component: QuickCaptureEditListComponent },
   { path: 'quick-captures-editList-doh/edit/:id', component: EditQuickCaptureDohListComponent },
   { path: 'quick-captures-doh/review/:id', component: ReviewQuickCaptureDohComponent },
   { path: 'quick-captures-doh/view/:id', component: ViewQuickCaptureDohComponent },
@@ -147,7 +160,13 @@ const routes: Routes = [
   { path: 'applications', component: ApplicationListComponent },
   { path: 'applicationDetails/:id', component: ApplicationDetailsComponent },
   { path: 'qcOpenApplicationList', component: QcApplicationPeriodsComponent },
+  { path: 'qcOpenApplicationDohList', component: QcApplicationPeriodsDohComponent },
 
+  { path: 'reports/:id', component: NpoReportCaptureComponent },
+  { path: 'reviewReports/:id', component: ReportReviewComponent },
+  { path: 'utilities/importReports', component: IndicatorImportComponent },
+
+  
   { path: 'application/create/:id', component: CreateApplicationComponent },
   { path: 'application/edit/:id/:activeStep', component: EditApplicationComponent },
   { path: 'application/review/:id', component: ReviewApplicationComponent },
@@ -243,6 +262,16 @@ const routes: Routes = [
 
   // Payment Schedule
   { path: 'admin/payment-schedule', component: PaymentSchedulesComponent },
+
+  // Funding Capture
+  { path: 'funding-capture', component: FundingCaptureListComponent },
+  { path: 'funding-capture/edit/:id', component: EditFundingCaptureComponent },
+  { path: 'funding-capture/approve/:id', component: ApproveFundingCaptureComponent },
+  { path: 'funding-capture/view/:id', component: ViewFundingCaptureComponent },
+  // { path: 'funding-capture/download/:id', component: DownloadFundingCaptureComponent }
+
+    // Funding Assessment
+    { path: 'funding-assessment', component: FundingAssessmentListComponent },
 ];
 
 @NgModule({

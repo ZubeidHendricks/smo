@@ -7,12 +7,19 @@
                 [application]="application"
                 [(fundingApplicationDetails)]="fundingApplicationDetails"
                 [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor" 
+                [programId]="application.applicationPeriod.programmeId" 
+                [subProgramId] = "application.applicationPeriod.subProgrammeId"
+                [subProgramTypeId] = "application.applicationPeriod.subProgrammeTypeId"
                 (getPlace)="places($event)"
                 (getSubPlace)=" subPlaces($event)">
             </app-view-application-details>
             <app-view-financial-matters 
                 [(activeStep)]="activeStep"
                 [application]="application"
+                [programId]="application.applicationPeriod.programmeId" 
+                [subProgramId] = "application.applicationPeriod.subProgrammeId"
+                [subProgramTypeId] = "application.applicationPeriod.subProgrammeTypeId"
+                [source]="source" 
                 [isAdmin]=false
                 [(fundingApplicationDetails)]="fundingApplicationDetails"
                 (financialMattersChange)="getfinFund($event)">
@@ -42,20 +49,26 @@
                 [application]="application"
                 [(fundingApplicationDetails)]="fundingApplicationDetails">
             </app-view-document-upload>
-        </div>
+        </div>       
+    </div>
+    <div *ngIf="application.applicationPeriod.applicationTypeId == ApplicationTypeEnum.QC">
         <div *ngIf="application.isQuickCapture">
             <app-view-application-details 
                 [(activeStep)]="activeStep"
                 [application]="application"
                 [(fundingApplicationDetails)]="fundingApplicationDetails"
+                [programId]="application.applicationPeriod.programmeId" 
+                [subProgramId] = "application.applicationPeriod.subProgrammeId"
+                [subProgramTypeId] = "application.applicationPeriod.subProgrammeTypeId"
                 [(Amount)]="fundingApplicationDetails.applicationDetails.amountApplyingFor" 
                 (getPlace)="places($event)"
                 (getSubPlace)=" subPlaces($event)">
             </app-view-application-details>
             <div style="height: 10px;"></div>
-            <app-qc-document-upload [(activeStep)]="activeStep"
+            <app-qc-document-upload 
+                [(activeStep)]="activeStep"
                 [application]="application"
-                [isView]="true">
+                [(fundingApplicationDetails)]="fundingApplicationDetails">
             </app-qc-document-upload>
         </div>        
     </div>

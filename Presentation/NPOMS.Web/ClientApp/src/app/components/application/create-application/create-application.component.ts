@@ -1,5 +1,5 @@
 import { IApplicationDetails, IDistrictCouncil, IFundAppSDADetail, ILocalMunicipality, IPlace, IProjectInformation, IQuickCaptureDetails, IRegion, ISDA, ISubPlace } from './../../../models/interfaces';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router'; 
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
@@ -12,6 +12,7 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 import { FundingApplicationStepsEnum } from '../../../models/enums';
 import { FundingApplicationService } from 'src/app/services/api-services/funding-application/funding-application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
+import { IFinancialMattersIncome } from 'src/app/models/FinancialMatters';
 
 @Component({
   selector: 'app-create-application',
@@ -24,7 +25,7 @@ export class CreateApplicationComponent implements OnInit {
   applicationIdOnBid: any;
   // subPlacesAll: ISubPlace[];
   // place: IPlace[];
-
+  
   placesAll: IPlace[] = [];
   subPlacesAll: ISubPlace[] = [];
   /* Permission logic */
@@ -65,7 +66,7 @@ export class CreateApplicationComponent implements OnInit {
   items: MenuItem[];
   faItems: MenuItem[];
   qcItems: MenuItem[];
-
+  financialMattersIncome: IFinancialMattersIncome[];
   activeStep: number = 0;
   application: IApplication;
   applicationPeriod: IApplicationPeriod;
@@ -173,11 +174,11 @@ export class CreateApplicationComponent implements OnInit {
         this.faItems = [
           { label: 'Organisation Details', command: (event: any) => { this.activeStep = 0; } },
           { label: 'Application Details', command: (event: any) => { this.activeStep = 1; } },
-          { label: 'Financial Matters' },
-          { label: 'Project Information' },
-          { label: 'Monitoring and Evaluation'},
-          { label: 'Project Implementation Plan'},
-          { label: 'Application Document'}
+          { label: 'Financial Matters', disabled: true },
+          { label: 'Project Information' , disabled: true},
+          { label: 'Monitoring and Evaluation', disabled: true},
+          { label: 'Project Implementation Plan', disabled: true},
+          { label: 'Application Document', disabled: true}
         ];
       }
     }
@@ -252,7 +253,7 @@ export class CreateApplicationComponent implements OnInit {
     }
   }
 
-  private loadObjectives() {
+  public loadObjectives() {
     this._applicationRepo.getAllObjectives(this.application).subscribe(
       (results) => {
         this.objectives = results.filter(x => x.isActive === true);
@@ -264,7 +265,7 @@ export class CreateApplicationComponent implements OnInit {
     );
   }
 
-  private loadActivities() {
+  public loadActivities() {
     this._applicationRepo.getAllActivities(this.application).subscribe(
       (results) => {
         this.activities = results.filter(x => x.isActive === true);
@@ -276,7 +277,7 @@ export class CreateApplicationComponent implements OnInit {
     );
   }
 
-  private loadSustainabilityPlans() {
+  public loadSustainabilityPlans() {
     this._applicationRepo.getAllSustainabilityPlans(this.application).subscribe(
       (results) => {
         this.sustainabilityPlans = results.filter(x => x.isActive === true);
@@ -288,7 +289,7 @@ export class CreateApplicationComponent implements OnInit {
     );
   }
 
-  private loadResources() {
+  public loadResources() {
     this._applicationRepo.getAllResources(this.application).subscribe(
       (results) => {
         this.resources = results.filter(x => x.isActive === true);
@@ -309,7 +310,7 @@ export class CreateApplicationComponent implements OnInit {
           command: () => {
             this.formValidate();
           },
-          visible: false
+          // visible: false
         },
         {
           label: 'Clear Messages',
@@ -370,7 +371,11 @@ export class CreateApplicationComponent implements OnInit {
   }
 
   private bidForm(status: StatusEnum) {
+    
     this.application.status = null;
+    this.fundingApplicationDetails.programId = this.application.applicationPeriod.programmeId
+    this.fundingApplicationDetails.subProgramId = this.application.applicationPeriod.subProgrammeId
+    this.fundingApplicationDetails.subProgramTypeId = this.application.applicationPeriod.subProgrammeTypeId
     if (status === StatusEnum.Saved) {
       this.application.statusId = status;
     }
@@ -383,22 +388,24 @@ export class CreateApplicationComponent implements OnInit {
         this._applicationRepo.updateApplication(this.application).subscribe();
       }
       if (!this.applicationIdOnBid) {
+        this.fundingApplicationDetails.implementations = null;
         this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
           this.menuActions[1].visible = false;
           this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-         // //this._router.navigateByUrl('applications');
-         this._router.navigateByUrl(`application/create/${this.application.id}`);
-       //   this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+         //this._router.navigateByUrl(`application/create/${this.application.id}`);
+         this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`); 
           resp;
         });
       }
       else {
+        this.fundingApplicationDetails.implementations = null;
         this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => { });
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
 
       }
 
       if (status == StatusEnum.PendingReview) {
+        
         this.application.status.name = "PendingReview";
         this._applicationRepo.updateApplication(this.application).subscribe();
 
@@ -419,13 +426,19 @@ export class CreateApplicationComponent implements OnInit {
     return false;
   }
 
-
   private formValidate() {
     this.validationErrors = [];
-    if (this.application.applicationPeriodId === ApplicationTypeEnum.SP) {
+    if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP) {
 
       if (this.objectives.length === 0)
         this.validationErrors.push({ severity: 'error', summary: "Objectives:", detail: "Objective table cannot be empty." });
+
+      if (this.objectives.length > 0) {
+        let changesRequiredOnObjectives = this.objectives.filter(x => x.changesRequired === true);
+
+        if (changesRequiredOnObjectives.length > 0)
+          this.validationErrors.push({ severity: 'warn', summary: "Objectives:", detail: "New comments added." });
+      }
 
       if (this.activities.length === 0)
         this.validationErrors.push({ severity: 'error', summary: "Activities:", detail: "Activity table cannot be empty." });
@@ -439,6 +452,13 @@ export class CreateApplicationComponent implements OnInit {
 
         if (hasActivityErrors.includes(false))
           this.validationErrors.push({ severity: 'warn', summary: "Activities:", detail: "Please capture an activity for each objective." });
+      }
+
+      if (this.activities.length > 0) {
+        let changesRequiredOnActivities = this.activities.filter(x => x.changesRequired === true);
+
+        if (changesRequiredOnActivities.length > 0)
+          this.validationErrors.push({ severity: 'warn', summary: "Activities:", detail: "New comments added." });
       }
 
       if (this.sustainabilityPlans.length === 0)
@@ -455,6 +475,13 @@ export class CreateApplicationComponent implements OnInit {
           this.validationErrors.push({ severity: 'warn', summary: "Sustainability:", detail: "Please capture a sustainability plan for each activity." });
       }
 
+      if (this.sustainabilityPlans.length > 0) {
+        let changesRequiredOnSustainabilityPlans = this.sustainabilityPlans.filter(x => x.changesRequired === true);
+
+        if (changesRequiredOnSustainabilityPlans.length > 0)
+          this.validationErrors.push({ severity: 'warn', summary: "Sustainability:", detail: "New comments added." });
+      }
+
       if (this.resources.length === 0)
         this.validationErrors.push({ severity: 'error', summary: "Resourcing:", detail: "Resourcing table cannot be empty." });
       else {
@@ -468,27 +495,47 @@ export class CreateApplicationComponent implements OnInit {
         if (hasResourcingErrors.includes(false))
           this.validationErrors.push({ severity: 'warn', summary: "Resourcing:", detail: "Please capture a resource for each activity." });
       }
+
+      if (this.resources.length > 0) {
+        let changesRequiredOnResources = this.resources.filter(x => x.changesRequired === true);
+
+        if (changesRequiredOnResources.length > 0)
+          this.validationErrors.push({ severity: 'warn', summary: "Resourcing:", detail: "New comments added." });
+      }
+
     }
 
-    if (this.application.applicationPeriodId === ApplicationTypeEnum.FA) {
-      if (this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas.length == 0 || this.fundingApplicationDetails.applicationDetails.amountApplyingFor == undefined)
-        this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Please capture Application info and save." });
-      if (this.fundingApplicationDetails.financialMatters.length === 0)
-        this.validationErrors.push({ severity: 'error', summary: "Financial Matters:", detail: "Please capture financial matters." });
+
+    if (this.application.applicationPeriod.applicationTypeId === ApplicationTypeEnum.FA) {
+
+      // if (this.fundingApplicationDetails.implementations.length === 0)
+      //   this.validationErrors.push({ severity: 'error', summary: "Implementations:", detail: "Please capture implementations." });
+      // if (this.fundingApplicationDetails.projectInformation.initiatedQuestion == null && this.fundingApplicationDetails.projectInformation.considerQuestion == null &&
+      //   this.fundingApplicationDetails.projectInformation.purposeQuestion == null)
+      //   this.validationErrors.push({ severity: 'error', summary: "Project Info:", detail: "Please capture Project Information." });
+
+      // if (this.fundingApplicationDetails.monitoringEvaluation.monEvalDescription == null)
+      //   this.validationErrors.push({ severity: 'error', summary: "Monitoring:", detail: "Please capture Monitoring and Evaluation." });
+      if (this.fundingApplicationDetails.applicationDetails.amountApplyingFor == undefined)
+        this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Please specify the Rand amount you applying for." });
+      // if (this.financialMattersIncome.length === 0)
+      //   this.validationErrors.push({ severity: 'error', summary: "Financial Matters:", detail: "Please capture financial matters." });
 
       if (this.fundingApplicationDetails.implementations.length === 0)
         this.validationErrors.push({ severity: 'error', summary: "Implementations:", detail: "Please capture implementations." });
-      if (this.fundingApplicationDetails.projectInformation?.initiatedQuestion == undefined &&
-        this.fundingApplicationDetails.projectInformation?.considerQuestion == undefined &&
-        this.fundingApplicationDetails.projectInformation?.purposeQuestion == undefined)
+      if (this.fundingApplicationDetails.projectInformation?.purposeQuestion == undefined)
         this.validationErrors.push({ severity: 'error', summary: "Project Info:", detail: "Please capture Project Information." });
 
       if (this.fundingApplicationDetails.monitoringEvaluation?.monEvalDescription == undefined)
         this.validationErrors.push({ severity: 'error', summary: "Monitoring:", detail: "Please capture Monitoring and Evaluation." });
-
+  
+    
     }
 
-
+    // if (this.validationErrors.length == 0)
+    //   this.menuActions[1].visible = false;
+    // else
+    //   this.menuActions[1].visible = true;
     if (this.validationErrors.length == 0) {
       this.menuActions[3].disabled = false;
       this.menuActions[1].visible = false;
@@ -497,8 +544,83 @@ export class CreateApplicationComponent implements OnInit {
       this.menuActions[3].disabled = true;
       this.menuActions[1].visible = true;
     }
-
   }
+
+  // private formValidate() {
+  //   this.validationErrors = [];
+  //   if (this.application.applicationPeriodId === ApplicationTypeEnum.SP) {
+
+  //     if (this.objectives.length === 0)
+  //       this.validationErrors.push({ severity: 'error', summary: "Objectives:", detail: "Objective table cannot be empty." });
+
+  //     if (this.activities.length === 0)
+  //       this.validationErrors.push({ severity: 'error', summary: "Activities:", detail: "Activity table cannot be empty." });
+  //     else {
+  //       let hasActivityErrors: boolean[] = [];
+
+  //       this.objectives.forEach(item => {
+  //         var isPresent = this.activities.some(function (activity) { return activity.objectiveId === item.id });
+  //         hasActivityErrors.push(isPresent);
+  //       });
+
+  //       if (hasActivityErrors.includes(false))
+  //         this.validationErrors.push({ severity: 'warn', summary: "Activities:", detail: "Please capture an activity for each objective." });
+  //     }
+
+  //     if (this.sustainabilityPlans.length === 0)
+  //       this.validationErrors.push({ severity: 'error', summary: "Sustainability:", detail: "Sustainability Plan table cannot be empty." });
+  //     else {
+  //       let hasSustainabilityErrors: boolean[] = [];
+
+  //       this.activities.forEach(item => {
+  //         var isPresent = this.sustainabilityPlans.some(function (sustainabilityPlan) { return sustainabilityPlan.activityId === item.id });
+  //         hasSustainabilityErrors.push(isPresent);
+  //       });
+
+  //       if (hasSustainabilityErrors.includes(false))
+  //         this.validationErrors.push({ severity: 'warn', summary: "Sustainability:", detail: "Please capture a sustainability plan for each activity." });
+  //     }
+
+  //     if (this.resources.length === 0)
+  //       this.validationErrors.push({ severity: 'error', summary: "Resourcing:", detail: "Resourcing table cannot be empty." });
+  //     else {
+  //       let hasResourcingErrors: boolean[] = [];
+
+  //       this.activities.forEach(item => {
+  //         var isPresent = this.resources.some(function (resource) { return resource.activityId === item.id });
+  //         hasResourcingErrors.push(isPresent);
+  //       });
+
+  //       if (hasResourcingErrors.includes(false))
+  //         this.validationErrors.push({ severity: 'warn', summary: "Resourcing:", detail: "Please capture a resource for each activity." });
+  //     }
+  //   }
+
+  //   if (this.application.applicationPeriodId === ApplicationTypeEnum.FA) {
+  //     if (this.fundingApplicationDetails.applicationDetails.amountApplyingFor == undefined)
+  //       this.validationErrors.push({ severity: 'error', summary: "Application Details:", detail: "Please specify the Rand amount you applying for." });
+  //     // if (this.financialMattersIncome.length === 0)
+  //     //   this.validationErrors.push({ severity: 'error', summary: "Financial Matters:", detail: "Please capture financial matters." });
+
+  //     if (this.fundingApplicationDetails.implementations.length === 0)
+  //       this.validationErrors.push({ severity: 'error', summary: "Implementations:", detail: "Please capture implementations." });
+  //     if (this.fundingApplicationDetails.projectInformation?.purposeQuestion == undefined)
+  //       this.validationErrors.push({ severity: 'error', summary: "Project Info:", detail: "Please capture Project Information." });
+
+  //     if (this.fundingApplicationDetails.monitoringEvaluation?.monEvalDescription == undefined)
+  //       this.validationErrors.push({ severity: 'error', summary: "Monitoring:", detail: "Please capture Monitoring and Evaluation." });
+  //   }
+
+  //   if (this.validationErrors.length == 0) {
+  //     this.menuActions[3].disabled = false;
+  //     this.menuActions[1].visible = false;
+  //   }
+  //   else {
+  //     this.menuActions[3].disabled = true;
+  //     this.menuActions[1].visible = true;
+  //   }
+
+  // }
 
   private clearMessages() {
     this.validationErrors = [];
@@ -551,5 +673,9 @@ export class CreateApplicationComponent implements OnInit {
 
   subPlaces(subPlacesAll: ISubPlace[]) {
     this.subPlacesAll = subPlacesAll;
+  }
+  public saveFundingApplication()
+  {
+    this.bidForm(StatusEnum.Saved);
   }
 }

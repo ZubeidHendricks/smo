@@ -193,8 +193,42 @@ namespace NPOMS.Repository.Configurations.Core
                     Name = "AmendedScorecard",
                     Body = "<p>Dear {ToUserFullName}</p><p>The Scorecard for <strong>{organisationName}</strong> with reference number <strong>{ApplicationRefNo}</strong> has been resubmitted.</p><p>To review the amended scorecard, please <a href=\"{url}/#/reviewScorecard/{ApplicationId}\">click here</a> to access.</p><p>Kind Regards,</p><p>NPO MS Team</p>",
                     Subject = "Amended Scorecard Notification - {NPO}"
+                },
+                new EmailTemplate
+                {
+                    Id = 27,
+                    Name = "DSDFundingApplicationSubmitted",
+                    Body = "<p>Dear Applicant - {OrganizationName}</p><p>We acknowledge receipt of your submitted application with ref no: <strong>{ApplicationRefNo}.</strong></p><p>This application will now undergo review, and the outcome will be communicated in due course.</p>Kind Regards,</p><p>NPO MS Team</p>",
+                    Subject = "DSD Funding Application Acknowledgement Confirmation – (Submitted Pending Review Status)"
+                },
+                new EmailTemplate
+                {
+                    Id = 28,
+                    Name = "NpoReviewer",
+                    Body = "<p>Dear {ToUserFullName},</p><p>The Work plan with Reference Number <span style=\"font-weight: bold;\">{ApplicationRefNo}</span> has been submitted for you to review.</p><p>Please <a href=\"{url}/#/applications\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
+                    Subject = "Amended Scorecard Notification - {NPO}"
+                },
+                new EmailTemplate
+                {
+                    Id = 31,
+                    Name = "NewFunding",
+                    Body = "<p>Dear {ToUserFullName},</p><p>Thank you for submitting the funding for <span style=\"font-weight: bold;\">{NpoName} ({NpoRefNo})</span> for the <span style=\"font-weight: bold;\">{FinancialYearName}</span> financial year.</p><p>It has been sent to be approved.</p><p>Please <a href=\"{url}/#/funding-capture\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
+                    Subject = "Funding submitted for Organisation - {NpoName} ({NpoRefNo})"
+                },
+                new EmailTemplate
+                {
+                    Id = 32,
+                    Name = "FundingStatusChanged",
+                    Body = "<p>Dear {ToUserFullName},</p><p>The funding for <span style=\"font-weight: bold;\">{NpoName} ({NpoRefNo})</span> for the <span style=\"font-weight: bold;\">{FinancialYearName}</span> financial year has been {action}.</p><p>Please <a href=\"{url}/#/funding-capture\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
+                    Subject = "Funding {StatusName} for Organisation - {NpoName} ({NpoRefNo})"
+                },
+                new EmailTemplate
+                {
+                    Id = 33,
+                    Name = "FundingStatusChangedPending",
+                    Body = "<p>Dear {ToUserFullName},</p><p>The funding for <span style=\"font-weight: bold;\">{NpoName} ({NpoRefNo})</span> for the <span style=\"font-weight: bold;\">{FinancialYearName}</span> financial year has been sent for you to {action}.</p><p>Please <a href=\"{url}/#/funding-capture\">click here</a> to access the NPO MS application.</p><p>Kind Regards,<br>NPO MS Team</p>",
+                    Subject = "Funding {StatusName} for Organisation - {NpoName} ({NpoRefNo})"
                 }
-
             );
         }
     }

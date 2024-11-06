@@ -19,6 +19,8 @@ using Microsoft.EntityFrameworkCore;
 using NPOMS.Repository.Implementation.Core;
 using NPOMS.Repository.Interfaces.Mapping;
 using NPOMS.Domain.Mapping;
+using NPOMS.Repository.Implementation.Dropdown;
+using NPOMS.Repository.Configurations.Dropdown;
 
 namespace NPOMS.Services.Implementation
 {
@@ -86,12 +88,25 @@ namespace NPOMS.Services.Implementation
         private IQuarterlyPeriodRepository _quarterlyPeriodRepository;
         private IDepartmentRoleRepository _departmentRoleRepository;
         private ISegmentCodeRepository _segmentCodeRepository;
+        private IFacilitySubStructureRepository _facilitySubStructuresRepository;
+        private IDemographicSubStructureRepository _demographicSubStructureRepository;
+        private IDistrictDemographicRepository _districtDemographicRepository;
+        private IManicipalityDemographicRepository _manicipalityDemographicRepository;
+        private ISubDistrictDemographicRepository _subDistrictDemographicRepository;
+        private IIndicatorRepository _indicatorRepository;
+        private INPOIndicatorRepository _npoindicatorRepository;
+        private IQuarterlyPeriodRepository _quarterPeriodRepository;
+        private IAreaRepository _areaRepository;
         #endregion
 
         #region Constructors
 
         public DropdownService(
             IMapper mapper,
+            IDemographicSubStructureRepository demographicSubStructureRepository,
+            IDistrictDemographicRepository districtDemographicRepository,
+            IManicipalityDemographicRepository manicipalityDemographicRepository,
+            ISubDistrictDemographicRepository subDistrictDemographicRepository,
             IDepartmentRoleRepository departmentRoleRepository,
             IRoleRepository roleRepository,
             IDepartmentRepository departmentRepository,
@@ -150,9 +165,18 @@ namespace NPOMS.Services.Implementation
             IWorkflowAssessmentRepository workflowAssessmentRepository,
             IFundingTemplateTypeRepository fundingTemplateTypeRepository,
             IQuarterlyPeriodRepository quarterlyPeriodRepository,
-            ISegmentCodeRepository segmentCodeRepository)
+            ISegmentCodeRepository segmentCodeRepository,
+            IFacilitySubStructureRepository facilitySubStructuresRepository,
+            IIndicatorRepository indicatorRepository,
+            IQuarterlyPeriodRepository quarterPeriodRepository,
+            INPOIndicatorRepository npoindicatorRepository,
+            IAreaRepository areaRepository)
         {
             _mapper = mapper;
+            _demographicSubStructureRepository = demographicSubStructureRepository;
+            _districtDemographicRepository = districtDemographicRepository;
+            _manicipalityDemographicRepository = manicipalityDemographicRepository;
+            _subDistrictDemographicRepository = subDistrictDemographicRepository;
             _roleRepository = roleRepository;
             _departmentRepository = departmentRepository;
             _organisationTypeRepository = organisationTypeRepository;
@@ -212,6 +236,12 @@ namespace NPOMS.Services.Implementation
             _quarterlyPeriodRepository = quarterlyPeriodRepository;
             _departmentRoleRepository = departmentRoleRepository;
             _segmentCodeRepository = segmentCodeRepository;
+            _facilitySubStructuresRepository = facilitySubStructuresRepository;
+            _indicatorRepository = indicatorRepository;
+            _quarterPeriodRepository = quarterPeriodRepository;
+            _areaRepository = areaRepository;
+            _npoindicatorRepository = npoindicatorRepository;
+
         }
 
         #endregion
@@ -814,6 +844,21 @@ namespace NPOMS.Services.Implementation
             await _facilitySubDistrictRepository.UpdateAsync(null, model, false, loggedInUser.Id);
         }
 
+        public async Task<IEnumerable<FacilitySubStructure>> GetFacilitySubStructures(bool returnInactive)
+        {
+            return await _facilitySubStructuresRepository.GetEntities(returnInactive);
+        }
+
+        public Task CreateFacilitySubStructures(FacilitySubStructure model, string userIdentifier)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateFacilitySubStructures(FacilitySubStructure model, string userIdentifier)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region FA-FinancialDetails- PropertyTypes
@@ -849,6 +894,11 @@ namespace NPOMS.Services.Implementation
         public async Task<IEnumerable<ServiceDeliveryArea>> GetServiceDeliveryAreas(bool returnInactive)
         {
             return await _serviceDeliveryAreaRepository.GetEntities(returnInactive);
+        }
+
+        public async Task<ServiceDeliveryArea> GetServiceDeliveryAreaById(int id)
+        {
+            return await _serviceDeliveryAreaRepository.GetById(id);
         }
 
         public async Task<IEnumerable<Place>> GetPlaces(bool returnInactive)
@@ -921,7 +971,7 @@ namespace NPOMS.Services.Implementation
             if (facility == null)
             {
                 var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
-
+                model.IsNew = true;
                 model.CreatedUserId = loggedInUser.Id;
                 model.CreatedDateTime = DateTime.Now;
 
@@ -1004,6 +1054,11 @@ namespace NPOMS.Services.Implementation
         public async Task<IEnumerable<Status>> GetStatuses(bool returnInactive)
         {
             return await _statusRepository.GetEntities(returnInactive);
+        }
+
+        public async Task<Status> GetStatusById(int id)
+        {
+            return await _statusRepository.GetById(id);
         }
 
         public async Task CreateStatus(Status model, string userIdentifier)
@@ -1303,6 +1358,11 @@ namespace NPOMS.Services.Implementation
         public async Task<IEnumerable<Bank>> GetBanks(bool returnInactive)
         {
             return await _bankRepository.GetEntities(returnInactive);
+        }
+
+        public async Task<Bank> GetBankById(int id)
+        {
+            return await _bankRepository.GetById(id);
         }
 
         public async Task CreateBank(Bank model, string userIdentifier)
@@ -1724,8 +1784,48 @@ namespace NPOMS.Services.Implementation
             return await _departmentRepository.GetDepartmentById(depId);
         }
 
+        public Task<IEnumerable<FacilitySubStructure>> GetFacilitySubStructure(bool returnInactive)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<DistrictDemographic>> DemographicDistricts(bool returnInactive)
+        {
+            return await _districtDemographicRepository.GetEntities(returnInactive);
+        }
+
+        public async Task<IEnumerable<SubstructureDemographic>> DemographicSubStructures(bool returnInactive)
+        {
+            return await _demographicSubStructureRepository.GetEntities(returnInactive);
+        }
+
+        public async Task<IEnumerable<ManicipalityDemographic>> DemographicManicipalities(bool returnInactive)
+        {
+            return await _manicipalityDemographicRepository.GetEntities(returnInactive);
+        }
+
+        public async Task<IEnumerable<SubDistrictDemographic>> DemographicSubDistricts(bool returnInactive)
+        {
+            return await _subDistrictDemographicRepository.GetEntities(returnInactive);
+        }
+
+        public async Task<IEnumerable<Indicators>> Indicators(bool returnInactive)
+        {
+             var results = await _indicatorRepository.GetEntities(returnInactive);
+            return results;
+        }
+
+        public async Task<IEnumerable<NPOIndicators>> NPOIndicators(bool returnInactive)
+        {
+            var results = await _npoindicatorRepository.GetEntities(returnInactive);
+            return results;
+        }
         #endregion
 
         #endregion
+        public async Task<IEnumerable<Area>> Areas(bool returnInactive)
+        {
+            return await _areaRepository.GetEntities(returnInactive);
+        }
     }
 }

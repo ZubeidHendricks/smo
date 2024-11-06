@@ -217,7 +217,6 @@ export class BudgetSummaryComponent implements OnInit {
   {
     let linkedPrograms = [];
 
-    alert(this.profile.userPrograms.length);
     linkedPrograms.push(this.profile.userPrograms); 
 
     if (linkedPrograms.length > 0)

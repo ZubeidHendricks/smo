@@ -22,7 +22,8 @@ export enum QuestionCategoryEnum {
 export enum ApplicationTypeEnum {
     FA = 1,
     SP = 2,
-    QC = 3
+    QC = 3,
+    BP = 4
 }
 
 export enum DocumentTypeEnum {
@@ -89,13 +90,22 @@ export enum DropdownTypeEnum {
     QuarterlyPeriod = 56,
     FilteredProgrammesByDepartment = 57,
     FilteredRolesByDepartment = 58,
-    SegmentCode = 59
+    SegmentCode = 59,
+    FacilitySubStructure = 60,
+    DemographicSubStructure = 61,
+    DemographicDistrict = 62,
+    DemographicManicipality = 63,
+    DemographicSubDistrict = 64,
+    Area=65,
+    Indicator = 66,
+    HighLevelNPO = 67,
 }
 
 export enum EntityTypeEnum {
     SupportingDocuments = 1,
     SLA = 2,
-    WorkplanActuals = 3
+    WorkplanActuals = 3,
+    ReportActuals = 4,
 }
 
 export enum EntityEnum {
@@ -103,7 +113,8 @@ export enum EntityEnum {
     Application = 'Application',
     WorkplanIndicators = 'WorkplanIndicators',
     FundingApplicationDetails = 'FundingApplicationDetails',
-    FundedNpo = 'FundedNpo'
+    FundedNpo = 'FundedNpo',
+    IndicatorReports = 'IndicatorReports'
 }
 
 export enum ResponseTypeEnum {
@@ -141,7 +152,8 @@ export enum RoleEnum {
     ViewOnly = 10,
     ProgrammeCapturer = 11,
     ProgrammeApprover = 12,
-    ProgrammeViewOnly = 13
+    ProgrammeViewOnly = 13,
+    DOHApprover = 15
 }
 
 export enum ServiceProvisionStepsEnum {
@@ -152,6 +164,16 @@ export enum ServiceProvisionStepsEnum {
     Resourcing = 4,
     ApplicationConfirmation = 5,
     OverallWorkplan = 6
+}
+
+export enum NPOReportingStepsEnum {
+    IndicatorReport = 0,
+    PostReport = 1,
+    DetailsOfIncomeAndAndExpenditure = 2,
+    Governance = 3,
+    AnyOtherInformation = 4,
+    QuarterlySDIP = 5,
+
 }
 
 export enum StatusEnum {
@@ -212,7 +234,7 @@ export enum StatusEnum {
     Recommended = 20,
     StronglyRecommended = 21,
     NonCompliance = 22,
-    PendingReviewerSatisfaction = 23    
+    PendingReviewerSatisfaction = 23
 }
 
 export enum AuditorOrAffiliationEntityTypeEnum {
@@ -240,6 +262,8 @@ export enum PermissionsEnum {
     ViewDashboardMenu = "TN.VDM",
     ViewTrainingMenu = "TN.VTM",
     ViewFundingMenu = "TN.VFM",
+    ViewFundingCaptureMenu = "TN.VFCM",
+    ViewFundingAssessmentMenu = "TN.VFAM",
 
     /* USER ADMINISTRATION */
     AddUsers = "UA.AU",
@@ -396,7 +420,16 @@ export enum PermissionsEnum {
     /* Quick Capture*/
     ViewQC = "QC.View",
     EditQC = "QC.Edit",
-    DownloadQC = "QC.Download"
+    DownloadQC = "QC.Download",
+
+    /* Funding Capture */
+    AddFundingCapture = "FC.Add",
+    EditFundingCapture = "FC.Edit",
+    ViewFundingCapture = "FC.View",
+    ApproveFundingCapture = "FC.Approve",
+    DownloadFundingCapture = "FC.Download",
+    ShowFundingCaptureActions = "FC.SFCA",
+    DeleteFundingCapture = "FC.Delete"
 }
 
 export enum ReportTypeEnum {
@@ -475,8 +508,8 @@ export enum QuickCaptureStepsEnum {
 }
 
 export enum QCStepsEnum {
-    NpoCreate = 0,
-    Applications = 1,
+    Applications = 0,
+    NpoCreate = 1,   
     AmountYouApplyingFor = 2,
     ApplicationDocument = 3
 }
@@ -490,8 +523,8 @@ export enum QuickCaptureFundedStepsEnum {
 }
 
 export enum QCStepsFundedEnum {
-    NpoCreate = 0,
-    Applications = 1,
+    Applications = 0,
+    NpoCreate = 1,
     ApplicationDetail = 2,
     Objectives = 3,
     Activities = 4,
@@ -506,7 +539,8 @@ export enum DocumentUploadLocationsEnum {
     WorkplanActuals = 'WorkplanActuals',
     FundApp = "FundApp",
     QuickCapture = "QuickCapture",
-    FundedNpo = "FundedNpo"
+    FundedNpo = "FundedNpo",
+    ReportActuals = "ReportActuals"
 }
 
 //export enum FundingTemplateTypeEnum {
@@ -605,4 +639,22 @@ export enum RecipientEntityEnum {
     Objective = 'Objective',
     SubRecipient = 'SubRecipient',
     SubSubRecipient = 'SubSubRecipient'
+}
+
+export enum FundingCaptureStepsEnum {
+    Funding = 0,
+    SDA = 1,
+    PaymentSchedule = 2,
+    BankDetail = 3,
+    Document = 4
+}
+
+export enum FundingTypeEnum {
+    Adhoc = 1,
+    Annual = 2
+}
+
+export enum CalculationTypeEnum {
+    Detailed = 1,
+    Summary = 2
 }

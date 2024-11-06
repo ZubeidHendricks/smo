@@ -3,13 +3,10 @@ using NPOMS.Domain.Entities;
 using NPOMS.Domain.Enumerations;
 using NPOMS.Repository.Extensions;
 using NPOMS.Repository.Interfaces.Entities;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace NPOMS.Repository.Implementation.Entities
 {
-	public class NpoProfileRepository : BaseRepository<NpoProfile>, INpoProfileRepository
+    public class NpoProfileRepository : BaseRepository<NpoProfile>, INpoProfileRepository
 	{
 		#region Constructors
 
@@ -31,7 +28,18 @@ namespace NPOMS.Repository.Implementation.Entities
 								  .Where(x => x.Npo.IsActive && x.IsActive).AsNoTracking().ToListAsync();
 		}
 
-		public async Task<NpoProfile> GetById(int id)
+		public async Task<IEnumerable<NpoProfile>> GetEntitiesForFundingCapture()
+		{
+            return await FindAll().Include(x => x.Npo)
+									.ThenInclude(x => x.OrganisationType)
+                                  .Include(x => x.Npo)
+                                    .ThenInclude(x => x.FundingCaptures)
+                                  .Where(x => x.Npo.IsActive && x.IsActive)
+								  .OrderBy(x => x.Npo.Name).AsNoTracking().ToListAsync();
+        }
+
+
+        public async Task<NpoProfile> GetById(int id)
 		{
 			return await FindByCondition(x => x.Id.Equals(id))
 							.Include(x => x.AddressInformation)

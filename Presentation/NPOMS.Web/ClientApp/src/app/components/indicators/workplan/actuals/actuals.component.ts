@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FrequencyPeriodEnum, PermissionsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IApplication, IDocumentType, IFinancialYear, IFrequencyPeriod, IStatus, IUser, IWorkplanActual, IWorkplanActualAudit, IWorkplanComment, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { IActivity, IApplication, IDocumentType, IFinancialYear, IFrequencyPeriod, IStatus, IUser, IWorkplanActual, IWorkplanActualAudit, IWorkplanComment, IWorkplanIndicator, IWorkplanTarget } from 'src/app/models/interfaces';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { IndicatorService } from 'src/app/services/api-services/indicator/indicator.service';
@@ -162,21 +162,37 @@ export class ActualsComponent implements OnInit {
       { header: 'Created Date', width: '20%' }
     ];
   }
-
   private getTargetsAndActuals() {
-    if (this._workplanIndicators) {
-      this._workplanIndicators.forEach(indicator => {
-        this.loadTargets(indicator.activity);
-        this.loadActuals(indicator.activity);
-      });
+    if (this._workplanIndicators && this._workplanIndicators.length) {
+      const activityIds = this._workplanIndicators.map(indicator => indicator.activity.id);
+  
+      this.loadTargets(activityIds);
+      this.loadActuals(activityIds);
     }
   }
 
-  private loadTargets(activity: IActivity) {
-    this._indicatorRepo.getTargetsByActivityId(activity.id).subscribe(
+  private loadTargets(activityIds: number[]) {
+    this._indicatorRepo.getTargetsByActivityIds(activityIds).subscribe(
       (results) => {
-        var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
-        this.workplanIndicators[index].workplanTargets = results;
+        // Group results by activityId
+        const groupedTargets = results.reduce((acc, target) => {
+          // Check if the activityId already exists in the accumulator
+          if (!acc[target.activityId]) {
+            acc[target.activityId] = []; // Create a new array if it doesn't exist
+          }
+          acc[target.activityId].push(target); // Push the target into the corresponding activityId array
+          return acc; // Return the accumulator for the next iteration
+        }, {} as { [key: number]: IWorkplanTarget[] }); // Initialize the accumulator as an object
+  
+        // Now update workplanIndicators with the grouped targets
+        this.workplanIndicators.forEach(indicator => {
+          const targetsForActivity = groupedTargets[indicator.activity.id];
+          if (targetsForActivity) {
+            indicator.workplanTargets = targetsForActivity; // Assign the array of targets to workplanTargets
+          } else {
+            indicator.workplanTargets = []; // Set to empty array if no targets found for the activity
+          }
+        });
       },
       (err) => {
         this._loggerService.logException(err);
@@ -184,17 +200,133 @@ export class ActualsComponent implements OnInit {
     );
   }
 
-  private loadActuals(activity: IActivity) {
-    this._indicatorRepo.getActualsByActivityId(activity.id).subscribe(
+  private loadActuals(activityIds: number[]) {
+    this._indicatorRepo.getActualsByActivityIds(activityIds).subscribe(
       (results) => {
-        var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
-        this.workplanIndicators[index].workplanActuals = results;
+        // Group results by activityId
+        const groupedActuals = results.reduce((acc, actual) => {
+          // Check if the activityId already exists in the accumulator
+          if (!acc[actual.activityId]) {
+            acc[actual.activityId] = []; // Create a new array if it doesn't exist
+          }
+          acc[actual.activityId].push(actual); // Push the actual into the corresponding activityId array
+          return acc; // Return the accumulator for the next iteration
+        }, {} as { [key: number]: IWorkplanActual[] }); // Initialize the accumulator as an object
+  
+        // Now update workplanIndicators with the grouped actuals
+        this.workplanIndicators.forEach(indicator => {
+          const actualsForActivity = groupedActuals[indicator.activity.id];
+          if (actualsForActivity) {
+            indicator.workplanActuals = actualsForActivity; // Assign the array of actuals to workplanActuals
+          } else {
+            indicator.workplanActuals = []; // Set to empty array if no actuals found for the activity
+          }
+        });
       },
       (err) => {
         this._loggerService.logException(err);
       }
     );
   }
+  
+  // private loadTargets(activityIds: number[]) {
+  //   this._indicatorRepo.getTargetsByActivityIds(activityIds).subscribe(
+  //     (results) => {
+  //       results.forEach((result) => {
+  //         const index = this.workplanIndicators.findIndex(x => x.activity.id === result.activityId);
+  //         if (index !== -1) {
+  //           this.workplanIndicators[index].workplanTargets = result.targets;
+  //         }
+  //       });
+  //     },
+  //     (err) => {
+  //       this._loggerService.logException(err);
+  //     }
+  //   );
+  // }
+  
+  // private loadActuals(activityIds: number[]) {
+  //   this._indicatorRepo.getActualsByActivityIds(activityIds).subscribe(
+  //     (results) => {
+  //       results.forEach((result) => {
+  //         const index = this.workplanIndicators.findIndex(x => x.activity.id === result.activityId);
+  //         if (index !== -1) {
+  //           this.workplanIndicators[index].workplanActuals = result.actuals;
+  //         }
+  //       });
+  //     },
+  //     (err) => {
+  //       this._loggerService.logException(err);
+  //     }
+  //   );
+  // }
+  
+  
+
+  // private loadTargets(activityIds: number[]) {
+  //   this._indicatorRepo.getTargetsByActivityIds(activityIds).subscribe(
+  //     (results) => {
+  //       results.forEach((result) => {
+  //         const index = this.workplanIndicators.findIndex(x => x.activity.id === result.activityId);
+  //         if (index !== -1) {
+  //           this.workplanIndicators[index].workplanTargets = result.targets;
+  //         }
+  //       });
+  //     },
+  //     (err) => {
+  //       this._loggerService.logException(err);
+  //     }
+  //   );
+  // }
+  
+  // private loadActuals(activityIds: number[]) {
+  //   this._indicatorRepo.getActualsByActivityIds(activityIds).subscribe(
+  //     (results) => {
+  //       results.forEach((result) => {
+  //         const index = this.workplanIndicators.findIndex(x => x.activity.id === result.activityId);
+  //         if (index !== -1) {
+  //           this.workplanIndicators[index].workplanActuals = result.actuals;
+  //         }
+  //       });
+  //     },
+  //     (err) => {
+  //       this._loggerService.logException(err);
+  //     }
+  //   );
+  // }
+  
+  // private getTargetsAndActuals() {
+  //   if (this._workplanIndicators) {
+  //     this._workplanIndicators.forEach(indicator => {
+  //       this.loadTargets(indicator.activity);
+  //       this.loadActuals(indicator.activity);
+  //     });
+  //   }
+  // }
+
+  // private loadTargets(activity: IActivity) {
+  //   this._indicatorRepo.getTargetsByActivityId(activity.id).subscribe(
+  //     (results) => {
+  //       var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
+  //       this.workplanIndicators[index].workplanTargets = results;
+  //     },
+  //     (err) => {
+  //       this._loggerService.logException(err);
+  //     }
+  //   );
+  // }
+
+  // private loadActuals(activity: IActivity) {
+  //   this._indicatorRepo.getActualsByActivityId(activity.id).subscribe(
+  //     (results) => {
+  //       var index = this.workplanIndicators.findIndex(x => x.activity.id == activity.id);
+  //       this.workplanIndicators[index].workplanActuals = results;
+  //     },
+  //     (err) => {
+  //       this._loggerService.logException(err);
+  //     }
+  //   );
+  // }
 
   private loadAllFinancialYears() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.FinancialYears, true).subscribe(
@@ -477,40 +609,40 @@ export class ActualsComponent implements OnInit {
 
             switch (workplanActuals[0].frequencyPeriodId) {
               case FrequencyPeriodEnum.Apr:
-                capturedTarget = workplanTargets[0].apr;
+                capturedTarget = workplanTargets[0]?.apr;
                 break;
               case FrequencyPeriodEnum.May:
-                capturedTarget = workplanTargets[0].may;
+                capturedTarget = workplanTargets[0]?.may;
                 break;
               case FrequencyPeriodEnum.Jun:
-                capturedTarget = workplanTargets[0].jun;
+                capturedTarget = workplanTargets[0]?.jun;
                 break;
               case FrequencyPeriodEnum.Jul:
-                capturedTarget = workplanTargets[0].jul;
+                capturedTarget = workplanTargets[0]?.jul;
                 break;
               case FrequencyPeriodEnum.Aug:
-                capturedTarget = workplanTargets[0].aug;
+                capturedTarget = workplanTargets[0]?.aug;
                 break;
               case FrequencyPeriodEnum.Sep:
-                capturedTarget = workplanTargets[0].sep;
+                capturedTarget = workplanTargets[0]?.sep;
                 break;
               case FrequencyPeriodEnum.Oct:
-                capturedTarget = workplanTargets[0].oct;
+                capturedTarget = workplanTargets[0]?.oct;
                 break;
               case FrequencyPeriodEnum.Nov:
-                capturedTarget = workplanTargets[0].nov;
+                capturedTarget = workplanTargets[0]?.nov;
                 break;
               case FrequencyPeriodEnum.Dec:
-                capturedTarget = workplanTargets[0].dec;
+                capturedTarget = workplanTargets[0]?.dec;
                 break;
               case FrequencyPeriodEnum.Jan:
-                capturedTarget = workplanTargets[0].jan;
+                capturedTarget = workplanTargets[0]?.jan;
                 break;
               case FrequencyPeriodEnum.Feb:
-                capturedTarget = workplanTargets[0].feb;
+                capturedTarget = workplanTargets[0]?.feb;
                 break;
               case FrequencyPeriodEnum.Mar:
-                capturedTarget = workplanTargets[0].mar;
+                capturedTarget = workplanTargets[0]?.mar;
                 break;
             }
 

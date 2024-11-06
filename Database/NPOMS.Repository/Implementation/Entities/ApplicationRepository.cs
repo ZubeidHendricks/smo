@@ -26,19 +26,29 @@ namespace NPOMS.Repository.Implementation.Entities
         {
             return await FindByCondition(x => x.IsActive).Include(x => x.Npo)
                             .Include(x => x.NpoUserTrackings)
+                            .Include(x => x.NpoUserSatisfactionTrackings)
+                            .Include(x => x.NpoWorkPlanApproverTrackings)
+                            .Include(x => x.NpoWorkPlanReviewerTrackings)
                             .Include(x => x.ApplicationPeriod)
                                 .ThenInclude(x => x.ApplicationType)
                             .Include(x => x.ApplicationPeriod)
                                 .ThenInclude(x => x.FinancialYear)
                             .Include(x => x.ApplicationPeriod)
                                 .ThenInclude(x => x.SubProgramme)
+                            .Include(x => x.ApplicationPeriod)
+                                .ThenInclude(x => x.SubProgrammeType)
                             .Include(x => x.Status)
                             .Where(x => x.Npo.IsActive).AsNoTracking().ToListAsync();
         }
 
         public async Task<Application> GetById(int id)
         {
-            return await FindByCondition(x => x.Id.Equals(id)).Include(x => x.NpoUserTrackings).Include(x => x.ApplicationPeriod)
+            return await FindByCondition(x => x.Id.Equals(id))
+                .Include(x => x.NpoUserTrackings)
+                .Include(x => x.NpoUserSatisfactionTrackings)
+                .Include(x => x.NpoWorkPlanReviewerTrackings)
+                .Include(x => x.NpoWorkPlanApproverTrackings)
+                .Include(x => x.ApplicationPeriod)
                 .ThenInclude(x => x.FinancialYear).AsNoTracking().FirstOrDefaultAsync();
         }
 
@@ -47,6 +57,13 @@ namespace NPOMS.Repository.Implementation.Entities
             return await FindByCondition(x => x.NpoId.Equals(NpoId) && x.ApplicationPeriodId.Equals(applicationPeriodId) && x.IsActive)
                             .AsNoTracking().FirstOrDefaultAsync();
         }
+
+        public async Task<Application> GetByNpoIdAndPeriodIdAndYear(int NpoId, int applicationPeriodId, string year)
+        {
+            return await FindByCondition(x => x.NpoId.Equals(NpoId) && x.ApplicationPeriodId.Equals(applicationPeriodId) && x.ApplicationPeriod.FinancialYear.Name.Equals(year) && x.IsActive)
+                            .AsNoTracking().FirstOrDefaultAsync();
+        }
+
 
         public async Task<IEnumerable<Application>> GetByNpoId(int npoId)
         {
@@ -74,9 +91,29 @@ namespace NPOMS.Repository.Implementation.Entities
             await UpdateAsync(oldEntity, model, true, currentUserId);
         }
 
+        public async Task UpdateEntityQC(Application model, int currentUserId)
+        {
+            await UpdateAsync(model, false, currentUserId);
+        }
+
         public async Task CreateNpoUserTracking(IEnumerable<NpoUserTracking> npoUserTrackings)
         {
             await this.RepositoryContext.NpoUserTrackings.AddRangeAsync(npoUserTrackings);
+        }
+
+        public async Task CreateNpoUserSatisfactionTracking(IEnumerable<NpoUserSatisfactionTracking> npoUserSatisfactionTracking)
+        {
+            await this.RepositoryContext.NpoUserSatisfactionTrackings.AddRangeAsync(npoUserSatisfactionTracking);
+        }
+
+        public async Task CreateNpoWorkPlanApproverTracking(IEnumerable<NpoWorkPlanApproverTracking> npoWorkPlanApproverTracking)
+        {
+            await this.RepositoryContext.NpoWorkPlanApproverTrackings.AddRangeAsync(npoWorkPlanApproverTracking);
+        }
+
+        public async Task CreateNpoUserReviewerTracking(IEnumerable<NpoWorkPlanReviewerTracking> npoWorkPlanReviewerTrackingList)
+        {
+            await this.RepositoryContext.NpoWorkPlanReviewerTrackings.AddRangeAsync(npoWorkPlanReviewerTrackingList);
         }
 
         #endregion

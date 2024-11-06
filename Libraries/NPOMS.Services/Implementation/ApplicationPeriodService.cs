@@ -57,15 +57,51 @@ namespace NPOMS.Services.Implementation
             }
             else
             {
-               
-                results = results.Where(x => departmentIds.Contains(x.DepartmentId)
-                         || programmesIds.Contains(x.ProgrammeId));
+				if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.Applicant))))
+				{
+                    return results;
+                    //= results.Where(x => x.CreatedUserId == loggedInUser.Id);
+                }
+                else {
+                    results = results.Where(x => departmentIds.Contains(x.DepartmentId)
+                    || programmesIds.Contains(x.ProgrammeId));
+                }
 
                 return results;
             }
         }
 
-		public async Task<ApplicationPeriod> GetById(int id)
+        public async Task<IEnumerable<ApplicationPeriod>> Get()
+        {
+
+            //var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+            var results = await _applicationPeriodRepository.GetEntities();
+
+            return results;
+            //var departmentIds = await _departmentRepository.GetDepartmentIdOfLogggedInUserAsync(loggedInUser.Id);
+            //var programmesIds = await _programmeRepository.GetProgrammesIdOfLoggenInUserAsync(loggedInUser.Id);
+            //if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.SystemAdmin))))
+            //{
+            //    return results;
+            //}
+            //else
+            //{
+            //    if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.Applicant))))
+            //    {
+            //        return results;
+            //        //= results.Where(x => x.CreatedUserId == loggedInUser.Id);
+            //    }
+            //    else
+            //    {
+            //        results = results.Where(x => departmentIds.Contains(x.DepartmentId)
+            //        || programmesIds.Contains(x.ProgrammeId));
+            //    }
+
+            //    return results;
+            //}
+        }
+
+        public async Task<ApplicationPeriod> GetById(int id)
 		{
 			return await _applicationPeriodRepository.GetById(id);
 		}

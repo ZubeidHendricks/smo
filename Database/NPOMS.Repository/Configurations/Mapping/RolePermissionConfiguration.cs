@@ -103,7 +103,16 @@ namespace NPOMS.Repository.Configurations.Mapping
 				new RolePermission { RoleId = 1, PermissionId = 92 },
 				new RolePermission { RoleId = 1, PermissionId = 111 },
                 new RolePermission { RoleId = 1, PermissionId = 120 },
-                new RolePermission { RoleId = 1, PermissionId = 121 }
+                new RolePermission { RoleId = 1, PermissionId = 121 },
+                new RolePermission { RoleId = 1, PermissionId = 126 },
+                new RolePermission { RoleId = 1, PermissionId = 127 },
+                new RolePermission { RoleId = 1, PermissionId = 128 },
+                new RolePermission { RoleId = 1, PermissionId = 129 },
+                new RolePermission { RoleId = 1, PermissionId = 130 },
+                new RolePermission { RoleId = 1, PermissionId = 131 },
+                new RolePermission { RoleId = 1, PermissionId = 132 },
+                new RolePermission { RoleId = 1, PermissionId = 133 },
+                new RolePermission { RoleId = 1, PermissionId = 134 }
             );
 		}
 	}

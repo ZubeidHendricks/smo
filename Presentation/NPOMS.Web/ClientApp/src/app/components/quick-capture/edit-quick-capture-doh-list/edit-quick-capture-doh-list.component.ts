@@ -44,6 +44,9 @@ export class EditQuickCaptureDohListComponent implements OnInit {
     return QCStepsFundedEnum;
   }
  
+  objectives: IObjective[] = [];
+  activities: IActivity[] = [];
+
   profile: IUser;
 
   paramSubcriptions: Subscription;
@@ -116,6 +119,7 @@ export class EditQuickCaptureDohListComponent implements OnInit {
         this.buildMenu();
       }
     });
+   // alert(this.application.createdUserId);
   }
 
   private loadApplication() {
@@ -126,6 +130,8 @@ export class EditQuickCaptureDohListComponent implements OnInit {
           this.applicationPeriod = this.application.applicationPeriod;
           this.loadNpo();
           this.loadCreatedUser();
+          this.loadObjectives();
+          this.loadActivities();
         },
         (err) => {
           this._loggerService.logException(err);
@@ -303,71 +309,19 @@ export class EditQuickCaptureDohListComponent implements OnInit {
 
     if (this.bidCanContinue(status)) {
       this._spinner.show();
-
-      let data = this.npo;
-
-      data.contactInformation.forEach(item => {
-        item.titleId = item.title.id;
-        item.positionId = item.position.id;
-        item.genderId = item.gender ? item.gender.id : null;
-        item.raceId = item.race ? item.race.id : null;
-        item.languageId = item.language ? item.language.id : null;
-      });
-
-      this._npoRepo.createNpo(data).subscribe(
-        (resp) => {
-
           this.application.statusId = status;
-
-          this._applicationRepo.createApplication(this.application, true, null).subscribe(
+          this.application.isQuickCapture = true;
+          this.applicationPeriod = this.applicationPeriod;
+          this._applicationRepo.updateApplication(this.application).subscribe(
             (resp) => {
-
-              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.districtCouncil = this.districtCouncil;
-              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.localMunicipality = this.localMunicipality;
-              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.regions = this.regions;
-              this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.sdas;
-
-              if (!this.fundingApplicationDetails.id) {
-                this._fundAppService.addFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
-                  (resp) => {
-                    this._spinner.hide();
-
-                    if (status === StatusEnum.Saved)
-                      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-
-                    if (status === StatusEnum.PendingReview)
-                      this._router.navigateByUrl('applications');
-                  },
-                  (err) => {
-                    this._loggerService.logException(err);
-                    this._spinner.hide();
-                  }
-                );
-              }
-              else {
-                this._fundAppService.editFundingApplicationDetails(this.fundingApplicationDetails).subscribe(
-                  (resp) => {
-                    this._spinner.hide();
-
-                    if (status === StatusEnum.Saved)
-                      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-
-                    if (status === StatusEnum.PendingReview)
-                      this._router.navigateByUrl('applications');
-                  },
-                  (err) => {
-                    this._loggerService.logException(err);
-                    this._spinner.hide();
-                  }
-                );
-              }
-            },
-            (err) => {
-              this._loggerService.logException(err);
               this._spinner.hide();
-            }
-          );
-        },
+
+              if (status === StatusEnum.Saved)
+                this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+
+              if (status === StatusEnum.PendingReview)
+                this._router.navigateByUrl('applications');
+            },   
         (err) => {
           this._loggerService.logException(err);
           this._spinner.hide();
@@ -438,9 +392,9 @@ export class EditQuickCaptureDohListComponent implements OnInit {
   private validateApplicationDetails() {
     let applicationDetailsError: string[] = [];
 
-    if (!this.districtCouncil || !this.localMunicipality || this.regions.length === 0 || this.sdas.length === 0)
-      applicationDetailsError.push("Please select a District Council, Local Municipality, Region(s) and/or Service Delivery Area(s)");
-
+    if (this.purposeQuestion === undefined || this.purposeQuestion === '')
+      applicationDetailsError.push("Please provide purpose of the project");
+   
     return applicationDetailsError;
   }
 
@@ -453,8 +407,8 @@ export class EditQuickCaptureDohListComponent implements OnInit {
 
   private qCSteps() {
     this.qcItems = [
-      { label: 'Organisation Details' },   
       { label: 'Applications' },  
+      { label: 'Organisation Details' },     
       { label: 'Application Detail' },
       { label: 'Objectives' },
       { label: 'Activities' },
@@ -478,17 +432,17 @@ export class EditQuickCaptureDohListComponent implements OnInit {
           break;
         }
         case QCStepsFundedEnum.Applications: {
-          var orgDetailsError = this.validateOrganisationDetails();
           var applicationError = this.validateApplications();
+          var orgDetailsError = this.validateOrganisationDetails();         
 
-          if (orgDetailsError.length > 0 || applicationError.length > 0) {
-
-            if (orgDetailsError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
+          if (applicationError.length > 0 || orgDetailsError.length > 0 ) {
 
             if (applicationError.length > 0)
               this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
 
+            if (orgDetailsError.length > 0)
+              this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
+           
             break;
           }
 
@@ -498,9 +452,9 @@ export class EditQuickCaptureDohListComponent implements OnInit {
         case QCStepsFundedEnum.ApplicationDetail: {
           var orgDetailsError = this.validateOrganisationDetails();
           var applicationError = this.validateApplications();
-          var applicationDetailsError = this.validateApplicationDetails();
+        //  var applicationDetailsError = this.validateApplicationDetails();
 
-          if (orgDetailsError.length > 0 || applicationError.length > 0 || applicationDetailsError.length > 0) {
+          if (orgDetailsError.length > 0 || applicationError.length > 0) {
 
             if (orgDetailsError.length > 0)
               this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
@@ -508,8 +462,8 @@ export class EditQuickCaptureDohListComponent implements OnInit {
             if (applicationError.length > 0)
               this._messageService.add({ severity: 'error', summary: "Applications:", detail: applicationError.join('; ') });
 
-            if (applicationDetailsError.length > 0)
-              this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
+            // if (applicationDetailsError.length > 0)
+            //   this._messageService.add({ severity: 'error', summary: "Application Details:", detail: applicationDetailsError.join('; ') });
 
             break;
           }
@@ -527,7 +481,7 @@ export class EditQuickCaptureDohListComponent implements OnInit {
           var applicationError = this.validateApplications();
           var applicationDetailsError = this.validateApplicationDetails();
 
-          if (orgDetailsError.length > 0 || applicationError.length > 0 || applicationDetailsError.length > 0) {
+          if (orgDetailsError.length > 0 || applicationError.length > 0) {
 
             if (orgDetailsError.length > 0)
               this._messageService.add({ severity: 'error', summary: "Organisation Details:", detail: orgDetailsError.join('; ') });
@@ -552,5 +506,29 @@ export class EditQuickCaptureDohListComponent implements OnInit {
     }
     else
       this.activeStep = goToStep;
+  }
+
+  public loadObjectives() {
+    this._applicationRepo.getAllObjectives(this.application).subscribe(
+      (results) => {
+        this.objectives = results.filter(x => x.isActive === true);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  public loadActivities() {
+    this._applicationRepo.getAllActivities(this.application).subscribe(
+      (results) => {
+        this.activities = results.filter(x => x.isActive === true);
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
   }
 }

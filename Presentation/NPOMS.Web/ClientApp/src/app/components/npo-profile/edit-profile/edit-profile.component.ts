@@ -5,7 +5,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { FileUpload } from 'primeng/fileupload';
 import { Observable, Subscription, forkJoin, of, throwError } from 'rxjs';
-import { AccessStatusEnum, AuditorOrAffiliationEntityNameEnum, AuditorOrAffiliationEntityTypeEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, RoleEnum, StaffCategoryEnum } from 'src/app/models/enums';
+import { AccessStatusEnum, AuditorOrAffiliationEntityNameEnum, AuditorOrAffiliationEntityTypeEnum, DepartmentEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, RoleEnum, StaffCategoryEnum } from 'src/app/models/enums';
 import { IAccountType, IAddressInformation, IAddressLookup, IAuditorOrAffiliation, IBank, IBankDetail, IBranch, IContactInformation, IDenodoFacility, IDepartment, IDistrictCouncil, IDocumentStore, IDocumentType, IFacilityClass, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilityType, IGender, ILanguage, ILocalMunicipality, INpo, INpoProfile, INpoProfileFacilityList, IPosition, IProgramBankDetails, IProgramContactInformation, IProgramme, IProgrammeServiceDelivery, IRace, IRegion, ISDA, IServicesRendered, IStaffCategory, IStaffMemberProfile, ISubProgramme, ISubProgrammeType, ITitle, IUser } from 'src/app/models/interfaces';
 import { AddressLookupService } from 'src/app/services/api-services/address-lookup/address-lookup.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
@@ -33,18 +33,7 @@ export class EditProfileComponent implements OnInit {
   ProgrammeApprover: boolean;
   ProgrammeViewOnly: boolean;
   ProgrammeCapturer: boolean;
-  /* Permission logic */
-  // public IsAuthorized(permission: PermissionsEnum): boolean {
-  //   this.isSystemAdmin = this.profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
-  //   this.isApplicant = this.profile.roles.some(function (role) { return role.id === RoleEnum.Applicant });
-  //   this.canReviewOrApprove = this.profile.roles.some(function (role) { return role.id === RoleEnum.Approver || role.id === RoleEnum.SystemAdmin });
-  //   console.log(this.isSystemAdmin);
-  //   console.log(this.canReviewOrApprove);
-  //   if (this.profile != null && this.profile.permissions.length > 0) {
-  //     return this.profile.permissions.filter(x => x.systemName === permission).length > 0;
-  //   }
-  // }
-
+ selectedDepartmentId: number;
   public IsAuthorized(permission: PermissionsEnum): boolean {
     if (!this.profile) {
         return false;
@@ -80,7 +69,7 @@ export class EditProfileComponent implements OnInit {
 
   npo: INpo;
   npoProfile: INpoProfile;
-
+  selectedDepartmentSummary: IDepartment;
   menuActions: MenuItem[];
   profile: IUser;
 
@@ -114,8 +103,9 @@ export class EditProfileComponent implements OnInit {
   selectedFacilityType: IFacilityType;
 
   denodoFacilities: IDenodoFacility[];
-  selectedDenodoFacility: IDenodoFacility;
+  selectedDenodoFacility: IFacilityList; //IDenodoFacility;
   facilityList: IFacilityList;
+  facilityLists: IFacilityList[];
 
   disableField: boolean = true;
 
@@ -184,7 +174,8 @@ export class EditProfileComponent implements OnInit {
 
   sdasAll: ISDA[];
   sdas: ISDA[] = [];
-  selectedSdas: ISDA[];
+  selectedSdas: ISDA;
+  selectedSdas1: ISDA[];
   selected: ISDA[] = [];
 
 
@@ -209,6 +200,8 @@ export class EditProfileComponent implements OnInit {
   bankingDetails: any[] = [];
   displayBankingDetailsPanel: boolean = false;
   selectedProgram: any;
+  selectedSubProgram: any;
+  selectedSubProgramType: any;
   //contactInformation: IContactInformation = {} as IContactInformation;
 
   contactInformation: IProgramContactInformation = {} as IProgramContactInformation;
@@ -239,8 +232,9 @@ export class EditProfileComponent implements OnInit {
   selectedLocalMunicipality: ILocalMunicipality;
 
   regionsAll: IRegion[];
-  regions: IRegion[] = [];
-  selectedRegions: IRegion[];
+  regions: IRegion[];
+  selectedRegions: IRegion;
+  selectedRegions1: IRegion[];
   selectedRegs: IRegion[] = [];
   selectedLocalMunicipalitiesText: string;
   selectedRegionsText: string;
@@ -264,6 +258,10 @@ export class EditProfileComponent implements OnInit {
   // places: IPlace[] = [];
   // subPlacesAll: ISubPlace[];
   source: string = 'editprofile';
+  options: any[] = [];
+  hardcodedOption: any = { id: 0, name: 'Select a Region' };
+  options1: any[] = [];
+  hardcodedOption1: any = { id: 0, name: 'Select Service Delivery Area' };
 
   selectedRowIndex: number | null = null;
 
@@ -294,6 +292,10 @@ export class EditProfileComponent implements OnInit {
         this.profile = profile;
         if (!this.IsAuthorized(PermissionsEnum.EditNpoProfile))
           this._router.navigate(['401']);
+
+        this.isSystemAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.SystemAdmin });
+        this.isDepartmentAdmin = profile.roles.some(function (role) { return role.id === RoleEnum.Admin });
+        this.isApplicant = profile.roles.some(function (role) { return role.id === RoleEnum.Applicant });
 
         this.loadTitles();
         this.loadPositions();
@@ -395,6 +397,15 @@ export class EditProfileComponent implements OnInit {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
       (results) => {
         this.departments1 = results;
+        if(this.isSystemAdmin || this.isApplicant)
+          {
+            this.departments1 = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
+          }
+          else{
+            this.departments1 = results.filter(x => x.id === this.profile.departments[0].id);
+          }
+          this.selectedDepartmentSummary = null;
+          this.selectedDepartmentSummary = this.departments1.find(x => x.id === this.profile.departments[0].id);
       },
       (err) => {
         this._loggerService.logException(err);
@@ -404,6 +415,7 @@ export class EditProfileComponent implements OnInit {
   }
 
   loadDepartmentPrograms(id: number = 0) {
+    this.selectedDepartmentId = id;
     this.filteredProgrammes = this.programmes.filter(x => x.departmentId === id); 
     // Filter active programs within the department
    //// this.applicantfilteredProgrammes = this.filteredProgrammes.filter(x => x.department.isActive);
@@ -480,7 +492,7 @@ export class EditProfileComponent implements OnInit {
     );
   }
   private regionDropdown() {
-
+   
     this._dropdownRepo.getEntities(DropdownTypeEnum.Region, false).subscribe(
       (results) => {
         this.regionsAll = results;
@@ -499,7 +511,7 @@ export class EditProfileComponent implements OnInit {
       //map selected local municipality  
       this.selectedDelivery.localMunicipality = this.selectedLocalMunicipality;
     if (localMunicipality.id != undefined) {
-      this.regions = this.regionsAll?.filter(x => x.localMunicipalityId == localMunicipality.id);
+      this.regions = [this.hardcodedOption, ...this.regionsAll?.filter(x => x.localMunicipalityId == localMunicipality.id)];
     }
   }
 
@@ -518,26 +530,31 @@ export class EditProfileComponent implements OnInit {
     }
   }
 
-  onRegionChange(regions: IRegion[]) { 
-    this.selectedRegions = [];
-    this.selectedSdas = [];
+  onRegionChange(regions: IRegion) { 
+    this.selectedRegions = null;
+    this.selectedRegions1 = [];
+    this.selectedSdas = null;
+    this.selectedSdas1 = [];
     this.selected = [];
     this.sdas = [];
+   this.selectedRegions =  this.regionsAll.find(x => x.id === regions.id);
 
-    regions.forEach(item => {
-      this.selectedRegions = this.selectedRegions.concat(this.regionsAll.find(x => x.id === item.id));
-    });
+   this.selectedRegions1 = this.selectedRegions1.concat(this.regionsAll.find(x => x.id === regions.id));
+    // regions.forEach(item => {
+    //   this.selectedRegions = this.selectedRegions.concat(this.regionsAll.find(x => x.id === item.id));
+    // });
     if (this.selectedDelivery != null)
-        this.selectedDelivery.regions = this.selectedRegions;
+        this.selectedDelivery.regions = this.selectedRegions1;
 
+    this.sdas = [this.hardcodedOption1, ...this.sdasAll.filter(x => x.regionId == regions.id)];
     // filter items matching the selected regions
-    if (regions != null && regions.length != 0) {
-      for (var i = 0; i < this.sdasAll.length; i++) {
-        if (regions.filter(r => r.id === this.sdasAll[i].regionId).length != 0) {
-          this.sdas.push(this.sdasAll[i]);
-        }
-      }
-    }
+    // if (regions != null && regions.length != 0) {
+    //   for (var i = 0; i < this.sdasAll.length; i++) {
+    //     if (regions.filter(r => r.id === this.sdasAll[i].regionId).length != 0) {
+    //       this.sdas.push(this.sdasAll[i]);
+    //     }
+    //   }
+    // }
 
     // this.selected = [];
     // for (var i = 0; i < regions?.length; i++) {
@@ -556,18 +573,21 @@ export class EditProfileComponent implements OnInit {
   }
 
   
- onSdaChange(sdas: ISDA[]) {
+ onSdaChange(sdas: ISDA) {
     // this.places = [];
     // this.subPlacesAll = [];
-    this.selectedSdas = [];
+    this.selectedSdas = null;
+    this.selectedSdas1 = [];
     // this.sdas =[];
 
     // this.setPlaces(sdas); // populate specific locations where the service will be delivered to
-    sdas.forEach(item => {
-      this.selectedSdas = this.selectedSdas.concat(this.sdasAll.find(x => x.id === item.id));
-    });
+    // sdas.forEach(item => {
+    //   this.selectedSdas = this.selectedSdas.concat(this.sdasAll.find(x => x.id === item.id));
+    // });
 
-    this.selectedDelivery.serviceDeliveryAreas = this.selectedSdas;
+    this.selectedSdas = this.sdasAll.find(x => x.id === sdas.id);
+    this.selectedSdas1 = this.selectedSdas1.concat(this.sdasAll.find(x => x.id === sdas.id));
+    this.selectedDelivery.serviceDeliveryAreas = this.selectedSdas1;
      //map selected service delivery areas 
     // this.fundingApplicationDetails.applicationDetails.fundAppSDADetail.serviceDeliveryAreas = this.selectedSdas;
   }
@@ -605,10 +625,10 @@ export class EditProfileComponent implements OnInit {
         this.onLocalMunicipalityChange(this.selectedDelivery.localMunicipality);
 
       if (this.selectedDelivery.regions?.length > 0)
-        this.onRegionChange(this.selectedDelivery.regions);
+        this.onRegionChange(this.selectedDelivery.regions[0]);
 
       if (this.selectedDelivery.serviceDeliveryAreas?.length > 0)
-        this.onSdaChange(this.selectedDelivery.serviceDeliveryAreas);
+        this.onSdaChange(this.selectedDelivery.serviceDeliveryAreas[0]);
     }
   }
   
@@ -683,12 +703,12 @@ private loadTitles() {
   }
 
   canEditServicesRendered(programme: IProgramme): boolean {
-    return this.isSystemAdmin || this.isApplicant || (programme &&
+    return this.isSystemAdmin || this.isApplicant || this.isDepartmentAdmin || (programme &&
            this.profile.userPrograms.some(userProgram => userProgram.id === programme.id));
   }
   
   canEdit(): boolean {
-    return this.isSystemAdmin || this.isApplicant || (this.selectedProgram &&
+    return this.isSystemAdmin || this.isDepartmentAdmin || this.isApplicant || (this.selectedProgram &&
       this.profile.userPrograms.some(userProgram => userProgram.id === Number(this.selectedProgram.id)) && this.ProgrammeCapturer);
   }
 
@@ -805,7 +825,7 @@ private loadTitles() {
     });
   }
   
-  toggleBankingDetailsPanel(program: any) {
+  toggleBankingDetailsPanel(program: any, subProgram: any, subProgramType: any) {
     // if (this.selectedProgram && this.selectedProgram.id === program.id) {
     //   this.displayBankingDetailsPanel = true;
     // } else {
@@ -814,8 +834,12 @@ private loadTitles() {
     //   this.displayBankingDetailsPanel = true;
     // }
     this.selectedProgram = program;
-    this.loadProgrammeDetails(program.id);
+    this.loadProgrammeDetails(program.id, subProgram.id, subProgramType.id);
+    this.selectedSubProgram = subProgram;
+    this.selectedSubProgramType = subProgramType;
     this.displayBankingDetailsPanel = true;
+    // alert(this.selectedSubProgram.id);
+    // alert(this.selectedSubProgramType.id);
   }
 
   getNames(array: any[]): string {
@@ -826,16 +850,19 @@ private loadTitles() {
     return names; // Return the joined names as a string
   }
   
-  loadProgrammeDetails(progId: number): void {
+  loadProgrammeDetails(progId: number, subProgId: number, subProgTypeId: number): void {
     forkJoin({
       contacts: this._npoProfileRepo.getProgrammeContactsById(progId,Number(this.npoProfileId)),
       bankDetails: this._npoProfileRepo.getProgrammeBankDetailsById(progId,Number(this.npoProfileId)),
       deliveryDetails : this._npoProfileRepo.getProgrammeDeliveryDetailsById(progId,Number(this.npoProfileId))
     }).subscribe({
       next: (result) => {
-        this.programContactInformation = result.contacts;
-        this.programBankDetails = result.bankDetails;
-        this.programDeliveryDetails = result.deliveryDetails;
+
+        console.log("test", result, subProgId, subProgTypeId);
+
+        this.programContactInformation = result.contacts.filter(x=> x.subProgrammeId === subProgId && x.subProgrammeTypeId === subProgTypeId);
+        this.programBankDetails = result.bankDetails.filter(x=> x.subProgrammeId === subProgId && x.subProgrammeTypeId === subProgTypeId);
+        this.programDeliveryDetails = result.deliveryDetails.filter(x=> x.subProgrammeId === subProgId && x.subProgrammeTypeId === subProgTypeId);
         this.updateProgramBankDetailObjects();
       },
       error: (err) => {
@@ -844,10 +871,10 @@ private loadTitles() {
     });
   }
 
-  loadProgrammeContactInformation(progId: number): void {
+  loadProgrammeContactInformation(progId: number, subProgId: number, subProgTypeId: number): void {
     this._npoProfileRepo.getProgrammeContactsById(progId,Number(this.npoProfileId)).subscribe({
       next: (data) => {
-        this.programContactInformation = data;
+        this.programContactInformation = data.filter(x=> x.subProgrammeId === subProgId && x.subProgrammeTypeId === subProgTypeId);;
         this.updateProgramBankDetailObjects();
       },
       error: (err) => {
@@ -856,10 +883,10 @@ private loadTitles() {
     });
   }
   
-  loadProgrammeBankDetails(progId: number): void {
+  loadProgrammeBankDetails(progId: number, subProgId: number, subProgTypeId: number): void {
     this._npoProfileRepo.getProgrammeBankDetailsById(progId,Number(this.npoProfileId)).subscribe({
       next: (data) => {
-        this.programBankDetails = data;
+        this.programBankDetails = data.filter(x=> x.subProgrammeId === subProgId && x.subProgrammeTypeId === subProgTypeId);
         this.updateProgramBankDetailObjects();
       },
       error: (err) => {
@@ -946,9 +973,9 @@ private loadTitles() {
 
     this.selectedDistrictCouncil = delivery.districtCouncil;
 
-    this.selectedRegions = delivery.regions;
+    this.selectedRegions1 = delivery.regions;
 
-    this.selectedSdas = delivery.serviceDeliveryAreas;
+    this.selectedSdas1 = delivery.serviceDeliveryAreas;
 
     return;
   }
@@ -970,6 +997,8 @@ private loadTitles() {
   saveProgrammeServiceDelivery() {
   this.selectedDelivery.programId =  Number(this.selectedProgram.id);
   this.selectedDelivery.isActive = true;
+  this.selectedDelivery.subProgrammeId = Number(this.selectedSubProgram.id);
+  this.selectedDelivery.subProgrammeTypeId = Number(this.selectedSubProgramType.id);
 
   if (this.isNewDelivery) {
       this.createProgrammeServiceDelivery(this.selectedDelivery);
@@ -982,7 +1011,7 @@ private loadTitles() {
   private createProgrammeServiceDelivery(serviceDelivery: IProgrammeServiceDelivery) {
     this._npoProfileRepo.createProgrammeDeliveryDetails(Number(this.npoProfile.id),serviceDelivery).subscribe(
       (resp) => {
-        this.getProgrammeDeliveryDetailsById(Number(this.selectedProgram.id));
+        this.getProgrammeDeliveryDetailsById(Number(this.selectedProgram.id), Number(this.selectedSubProgram.id), Number(this.selectedSubProgramType.id));
       },
       (err) => {
         this._loggerService.logException(err);
@@ -994,7 +1023,7 @@ private loadTitles() {
   private updateProgrammeServiceDelivery(serviceDelivery: IProgrammeServiceDelivery) {
     this._npoProfileRepo.updateProgrammeDeliveryDetails(Number(this.npoProfile.id),serviceDelivery).subscribe(
       (resp) => {
-        this.getProgrammeDeliveryDetailsById(Number(this.selectedProgram.id));
+        this.getProgrammeDeliveryDetailsById(Number(this.selectedProgram.id), Number(this.selectedSubProgram.id), Number(this.selectedSubProgramType.id));
       },
       (err) => {
         this._loggerService.logException(err);
@@ -1075,6 +1104,15 @@ private loadTitles() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, true).subscribe(
       (results) => {
         this.departments = results;
+        if(this.isSystemAdmin )
+          {
+            this.departments = results.filter(x => x.id != DepartmentEnum.ALL && x.id != DepartmentEnum.NONE);
+          }
+          else{
+            this.departments = results.filter(x => x.id === this.profile.departments[0].id);
+          }
+          this.selectedDepartmentSummary = null;
+          this.selectedDepartmentSummary = this.departments.find(x => x.id === this.profile.departments[0].id);
       //  this.updateDepartments();
       },
       (err) => {
@@ -1089,10 +1127,9 @@ private loadTitles() {
       (results) => {
         this.programmes = results;
         
-        if(this.isSystemAdmin)
+        if(this.isSystemAdmin || this.isApplicant)
           {
             this.filteredProgrammes = this.programmes;
-            console.log('this.filteredProgrammes', this.filteredProgrammes);
           }
           
           if(!this.isDepartmentAdmin)
@@ -1414,7 +1451,9 @@ private loadTitles() {
     this._npoProfileRepo.getServicesRenderedByNpoProfileId(npoProfileId,this.source).subscribe(
       (results) => {
         this.servicesRendered = results;
+
         this.updateServicesRenderedObjects();
+       
       },
       (err) => {
         this._loggerService.logException(err);
@@ -1423,10 +1462,11 @@ private loadTitles() {
     );
   }
 
-  private getProgrammeDeliveryDetailsById(selectedProgramme: number) {
+  private getProgrammeDeliveryDetailsById(selectedProgramme: number, selectedSubProgramme: number, selectedSubProgrammeType: number) {
     this._npoProfileRepo.getProgrammeDeliveryDetailsById(selectedProgramme,Number(this.npoProfileId)).subscribe(
       (results) => {
-        this.programDeliveryDetails = results;
+        console.log("test1", results, this.selectedSubProgramme, this.selectedSubProgrammeType);
+        this.programDeliveryDetails = results.filter(x=> x.subProgrammeId === selectedSubProgramme && x.subProgrammeTypeId === selectedSubProgrammeType );
         this.updateServicesRenderedObjects();
       },
       (err) => {
@@ -1782,8 +1822,8 @@ private loadTitles() {
 
     if (this.selectedFacilityType.id === FacilityTypeEnum.Facility && this.mapping.facilityList.facilityFound === false) {
       if (!this.selectedClass || !this.mapping.facilityList.address)
-        return true;
-    }
+          return true;
+      }
 
     return false;
   }
@@ -1799,9 +1839,16 @@ private loadTitles() {
       facilitySubDistrictId: this.mapping.facilityList.facilitySubDistrict.id,
       name: this.mapping.facilityList.name,
       facilityClassId: this.mapping.facilityList.facilityClass.id,
-      latitude: this.mapping.facilityList.facilityFound ? this.facilityList.latitude : this.mapping.facilityList.latitude,
-      longitude: this.mapping.facilityList.facilityFound ? this.facilityList.longitude : this.mapping.facilityList.longitude,
-      address: this.mapping.facilityList.facilityFound ? this.facilityList.address : this.mapping.facilityList.address,
+     // latitude: this.mapping.facilityList.facilityFound ? this.facilityList.latitude : this.mapping.facilityList.latitude,
+     // longitude: this.mapping.facilityList.facilityFound ? this.facilityList.longitude : this.mapping.facilityList.longitude,
+     
+     latitude: this.mapping.facilityList.facilityFound ? null : this.mapping.facilityList.latitude,
+     longitude: this.mapping.facilityList.facilityFound ? null : this.mapping.facilityList.longitude,
+      
+
+     //address: this.mapping.facilityList.facilityFound ? this.facilityList.address : this.mapping.facilityList.address,
+     // below logic need to be optimised
+     address: this.mapping.facilityList.facilityFound ? this.mapping.facilityList.address : this.mapping.facilityList.address, 
       isNew: this.mapping.facilityList.facilityFound ? false : true,
       isActive: true
     } as IFacilityList;
@@ -1907,8 +1954,9 @@ private loadTitles() {
   private cloneFacilityInformation(data: INpoProfileFacilityList) {
     let mapping = {} as INpoProfileFacilityList;
     data.facilityList.facilityFound = !data.facilityList.isNew;
-
-    this.disableField = data.facilityList.facilityFound ? true : false;
+   
+    this.disableField = false; // data.facilityList.facilityFound ? true : false;
+    //this.disableField = data.facilityList.facilityFound ? true : false;
 
     for (let prop in data)
       mapping[prop] = data[prop];
@@ -1918,7 +1966,8 @@ private loadTitles() {
     this.districtChange(this.selectedDistrict);
     this.selectedSubDistrict = this.facilitySubDistricts.find(x => x.id === data.facilityList.facilitySubDistrictId);
     this.selectedClass = data.facilityList.facilityClass;
-    //this.addressLookup = { text: data.facilityList.address, magicKey: null };
+    data.facilityList.facilityFound = true;
+    this.addressLookup = null; // { text: data.facilityList.address, magicKey: null };
 
     return mapping;
   }
@@ -1941,7 +1990,7 @@ private loadTitles() {
     let query = event.query;
     this._dropdownRepo.getFacilityByName(query).subscribe(
       (results) => {
-        this.denodoFacilities = results ? results.elements : [];
+        this.facilityLists = results; // ? results.elements : [];
       },
       (err) => {
         this._loggerService.logException(err);
@@ -1950,11 +1999,12 @@ private loadTitles() {
     );
   }
 
-  selectDenodoFacility(denodoFacility: IDenodoFacility, initialSelect: boolean) {
-    this.selectedDistrict = this.facilityDistricts.find(x => x.name === denodoFacility.district);
+  selectDenodoFacility(denodoFacility: IFacilityList, initialSelect: boolean) {
+    this.selectedDistrict = this.facilityDistricts.find(x => x.id === denodoFacility.facilitySubDistrict.facilityDistrict.id);
     this.districtChange(this.selectedDistrict);
-    this.selectedSubDistrict = this.facilitySubDistricts.find(x => x.name === denodoFacility.sub_district);
-    this.selectedClass = this.facilityClasses.find(x => x.name === denodoFacility.classification);
+    this.selectedSubDistrict = this.facilitySubDistricts.find(x => x.id === denodoFacility.facilitySubDistrictId);
+    this.selectedClass = this.facilityClasses.find(x => x.id === denodoFacility.facilityClassId);
+
     //this.addressLookup = { text: "", magicKey: "" } as IAddressLookup;
 
     this.mapping.facilityList.name = denodoFacility.name;
@@ -1971,8 +2021,8 @@ private loadTitles() {
         name: denodoFacility.name,
         facilityClass: this.selectedClass,
         facilityClassId: this.selectedClass.id,
-        latitude: denodoFacility.latitude,
-        longitude: denodoFacility.longitude,
+        latitude:  null, //denodoFacility.latitude,
+        longitude: null, // denodoFacility.longitude,
         address: null,
         isNew: false,
         isActive: true
@@ -2162,9 +2212,18 @@ private loadTitles() {
     this.serviceRendered.subProgrammeId = this.selectedSubProgramme.id;
     this.serviceRendered.subProgrammeTypeId = this.selectedSubProgrammeType.id;
     this.serviceRendered.isActive = true;
+    
 
     this.newServiceRendered ? this.createServiceRendered(this.serviceRendered) : this.updateServiceRendered(this.serviceRendered);
     this.displayServiceRenderedDialog = false;
+
+  //  alert(this.serviceRendered.programme.departmentId);
+    
+    if(this.selectedDepartmentId === Number(DepartmentEnum.DSD))
+    {
+      alert('In order to complete Services Rendered for this Programme, please click on the Programme you have created to add Banking Details, Service Delivery Area(s) and Contact Details.');
+    }
+   
   }
 
   private createServiceRendered(service: IServicesRendered) {
@@ -2212,12 +2271,12 @@ private loadTitles() {
     for (let prop in data)
       serviceRendered[prop] = data[prop];
 
-    if(this.isApplicant)
-      {
-        this.selectedDepartment = data.department;
-        this.loadDepartmentPrograms(this.selectedDepartment.id);
-      }
-
+    // if(this.isApplicant)
+    //   {
+    //     this.selectedDepartment = data.department;
+    //     this.loadDepartmentPrograms(this.selectedDepartment.id);
+    //   }
+    
     this.selectedProgramme = data.programme;
     this.programmeChange(this.selectedProgramme);
 
@@ -2409,6 +2468,9 @@ private loadTitles() {
     this.programBankDetail.branchId = this.selectedBranch.id;
     this.programBankDetail.accountTypeId = this.selectedAccountType.id;
     this.programBankDetail.isActive = true;
+    this.programBankDetail.subProgrammeId = Number(this.selectedSubProgram.id);
+   
+    this.programBankDetail.subProgrammeTypeId = Number(this.selectedSubProgramType.id);
 
     this.newBankDetail ? this.createProgrameBankDetail(this.programBankDetail) : this.updateProgrameBankDetail(this.programBankDetail);
     this.displayBankDetailDialog = false;
@@ -2418,7 +2480,7 @@ private loadTitles() {
   private createProgrameBankDetail(bankDetail: IProgramBankDetails) {
     this._npoProfileRepo.createProgrammeBankDetails(Number(this.npoProfile.id),bankDetail).subscribe(
       (resp) => {
-        this.loadProgrammeBankDetails(Number(this.selectedProgram.id));
+        this.loadProgrammeBankDetails(Number(this.selectedProgram.id), Number(this.selectedSubProgram.id), Number(this.selectedSubProgramType.id));
       },
       (err) => {
         this._loggerService.logException(err);
@@ -2430,7 +2492,7 @@ private loadTitles() {
   private updateProgrameBankDetail(bankDetail: IProgramBankDetails) {
     this._npoProfileRepo.updateProgrammeBankDetails(Number(this.npoProfile.id),bankDetail).subscribe(
       (resp) => {
-        this.loadProgrammeBankDetails(Number(this.selectedProgram.id));
+        this.loadProgrammeBankDetails(Number(this.selectedProgram.id), Number(this.selectedSubProgram.id), Number(this.selectedSubProgramType.id));
       },
       (err) => {
         this._loggerService.logException(err);
@@ -2446,6 +2508,8 @@ private loadTitles() {
     this.contactInformation.race = this.selectedRace;
     this.contactInformation.gender = this.selectedGender;
     this.contactInformation.language = this.selectedLanguage;
+    this.contactInformation.subProgrammeId = Number(this.selectedSubProgram.id);
+    this.contactInformation.subProgrammeTypeId = Number(this.selectedSubProgramType.id);
 
     if (this.newContactInformation)
       this.createProgrameContactDetail(this.contactInformation)
@@ -2457,7 +2521,7 @@ private loadTitles() {
   private createProgrameContactDetail(contact: IProgramContactInformation) {
     this._npoProfileRepo.createProgrammeContact(Number(this.npoProfile.id),contact).subscribe(
       (resp) => {
-        this.loadProgrammeContactInformation(Number(this.selectedProgram.id));
+        this.loadProgrammeContactInformation(Number(this.selectedProgram.id), Number(this.selectedSubProgram.id), Number(this.selectedSubProgramType.id));
       },
       (err) => {
         this._loggerService.logException(err);
@@ -2469,7 +2533,7 @@ private loadTitles() {
   private updateProgrameContactDetail(contact: IProgramContactInformation) {
     this._npoProfileRepo.updateProgrammeContact(Number(this.npoProfile.id),contact).subscribe(
       (resp) => {
-        this.loadProgrammeContactInformation(Number(this.selectedProgram.id));
+        this.loadProgrammeContactInformation(Number(this.selectedProgram.id), Number(this.selectedSubProgram.id), Number(this.selectedSubProgramType.id));
       },
       (err) => {
         this._loggerService.logException(err);
@@ -2516,9 +2580,9 @@ private loadTitles() {
   }
 
   private updateProgrammeBankDetail(bankDetail: IProgramBankDetails) {
-    this._npoProfileRepo.updateProgrammeBankDetails(Number(this.selectedProgram.id),bankDetail).subscribe(
+    this._npoProfileRepo.updateProgrammeBankDetails(Number(this.npoProfile.id),bankDetail).subscribe(
       (resp) => {
-        this.loadProgrammeBankDetails(Number(this.selectedProgram.id));
+        this.loadProgrammeBankDetails(Number(this.selectedProgram.id),Number(this.selectedSubProgram.id),Number(this.selectedSubProgramType.id));
       },
       (err) => {
         this._loggerService.logException(err);

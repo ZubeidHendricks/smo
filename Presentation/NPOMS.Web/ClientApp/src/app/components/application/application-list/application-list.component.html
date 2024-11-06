@@ -18,10 +18,10 @@
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]" 
     [globalFilterFields]="['refNo','npo.name','applicationPeriod.applicationType.name',
     'applicationPeriod.subProgramme.name','applicationPeriod.financialYear.name', 
-    'applicationPeriod.closingDate', 'status.name']">
+    'applicationPeriod.subProgrammeType.name', 'status.name']">
         <ng-template pTemplate="header" let-columns>
             <tr>
-              <th style="width: 5%;" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && canShowOptions">Options</th>
+              <th style="width: 5%;" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && (canShowOptions || canShowOtherOptions)">Options</th>
               <th style="width: 5%;"></th>
               <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}" [pSortableColumn]="col.field">
                   {{col.header}}
@@ -32,25 +32,25 @@
               <th style="width: 5%;">Actions</th>
             </tr>
             <tr>
-                <th *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && canShowOptions"></th>
+                <th *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && (canShowOptions || canShowOtherOptions)"></th>
                 <th></th>
                 <th><p-columnFilter type="text" field="refNo"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="npo.name"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="applicationPeriod.applicationType.name"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="applicationPeriod.name"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="applicationPeriod.subProgramme.name"></p-columnFilter></th>
+                <th><p-columnFilter type="text" field="applicationPeriod.subProgrammeType.name"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="applicationPeriod.financialYear.name"></p-columnFilter></th>
-                <th><p-columnFilter type="text" field="applicationPeriod.closingDate"></p-columnFilter></th>
                 <th><p-columnFilter type="text" field="status.name"></p-columnFilter></th>
                 <th></th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
             <tr class="default-font">
-                <td style="text-align: center;" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && (canShowOptions || canShowOptionsNpo)">
+                <td style="text-align: center;" *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && (canShowOptions || canShowOptionsNpo || canShowOtherOptions)">
                     <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" 
                     (click)="selectedApplication=rowData; menu.toggle($event); updateOptionItems();" pTooltip="Options" tooltipPosition="right" 
-                    *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && (rowData.statusId === StatusEnum.AcceptedSLA || (rowData.statusId === StatusEnum.Approved && rowData.applicationPeriod.departmentId === 11))"></button>
+                    *ngIf="IsAuthorized(PermissionsEnum.ViewOptions) && (rowData.statusId === StatusEnum.AcceptedSLA || (rowData.statusId === StatusEnum.Approved && rowData.applicationPeriod.departmentId === 11) ||(rowData.statusId === StatusEnum.Approved && rowData.applicationPeriod.departmentId === 7))"></button>
                     <p-menu #menu [popup]="true" [model]="optionItems" appendTo="body"></p-menu>
                 </td>
                 <td style="text-align: center;">{{rowIndex + 1}}</td>
@@ -100,6 +100,30 @@
     </form>
     <p-footer *ngIf="IsAuthorized(PermissionsEnum.ShowUserActions)">
         <button type="submit" [disabled]="disableSubmit()" pButton icon="fa fa-thumbs-o-up" (click)="submit()"
+            class="ui-button-success" label="Submit"></button>
+    </p-footer>
+</p-dialog>
+
+
+<p-dialog header="Select Reviewers" [(visible)]="displayReviewDialog" [modal]="true" [style]="{width: '50vw'}"
+    [maximizable]="false" [resizable]="false" *ngIf="reviewerForm">
+    <form novalidate [formGroup]="reviewerForm">
+        <div class="form-group">
+            <div class="p-fluid">
+                <div class="p-field p-grid">
+                    <label for="selectedUser" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0"
+                        style="font-size: 13px; font-weight: bold;">Full Name</label>
+                    <div class="p-col-12 p-md-10">
+                        <p-multiSelect [options]="reviewerlist" [(ngModel)]="selectedreviewerlist" defaultLabel="Select reviewer(s)"
+                            optionLabel="email" [ngModelOptions]="{standalone: true}" appendTo="body"
+                            selectedItemsLabel="{0} items selected"></p-multiSelect>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <p-footer *ngIf="IsAuthorized(PermissionsEnum.ShowUserActions)">
+        <button type="submit" [disabled]="disableSubmit()" pButton icon="fa fa-thumbs-o-up" (click)="btnSubmitReviewers()"
             class="ui-button-success" label="Submit"></button>
     </p-footer>
 </p-dialog>

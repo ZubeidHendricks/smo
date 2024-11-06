@@ -36,7 +36,8 @@ import { CardModule } from 'primeng/card';
 import { AccordionModule } from 'primeng/accordion';
 import { MenuModule } from 'primeng/menu';
 import { ScrollTopModule } from 'primeng/scrolltop';
-
+import { ToggleButtonModule } from 'primeng/togglebutton';
+import {RadioButtonModule} from 'primeng/radiobutton';
 
 // B2B / B2C
 import { IPublicClientApplication, PublicClientApplication, InteractionType, BrowserCacheLocation, LogLevel } from '@azure/msal-browser';
@@ -146,9 +147,14 @@ import { QcApplicationDetailsComponent } from './components/application/applicat
 import { QcDocumentUploadComponent } from './components/application/application-steps/quick-capture/qc-document-upload/qc-document-upload.component';
 import { QcFundedDocumentUploadComponent } from './components/application/application-steps/quick-capture/qc-funded-document-upload/qc-funded-document-upload.component';
 import { QcApplicationPeriodsComponent } from './components/application/application-steps/quick-capture/qc-application-periods/qc-application-periods.component';
+import { QcApplicationPeriodsDohComponent } from './components/application/application-steps/quick-capture/qc-application-periods-doh/qc-application-periods-doh.component';
+import { QcApplicationPeriodsDohViewComponent } from './components/application/application-steps/quick-capture-view/qc-application-periods-doh-view/qc-application-periods-doh-view.component';
 import { QcApplicationDetailComponent } from './components/application/application-steps/quick-capture/qc-application-detail/qc-application-detail.component';
+import { QcApplicationDetailEditComponent } from './components/application/application-steps/quick-capture/qc-application-detail-edit/qc-application-detail-edit.component';
 import { QCActivitiesComponent } from './components/application/application-steps/quick-capture/qc-activities/qc-activities.component';
 import { QcObjectivesComponent } from './components/application/application-steps/quick-capture/qc-objectives/qc-objectives.component';
+import { QCActivitiesEditComponent } from './components/application/application-steps/quick-capture/qc-activities-edit/qc-activities-edit.component';
+import { QcObjectivesEditComponent } from './components/application/application-steps/quick-capture/qc-objectives-edit/qc-objectives-edit.component';
 
 import { QuestionComponent } from './components/admin/utilities/question/question.component';
 import { ResponseTypeComponent } from './components/admin/utilities/response-type/response-type.component';
@@ -172,7 +178,7 @@ import { QuickCaptureEditListComponent } from './components/quick-capture/quick-
 import { EditQuickCaptureDohListComponent } from './components/quick-capture/edit-quick-capture-doh-list/edit-quick-capture-doh-list.component';
 import { ReviewQuickCaptureDohComponent } from './components/quick-capture/review-quick-capture-doh/review-quick-capture-doh.component';
 import { ViewQuickCaptureDohComponent } from './components/quick-capture/view-quick-capture-doh/view-quick-capture-doh.component';
-import{DownloadQuickCaptureDohComponent} from './components/quick-capture/download-quick-capture-doh/download-quick-capture-doh.component';
+import { DownloadQuickCaptureDohComponent} from './components/quick-capture/download-quick-capture-doh/download-quick-capture-doh.component';
 import { QcApplicationDetailsEditComponent } from './components/application/application-steps/quick-capture/qc-application-details-edit/qc-application-details-edit.component';
 import { QcDocumentUploadEditComponent } from './components/application/application-steps/quick-capture/qc-document-upload-edit/qc-document-upload-edit.component';
 import { ScorecardComponent } from './components/application/scorecard/scorecard.component';
@@ -194,10 +200,38 @@ import { QcObjectivesViewComponent } from './components/application/application-
 import { QcNpoDetailsViewComponent } from './components/application/application-steps/quick-capture-view/qc-npo-details-view/qc-npo-details-view.component';
 import { BudgetSummaryComponent } from './components/admin/budgets/budget-summary/budget-summary.component';
 import { UploadBudgetComponent } from './components/admin/budgets/upload-budget/upload-budget.component';
+import { DownloadWorkplanComponent } from './components/application/download-workplan/download-workplan.component';
+import { ApproveFundingCaptureComponent } from './components/funding-capture/approve-funding-capture/approve-funding-capture.component';
+import { ViewFundingCaptureComponent } from './components/funding-capture/view-funding-capture/view-funding-capture.component';
+import { DownloadFundingCaptureComponent } from './components/funding-capture/download-funding-capture/download-funding-capture.component';
+import { FCSDAComponent } from './components/funding-capture/fc-steps/fc-sda/fc-sda.component';
+import { FCPaymentScheduleComponent } from './components/funding-capture/fc-steps/fc-payment-schedule/fc-payment-schedule.component';
+import { FCBankDetailComponent } from './components/funding-capture/fc-steps/fc-bank-detail/fc-bank-detail.component';
+import { FCDocumentComponent } from './components/funding-capture/fc-steps/fc-document/fc-document.component';
+import { FundingCaptureListComponent } from './components/funding-capture/funding-capture-list/funding-capture-list.component';
+import { EditFundingCaptureComponent } from './components/funding-capture/edit-funding-capture/edit-funding-capture.component';
+import { FCFundingDetailComponent } from './components/funding-capture/fc-steps/fc-funding-detail/fc-funding-detail.component';
+import { FCApprovalComponent } from './components/funding-capture/fc-steps/fc-approval/fc-approval.component';
+import { FundingAssessmentListComponent } from './components/funding-assessment/funding-assessment-list/funding-assessment-list.component';
+import { FundingAssessmentFormComponent } from './components/funding-assessment/funding-assessment-form/funding-assessment-form.component';
+import { FundingAssessmentFormQuestionSectionComponent } from './components/funding-assessment/funding-assessment-form-questionsection/funding-assessment-form-questionsection.component';
+
+import { NpoReportCaptureComponent } from './reporting/npo-report-capture/npo-report-capture.component';
+import { IndicatorReportComponent } from './npo-reporting-steps/indicator-report/indicator-report.component';
+import { PostReportComponent } from './npo-reporting-steps/post-report/post-report.component';
+import { DetailsOfIncomeAndAndExpenditureReportComponent } from './npo-reporting-steps/details-of-income-and-and-expenditure-report/details-of-income-and-and-expenditure-report.component';
+import { GovernanceReportComponent } from './npo-reporting-steps/governance-report/governance-report.component';
+import { AnyOtherInformationReportComponent } from './npo-reporting-steps/any-other-information-report/any-other-information-report.component';
+import { QuarterlySDIPReportingReportComponent } from './npo-reporting-steps/quarterly-sdip-reporting-report/quarterly-sdip-reporting-report.component';
+import { IndicatorsComponent } from './reporting/indicators/indicators.component';
+import { ReportReviewComponent } from './reporting/report-review/report-review.component';
+import { IndicatorImportComponent } from './reporting/indicator-import/indicator-import.component';
+import { ReportDownloadComponent } from './reporting/report-download/report-download.component';
+import { ReportActualsComponent } from './reporting/report-actuals/report-actuals.component';
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
 export function loggerCallback(logLevel: LogLevel, message: string) {
-  // console.log(message);
+
 }
 
 export function MSALInstanceFactory(): IPublicClientApplication {
@@ -381,7 +415,41 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     AdjudicateNpoComponent,
     ReviewAdjudicatedNpoComponent,
     BudgetSummaryComponent,
-    UploadBudgetComponent
+    UploadBudgetComponent,
+    DownloadWorkplanComponent,
+    QcApplicationPeriodsDohComponent,
+    QcApplicationPeriodsDohViewComponent,
+    QcApplicationDetailEditComponent,
+    QCActivitiesEditComponent,
+    QcObjectivesEditComponent,
+    DownloadWorkplanComponent,
+    ApproveFundingCaptureComponent,
+    ViewFundingCaptureComponent,
+    DownloadFundingCaptureComponent,
+    FCSDAComponent,
+    FCPaymentScheduleComponent,
+    FCBankDetailComponent,
+    FCDocumentComponent,
+    FundingCaptureListComponent,
+    EditFundingCaptureComponent,
+    FCFundingDetailComponent,
+    FCApprovalComponent,
+    NpoReportCaptureComponent,
+    IndicatorReportComponent,
+    PostReportComponent,
+    DetailsOfIncomeAndAndExpenditureReportComponent,
+    GovernanceReportComponent,
+    AnyOtherInformationReportComponent,
+    QuarterlySDIPReportingReportComponent,
+    IndicatorsComponent,
+    ReportReviewComponent,
+    IndicatorImportComponent,
+    ReportDownloadComponent,
+    ReportActualsComponent,
+    FCApprovalComponent,
+    FundingAssessmentListComponent,
+    FundingAssessmentFormComponent,
+    FundingAssessmentFormQuestionSectionComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
@@ -425,7 +493,9 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     AccordionModule,
     MenuModule,
     ScrollTopModule,
-    EditorModule
+    EditorModule,
+    ToggleButtonModule,
+    RadioButtonModule
   ],
   providers: [
     {

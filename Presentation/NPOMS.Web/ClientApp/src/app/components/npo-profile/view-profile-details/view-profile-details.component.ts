@@ -224,7 +224,7 @@ export class ViewProfileDetailsComponent implements OnInit {
       deliveryDetails: this._npoProfileRepo.getProgrammeDeliveryDetailsById(progId,Number(this.npoProfile.id))
     }).subscribe({
       next: (result) => {
-        this.programContactInformation = result.contacts.filter(contact => contact.approvalStatus.id === AccessStatusEnum.Approved);
+        this.programContactInformation = result.contacts; //.filter(contact => contact.approvalStatus.id === AccessStatusEnum.Approved);
         this.programBankDetails = result.bankDetails.filter(bankDetail => bankDetail.approvalStatus.id === AccessStatusEnum.Approved);
         this.programDeliveryDetails = result.deliveryDetails.filter(deliveryDetail => deliveryDetail.approvalStatus.id === AccessStatusEnum.Approved);
         this.updateProgramBankDetailObjects();
@@ -630,5 +630,13 @@ export class ViewProfileDetailsComponent implements OnInit {
 
   updateNpo(event) {
     this.npo = event
+  }
+
+  public facilityFoundChange(value) {
+    
+  }
+
+  public updatePostalAddress(value) {
+    
   }
 }

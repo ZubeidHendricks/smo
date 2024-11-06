@@ -48,6 +48,10 @@ export class PrintWorkflowApplicationComponent implements OnInit {
     return FacilityTypeEnum;
   }
 
+  public get QuestionCategoryEnum(): typeof QuestionCategoryEnum {
+    return QuestionCategoryEnum;
+  }
+
   _recommendation: boolean = false;
   isChecked: boolean = false;
   isEvalDeclarationChecked: boolean = false;
@@ -453,7 +457,7 @@ onAprCheckboxChange(event: any) {
     this._applicationRepo.getApplicationApprovals(this.application.id).subscribe(
       (results) => {
         this.approveFromCoCT = results.filter(x => x.approvedFrom === 'CoCT')[0];
-        this.approveFromDoH = results.filter(x => x.approvedFrom === 'DoH')[0];
+        this.approveFromDoH = results.filter(x => x.approvedFrom === 'DHW')[0];
       },
       (err) => {
         this._loggerService.logException(err);
@@ -1559,4 +1563,15 @@ onAprCheckboxChange(event: any) {
     return status;
   }
 
+  public onSaveResponse(value, question) {
+
+  }
+
+  public onSaveComment(value, question) {
+
+  }
+
+  public onSelectViewHistory(question) {
+    
+  }
 }

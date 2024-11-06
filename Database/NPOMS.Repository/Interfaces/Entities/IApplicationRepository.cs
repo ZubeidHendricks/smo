@@ -8,10 +8,15 @@ namespace NPOMS.Repository.Interfaces.Entities
     {
         Task<IEnumerable<Application>> GetEntities();
         Task CreateNpoUserTracking(IEnumerable<NpoUserTracking> npoUserTrackings);
+        Task CreateNpoUserSatisfactionTracking(IEnumerable<NpoUserSatisfactionTracking> npoUserSatisfactionTracking);
+
+        Task CreateNpoWorkPlanApproverTracking(IEnumerable<NpoWorkPlanApproverTracking> npoWorkPlanApproverTracking);
 
         Task<Application> GetById(int id);
 
         Task<Application> GetByNpoIdAndPeriodId(int NpoId, int applicationPeriodId);
+
+        Task<Application> GetByNpoIdAndPeriodIdAndYear(int NpoId, int applicationPeriodId, string year);
 
         Task<IEnumerable<Application>> GetByNpoId(int npoId);
 
@@ -20,5 +25,7 @@ namespace NPOMS.Repository.Interfaces.Entities
         Task CreateEntity(Application model);
 
         Task UpdateEntity(Application model, int currentUserId);
+        Task UpdateEntityQC(Application model, int currentUserId);
+        Task CreateNpoUserReviewerTracking(IEnumerable<NpoWorkPlanReviewerTracking> npoWorkPlanReviewerTrackingList);
     }
 }

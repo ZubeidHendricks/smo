@@ -2,7 +2,7 @@
     <div style="height: 10px;"></div>
     <p-panel [toggleable]="true" [style]="{'font-size':'12px'}" header="General Information" *ngIf="npo">
         <label class="mandatory-content" style="font-size: medium; font-style: oblique;">Select Organisation</label>
-        <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-plus" (click)="onRowSelect(rowData)" *ngIf="IsAuthorized(PermissionsEnum.AddApplication)" pTooltip="Add Organisation" tooltipPosition="left"></button>
+        <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-plus" (click)="onRowSelect()" *ngIf="IsAuthorized(PermissionsEnum.AddApplication)" pTooltip="Add Organisation" tooltipPosition="left"></button>
         <div style="height: 10px;"></div>
         <div class="p-fluid p-formgrid p-grid">
             <div class="p-field p-col-12 p-md-6">
@@ -548,7 +548,7 @@
     <div class="p-grid">
         <div class="p-col-fixed form-label">
             <div class="box">
-                <button pButton pRipple type="button" label="Add new organisation" class="p-button-text"  [disabled] = "isDisabled" (click)="selectNPO()"></button>
+                <!-- <button pButton pRipple type="button" label="Add new organisation" class="p-button-text"  [disabled] = "isDisabled" (click)="selectNPO()"></button> -->
             </div>
         </div>
     </div>

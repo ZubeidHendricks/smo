@@ -4,6 +4,7 @@ using NPOMS.Domain.Entities;
 using NPOMS.Domain.Evaluation;
 using NPOMS.Domain.Lookup;
 using NPOMS.Domain.Mapping;
+using NPOMS.Repository.Configurations.Dropdown;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,7 +12,7 @@ namespace NPOMS.Services.Interfaces
 {
     public interface IDropdownService
     {
-        Task<IEnumerable<Role>> GetRoles(bool returnInactive);
+        Task<IEnumerable<Role>> GetRoles(bool returnInactive); 
 
         Task CreateRole(Role model, string userIdentifier);
 
@@ -134,6 +135,14 @@ namespace NPOMS.Services.Interfaces
 
         Task UpdateFacilitySubDistrict(FacilitySubDistrict model, string userIdentifier);
 
+        Task<IEnumerable<FacilitySubStructure>> GetFacilitySubStructures(bool returnInactive);
+
+        Task CreateFacilitySubStructures(FacilitySubStructure model, string userIdentifier);
+
+        Task UpdateFacilitySubStructures(FacilitySubStructure model, string userIdentifier);
+
+
+
         Task<IEnumerable<FacilityClass>> GetFacilityClasses(bool returnInactive);
 
         Task CreateFacilityClass(FacilityClass model, string userIdentifier);
@@ -163,6 +172,8 @@ namespace NPOMS.Services.Interfaces
         Task UpdateFacilityType(FacilityType model, string userIdentifier);
 
         Task<IEnumerable<Status>> GetStatuses(bool returnInactive);
+
+        Task<Status> GetStatusById(int id);
 
         Task CreateStatus(Status model, string userIdentifier);
 
@@ -223,6 +234,8 @@ namespace NPOMS.Services.Interfaces
 
         Task<IEnumerable<Bank>> GetBanks(bool returnInactive);
 
+        Task<Bank> GetBankById(int id);
+
         Task CreateBank(Bank model, string userIdentifier);
 
         Task UpdateBank(Bank model, string userIdentifier);
@@ -260,6 +273,8 @@ namespace NPOMS.Services.Interfaces
         Task<IEnumerable<Region>> GetRegions(bool returnInactive);
 
         Task<IEnumerable<ServiceDeliveryArea>> GetServiceDeliveryAreas(bool returnInactive);
+
+        Task<ServiceDeliveryArea> GetServiceDeliveryAreaById(int id);
 
         Task<IEnumerable<PropertyType>> GetPropertyTypes(bool returnInactive);
 
@@ -324,5 +339,13 @@ namespace NPOMS.Services.Interfaces
         Task DeleteQuestionSection(int id, string userIdentifier);
         Task<IEnumerable<Programme>> GetProgramsByDepartment(int id);
         Task<IEnumerable<Role>> GetRolesByDepartment(int id);
+        Task<IEnumerable<FacilitySubStructure>> GetFacilitySubStructure(bool returnInactive);
+        Task<IEnumerable<DistrictDemographic>> DemographicDistricts(bool returnInactive);
+        Task<IEnumerable<SubstructureDemographic>> DemographicSubStructures(bool returnInactive);
+        Task<IEnumerable<ManicipalityDemographic>> DemographicManicipalities(bool returnInactive);
+        Task<IEnumerable<SubDistrictDemographic>> DemographicSubDistricts(bool returnInactive);
+        Task<IEnumerable<Indicators>> Indicators(bool returnInactive);
+        Task<IEnumerable<NPOIndicators>> NPOIndicators(bool returnInactive);
+        Task<IEnumerable<Area>> Areas(bool returnInactive);
     }
 }

@@ -39,5 +39,7 @@ namespace NPOMS.Repository.Interfaces.Core
         /// <returns></returns>
         Task<IEnumerable<User>> GetByUserIds(List<int> userIds);
         Task<IEnumerable<User>> GetUsersByRoleId(int roleId);
+
+        Task<IEnumerable<User>> GetUsersByPermissionId(int permissionId);
     }
 }

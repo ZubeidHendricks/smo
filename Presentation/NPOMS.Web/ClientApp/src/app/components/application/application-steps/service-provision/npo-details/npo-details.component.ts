@@ -18,7 +18,10 @@ export class NpoDetailsComponent implements OnInit {
   @Output() activeStepChange: EventEmitter<number> = new EventEmitter<number>();
   @Input() application: IApplication;
   @Input() newApplication: boolean;
-
+  @Input() programId: number;
+  @Input() subProgramId: number;
+  @Input() subProgramTypeId: number;
+  
   public get StatusEnum(): typeof StatusEnum {
     return StatusEnum;
   }
@@ -90,7 +93,7 @@ export class NpoDetailsComponent implements OnInit {
       this._messageService.add({ severity: 'error', summary: "Contact / Stakeholder Details:", detail: "The Organisation Contact List cannot be empty. This can be updated on the Organisations tab." });
     }
 
-    if (!this.npoProfile.addressInformation.physicalAddress || !this.npoProfile.addressInformation.postalSameAsPhysical || !this.npoProfile.addressInformation.postalAddress) {
+    if (!this.npoProfile.addressInformation.physicalAddress || !this.npoProfile.addressInformation.postalAddress) {
       validationErrors.push('Errors in Address Information');
       this._messageService.add({ severity: 'error', summary: "Address Information:", detail: "Missing detail required. This can be updated on the Profiles tab." });
     }

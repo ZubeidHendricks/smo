@@ -18,5 +18,8 @@ namespace NPOMS.Repository.Interfaces.Indicator
 		Task<IEnumerable<WorkplanActual>> GetByIds(List<int> activityIds, int financialYearId, int frequencyPeriodId);
 
 		Task<WorkplanActual> GetByIds(WorkplanActual model);
-	}
+
+        Task<IEnumerable<WorkplanActual>> GetByActivityIds(List<int> activityIds);
+
+    }
 }

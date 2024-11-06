@@ -21,8 +21,16 @@ namespace NPOMS.Repository.Configurations.Evaluation
 				new QuestionSection { Id = 5, QuestionCategoryId = 2, Name = "Impact on business sustainability and/or expansion", SortOrder = 4 },
 				new QuestionSection { Id = 6, QuestionCategoryId = 2, Name = "Monitoring and Evaluation", SortOrder = 5 },
 				new QuestionSection { Id = 7, QuestionCategoryId = 2, Name = "Financial sustainability of the organisation", SortOrder = 6 },
-				new QuestionSection { Id = 8, QuestionCategoryId = 3, Name = "Adjudication", SortOrder = 1 }
-			);
+				new QuestionSection { Id = 8, QuestionCategoryId = 3, Name = "Adjudication", SortOrder = 1 },
+
+
+                //Assessment & Evaluation
+                new QuestionSection { Id = 30, QuestionCategoryId = 20, Name = "Legislative Compliance", SortOrder = 1 },
+                new QuestionSection { Id = 31, QuestionCategoryId = 20, Name = "PFMA Compliance", SortOrder = 2 },
+                new QuestionSection { Id = 32, QuestionCategoryId = 20, Name = "Analysis Of Performance", SortOrder = 3 },
+                new QuestionSection { Id = 33, QuestionCategoryId = 20, Name = "Assessment Summary", SortOrder = 4, IsActive = true, CreatedUserId=1, CreatedDateTime=DateTime.UtcNow},
+                new QuestionSection { Id = 34, QuestionCategoryId = 20, Name = "Final Approver Section", SortOrder = 5, IsActive = true, CreatedUserId = 1, CreatedDateTime = DateTime.UtcNow }
+            );
 		}
 	}
 }

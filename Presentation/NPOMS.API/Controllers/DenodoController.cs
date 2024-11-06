@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NPOMS.Domain.Entities;
 using NPOMS.Domain.ResourceParameters;
 using NPOMS.Repository.Interfaces.Budget;
-using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Services.DenodoAPI.Interfaces;
 using System;
 using System.Linq;
@@ -11,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace NPOMS.API.Controllers
 {
-	[Route("api/denodo")]
+    [Route("api/denodo")]
 	[ApiController]
 	public class DenodoController : ExternalBaseController
     {

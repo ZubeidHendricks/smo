@@ -23,13 +23,15 @@ namespace NPOMS.Repository.Configurations.Dropdown
 				{
 					Id = 2,
 					Name = "Monthly",
-					SystemName = "Monthly"
+					SystemName = "Monthly",
+					FrequencyNumber = 12
 				},
 				new Frequency
 				{
 					Id = 3,
 					Name = "Quarterly",
-					SystemName = "Quarterly"
+					SystemName = "Quarterly",
+					FrequencyNumber = 4
 				},
 				new Frequency
 				{

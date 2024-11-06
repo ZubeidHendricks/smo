@@ -1,0 +1,537 @@
+<p-toast></p-toast>
+<p-panel [toggleable]="false" [style]="{'font-size':'12px'}"  [header]="'Performance Information - Organisation Name: ' + (npo?.name || '')"  >
+    <!-- <p-megaMenu [model]="menuActions" [style]="{'font-size':'14px'}"></p-megaMenu>     -->
+    <div style="height: 10px;"></div>
+    <p-card [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
+        <div style="margin-top: 0px;" class="p-grid">
+            <div class="p-col-6">
+                <div class="p-grid">
+                    <div class="p-col-fixed form-label">
+                        <div class="box">
+                            <span class="non-mandatory-content">Organisation</span>
+                        </div>
+                    </div>
+                    <div class="p-col">
+                        <input type="text" class="form-text" pInputText  [value]="getOrganisationValue()" [disabled]="true" [ngModelOptions]="{standalone: true}" [readonly]="true">
+                    </div>
+                </div>
+                <div class="p-grid">
+                    <div class="p-col-fixed form-label">
+                        <div class="box">
+                            <span class="non-mandatory-content">Programme</span>
+                        </div>
+                    </div>
+                    <div class="p-col">
+                        <input type="text" class="form-text" pInputText  [value]="getProgramValue()" [disabled]="true" [ngModelOptions]="{standalone: true}" [readonly]="true">
+                    </div>
+                </div>
+
+                <div class="p-grid">
+                    <div class="p-col-fixed form-label">
+                        <div class="box">
+                            <span class="non-mandatory-content">Sub-Programme</span>
+                        </div>
+                    </div>
+                    <div class="p-col">
+                        <input type="text" class="form-text" pInputText  [value]="getSubProgramValue()" [disabled]="true" [ngModelOptions]="{standalone: true}">
+                    </div>
+                </div>
+
+                <div class="p-grid">
+                    <div class="p-col-fixed form-label">
+                        <div class="box">
+                            <span class="non-mandatory-content">Sub-Programme Type</span>
+                        </div>
+                    </div>
+                    <div class="p-col">
+                        <input type="text" class="form-text" pInputText [value]="getSubProgramTypeValue()" [disabled]="true" [ngModelOptions]="{standalone: true}">
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-6">
+                <div class="p-fluid">
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">C-Code</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+        
+                            <input type="text" class="form-text" pInputText [value]="getcCodeValue()" [disabled]="true" [ngModelOptions]="{standalone: true}">
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content"> Target Group</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <input type="text" class="form-text" pInputText  [disabled]="false" [ngModelOptions]="{standalone: true}">
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Service Delivery Area</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <input type="text" class="form-text" pInputText [value]="getSDAValue()" [disabled]="true" [ngModelOptions]="{standalone: true}">
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="mandatory-content">Financial Year</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]="selectedFinancialYear" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body" [disabled]="true"></p-dropdown>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </p-card>
+    <div style="height: 10px;"></div>
+    <p-tabView>
+        <p-tabPanel header="Targets">
+            <p-table [rowHover]="true" [columns]="indicatorCols"  [value]="iNPOIndicators"  styleClass="p-datatable-sm">
+                  <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th style="width: 5%;"></th>
+                        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                            {{col.header}}
+                        </th>
+                        <!-- <th style="width: 6%;">Actions</th> -->
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                    <tr class="default-font">
+                        <td style="text-align: center;">{{rowIndex + 1}}</td>
+                        <td>{{rowData.indicatorId}}</td>
+                        <td>{{IndicatorDescription(rowData)}}</td>
+                        <td>{{outputTitle(rowData)}}</td>
+                        <td>{{rowData.annualTarget}}</td>
+                        <td>{{rowData.q1}}</td>
+                        <td>{{rowData.q2}}</td>
+                        <td>{{rowData.q3}}</td>
+                        <td>{{rowData.q4}}</td>
+                        <td> {{shortDefination(rowData)}}</td>
+                        <td>{{purpose(rowData)}}</td>
+                        <td style="text-align: center;">
+                            <!-- <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editActual(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
+                            <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteActivity(rowData)" pTooltip="Delete" tooltipPosition="top"></button> -->
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr class="default-font">
+                        <td colspan="12" style="text-align: center;">No results found</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-tabPanel>
+        <p-tabPanel header="Actuals">
+            <p-card [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
+                <div style="margin-top: 0px;" class="p-grid">
+                    <div class="p-col-6">
+                        <div class="p-fluid">
+                            <div class="p-grid">
+                                <div class="p-col-fixed form-label">
+                                    <div class="box">
+                                        <span class="mandatory-content">Financial Year</span>
+                                    </div>
+                                </div>
+                                <div class="p-col">
+                                    <input type="text" class="form-text" pInputText [value]="getFinancialYear(application?.applicationPeriod?.financialYearId)" [disabled]="true" [ngModelOptions]="{standalone: true}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-col-6">
+                        <div class="p-fluid">
+                            <div class="p-grid">
+                                <div class="p-col-fixed form-label">
+                                    <div class="box">
+                                        <span class="mandatory-content">Reporting Cycle</span>
+                                    </div>
+                                </div>
+                                <div class="p-col">
+                                    <input type="text" 
+                                           class="form-text" 
+                                           pInputText 
+                                           [value]="getQuarterValue()" 
+                                           [disabled]="true" 
+                                           [ngModelOptions]="{standalone: true}">
+                                </div>
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+            </p-card>
+
+            <p-table [rowHover]="true" [columns]="actualCols" [value]="mergedList" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th style="width: 5%;"></th>
+                        <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                            {{col.header}}
+                        </th>
+                        <th style="width: 6%;">Actions</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                    <tr class="default-font">
+                        <td style="text-align: center;">{{rowIndex + 1}}</td>
+                        <td>
+                            <p-cellEditor>
+                                <!-- Input Template: Used for editing the outputTitle directly -->
+                                <ng-template pTemplate="input">
+                                    <input pInputText [(ngModel)]="rowData.outputTitle" 
+                                           [disabled]="!rowData.isEditable && !rowData.inEditMode" />
+                                </ng-template>
+                        
+                                <!-- Output Template: Used to display the title based on indicatorId -->
+                                <ng-template pTemplate="output">
+                                    {{ outputTitle(rowData) }}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+                        
+                        <!-- Editable Cell for indicatorId -->
+                        <td>
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText [(ngModel)]="rowData.indicatorId" 
+                                           [disabled]="!rowData.isEditable && !rowData.inEditMode" />
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{ rowData.indicatorId }}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+                        
+                        <!-- Editable Cell for targets -->
+                        <td>
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText [(ngModel)]="rowData.actuals.targets" 
+                                           [disabled]="!rowData.isEditable && !rowData.inEditMode" />
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{ rowData.actuals.targets }}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+                        
+                        <td pEditableColumn>
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText
+                                           [(ngModel)]="rowData.actuals.actual"
+                                           (blur)="onBlurAdjustedActual(rowData)"
+                                           (keyup)="onKeyUp(rowData, $event)"
+                                           [disabled]="!rowData.isEditable && !rowData.inEditMode" />
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{ rowData.actuals.actual }}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+                        
+                        <!-- Other non-editable fields -->
+                        <td>{{ rowData.actuals.variance }}</td>
+                        
+                        <td pEditableColumn>
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText 
+                                           [(ngModel)]="rowData.actuals.deviationReason" 
+                                           (blur)="onBlurAdjustedActual(rowData)" 
+                                           [disabled]="!rowData.isEditable && !rowData.inEditMode" />
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{ rowData.actuals.deviationReason }}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+                        
+                        <td pEditableColumn>
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText 
+                                           [(ngModel)]="rowData.actuals.adjustedActual" 
+                                           (blur)="onBlurAdjustedActual(rowData)"
+                                           (keyup)="onKeyUpAdjustedActual($event, rowData)" 
+                                           [disabled]="!rowData.isEditable && !rowData.inEditMode" />
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{ rowData.actuals.adjustedActual }}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+      
+                        <td>{{rowData.actuals.adjustedVariance}}</td>
+
+                        <td style="text-align: center;">
+                            <button pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-files-o" pTooltip="Uploaded Files" tooltipPosition="top" (click)="uploadedFiles(rowData)"></button>
+                            <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-file-o" pTooltip="Upload File" tooltipPosition="left" (click)="uploadDocument(rowData)"></button>
+                            <input type="file" #addDoc (change)="onUploadChange(addDoc.files)" placeholder="Browse" accept="*" style="display:none;">
+                        </td>
+
+                        <td>{{status(rowData)}}</td>
+
+                        <td style="text-align: center;">
+                            <span>
+                                <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="merged=rowData; menu.toggle($event); updateButtonItems()" pTooltip="Options" tooltipPosition="top"></button>
+                                <p-menu #menu [popup]="true" [model]="buttonItems" appendTo="body"></p-menu>
+                            </span>                        
+                        </td>
+                        <!-- <td style="text-align: center;">
+                            <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteActual(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
+                            <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, 'allComments')" pTooltip="Comments" tooltipPosition="top"></button>
+                            <button *ngIf="showReviewerSatisfaction" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-handshake-o" (click)="viewReviewerSatisfaction(rowData)" pTooltip="Reviewer Satisfaction" tooltipPosition="left"></button>
+                        </td> -->
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="summary" let-rowData>
+                    <div style="text-align:left">
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="emptymessage">
+                    <tr class="default-font">
+                        <td colspan="12" style="text-align: center;">No results found</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+
+            <div class="button-container">
+                <!-- <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" *ngIf="quarterId > 0"  (click)="addNewRow()"></button> -->
+                <button pButton pRipple type="button" label="Complete" class="p-button-text" icon="fa fa-check" (click)="completeAction()" style="margin-left: auto;"></button>
+              </div>
+
+        </p-tabPanel>
+    </p-tabView>
+</p-panel>
+
+<p-dialog header="Uploaded Files"
+          [(visible)]="displayUploadedFilesDialog"
+          [style]="{width: '70vw'}"
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true"
+          [maximizable]="false"
+          [draggable]="false"
+          [resizable]="false">
+        <p-table [rowHover]="true" [value]="actual.documents" styleClass="p-datatable-sm" [columns]="documentCols" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,25,50]">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                        {{col.header}}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-document let-rowIndex="rowIndex">
+                <tr>
+                    <td style="text-align: center;">{{rowIndex + 1}}</td>
+                    <td>{{document.name}}</td>
+                    <td>{{document.fileSize}}</td>
+                    <td>{{document.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+                    <td style="text-align: center;">
+                        <button pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-cloud-download" (click)="onDownloadDocument(document)" pTooltip="Download" tooltipPosition="top"></button>
+                        <button pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="onDeleteDocument(document, actual)" pTooltip="Delete" tooltipPosition="top"></button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr class="default-font">
+                    <td colspan="5" style="text-align: center;">No results found</td>
+                </tr>
+            </ng-template>
+        </p-table>
+</p-dialog>
+
+<p-dialog header="Add Comment"
+          [(visible)]="displayCommentDialog"
+          [style]="{width: '50vw'}"
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Comment</span>
+            </div>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="5" [cols]="30" pInputTextarea [(ngModel)]="comment" [ngModelOptions]="{standalone: true}"></textarea>
+        </div>
+    </div>
+    <ng-template pTemplate="footer">
+        <button *ngIf="canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(false, 'allComments')"></button>
+        <!-- <button *ngIf="!canEdit" pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveComment() (click)="saveComment(true, 'singleComment')"></button> -->
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="View Comments"
+          [(visible)]="displayAllCommentDialog"
+          [style]="{width: '70vw'}"
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="commentCols" [paginator]="true" [rows]="10" [value]="applicationComments" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="default-font">
+                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                <td>{{rowData.comment}}</td>
+                <td>{{rowData.createdUser.fullName}}</td>
+                <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="4" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary" let-rowData *ngIf="canEdit">
+            <div style="text-align:right">
+                <button pButton pRipple type="button" label="Add Comment" class="p-button-text" icon="fa fa-comment-o" (click)="addComment()"></button>
+            </div>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<p-dialog header="Reviewer Satisfaction"
+          [(visible)]="displayReviewerSatisfactionDialog"
+          [style]="{width: '50vw'}"
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="reviewerSatisfactionCols" [paginator]="true" [rows]="10" [value]="applicationReviewerSatisfaction" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="default-font">
+                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                <td style="text-align: center;" [ngClass]="rowData.isSatisfied === true ? 'green' : 'default' && rowData.isSatisfied === false ? 'red' : 'default'">
+                    <span>{{rowData.isSatisfied ? 'Yes' : 'No'}}</span>
+                </td>
+                <td>{{rowData.createdUser.fullName}}</td>
+                <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="4" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary" let-rowData>
+            <div class="p-grid p-nogutter p-justify-between">
+                <span class="mandatory-content">Are you satisfied with the details contained in this Activity?</span>
+
+                <div>
+                    <p-button label="Yes" icon="fa fa-thumbs-o-up" styleClass="p-button-success" (onClick)="createReviewerSatisfaction(true)"></p-button>
+                    &nbsp; &nbsp;
+                    <p-button label="No" icon="fa fa-thumbs-o-down" styleClass="p-button-danger" (onClick)="createReviewerSatisfaction(false)"></p-button>
+                </div>
+            </div>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<p-dialog header="Deleted Activities"
+          [(visible)]="displayDeletedActivityDialog"
+          [style]="{width: '90vw'}"
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+    <p-table [rowHover]="true" [columns]="indicatorCols" [value]="deletedActivities" styleClass="p-datatable-sm">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="heading">
+                <td *ngIf="deletedRowGroupMetadata[rowIndex].itemExists === false" [attr.colspan]="5">
+                    <span><span class="p-text-bold">Objective:</span> {{rowData.objective.name}}</span>
+                </td>
+            </tr>
+            <tr class="default-font">
+                <td>{{rowData.activityList.name}}</td>
+                <td>{{rowData.activityType.name}}</td>
+                <td>{{rowData.timelineStartDate | date: 'yyyy-MM-dd'}} to {{rowData.timelineEndDate | date: 'yyyy-MM-dd'}}</td>
+                <td>{{rowData.target}}</td>
+                <td>{{rowData.facilityListText}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr class="default-font">
+                <td colspan="5" style="text-align: center;">No results found</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<p-dialog header="Audit History" 
+          [(visible)]="displayVieHistoryDialog" 
+          [style]="{width: '50vw'}" 
+          [focusOnShow]="false"
+          showEffect="fade"
+          [transitionOptions]="'0ms'"
+          [modal]="true">
+        <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="auditCols" [paginator]="true" [rows]="10" [value]="merged?.actuals?.indicatorReportAudits" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
+                    {{col.header}}
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+            <tr class="default-font">
+                <td style="text-align: center;">{{rowIndex + 1}}</td>
+                <td>{{rowData.statusName}}</td>
+                <td>{{rowData.createdUser}}</td>
+                <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<div class="content-section implementation">
+    <p-confirmDialog #cd header="Confirmation" [style]="{width: '30vw'}" icon="pi pi-exclamation-triangle">
+        <p-footer>
+            <button type="button" pButton icon="fa fa-check" class="ui-button-info" label="Yes" (click)="cd.accept()"></button>
+            <button type="button" pButton icon="fa fa-times" class="ui-button-info" label="No" (click)="cd.reject()"></button>
+        </p-footer>
+    </p-confirmDialog>
+</div>

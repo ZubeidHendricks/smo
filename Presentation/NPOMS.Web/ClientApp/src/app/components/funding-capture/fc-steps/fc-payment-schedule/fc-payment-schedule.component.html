@@ -1,0 +1,46 @@
+<div style="height: 10px;"></div>
+<p-panel [style]="{'font-size':'12px'}" header="Payment Schedule" [toggleable]="toggleable">
+    <p-panel [style]="{'font-size':'12px'}" header="Payment List" *ngIf="paymentFrequencyId && startDate && amountAwarded && paymentSchedule">
+        <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="cols" [value]="paymentSchedule.paymentScheduleItemViewModels">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th style="width: 5%;"></th>
+                    <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">{{col.header}}</th>
+                    <th style="width: 5%;" *ngIf="paymentFrequencyId === FrequencyEnum.Adhoc">Actions</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+                <tr class="default-font">
+                    <td style="text-align: center;">{{rowIndex + 1}}</td>
+                    <td>{{rowData.cycleNumber}}</td>
+                    <td>{{rowData.paymentDate | date : "yyyy-MM-dd"}}</td>
+                    <td>{{rowData.paymentStatus}}</td>
+                    <td>{{rowData.allocatedAmount | currency: 'R'}}</td>
+                    <td>{{rowData.approvedAmount | currency: 'R'}}</td>
+                    <td>{{rowData.paidAmount | currency: 'R'}}</td>
+                    <td *ngIf="paymentFrequencyId === FrequencyEnum.Adhoc"></td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="footer">
+                <tr class="default-font">
+                    <td colspan="4" style="text-align: right;">Total Allocated</td>
+                    <td>{{paymentSchedule.allocatedAmountTotal | currency: 'R'}}</td>
+                    <td>{{paymentSchedule.approvedAmountTotal | currency: 'R'}}</td>
+                    <td>{{paymentSchedule.paidAmountTotal | currency: 'R'}}</td>
+                    <td *ngIf="paymentFrequencyId === FrequencyEnum.Adhoc"></td>
+                </tr>
+                <tr class="default-font">
+                    <td colspan="4" style="text-align: right;">Balance</td>
+                    <td>{{paymentSchedule.allocatedAmountBalance | currency: 'R'}}</td>
+                    <td>{{paymentSchedule.approvedAmountBalance | currency: 'R'}}</td>
+                    <td>{{paymentSchedule.paidAmountBalance | currency: 'R'}}</td>
+                    <td *ngIf="paymentFrequencyId === FrequencyEnum.Adhoc"></td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-panel>
+
+    <div *ngIf="!paymentFrequencyId || !startDate || !amountAwarded">
+        Please select a payment frequency and capture an amount awarded...
+    </div>
+</p-panel>

@@ -24,6 +24,7 @@
 		Recommended = 20,
 		StronglyRecommended = 21,
 		NonCompliance = 22,
-		PendingReviewerSatisfaction = 23
+		PendingReviewerSatisfaction = 23,
+		Completed = 24,
 	}
 }

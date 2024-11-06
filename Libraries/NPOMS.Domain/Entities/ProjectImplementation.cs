@@ -22,9 +22,19 @@ namespace NPOMS.Domain.Entities
         public string Results { get; set; }
         public string Resources { get; set; }
         public int BudgetAmount { get; set; }
-        public int FundingApplicationDetailId { get; set; }
 
-        public virtual FundingApplicationDetail FundingApplicationDetail { get; set; }
+        public int? CreatedUserId { get; set; }
+
+        public DateTime? CreatedDateTime { get; set; }
+
+        public int? UpdatedUserId { get; set; }
+
+        public DateTime? UpdatedDateTime { get; set; }
+
+        public int FundingApplicationDetailId { get; set; }
+        
+        public int ApplicationId { get; set; }
+        //public virtual FundingApplicationDetail FundingApplicationDetail { get; set; }
         public virtual ICollection<ProjectImplementationPlace> ImplementationPlaces
         {
             get => _implementationPlaces ?? (_implementationPlaces = new List<ProjectImplementationPlace>());

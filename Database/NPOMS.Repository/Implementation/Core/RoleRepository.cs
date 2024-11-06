@@ -50,7 +50,8 @@ namespace NPOMS.Repository.Implementation.Core
 		public IEnumerable<Role> GetRoles()
 		{
 			return FindAll().AsNoTracking()
-			 .OrderBy(ow => ow.Id).ToList();
+             .OrderBy(x => x.DepartmentCode)
+                    .ThenBy(x => x.Id).ToList();
 		}
 
         public async Task<IEnumerable<Role>> GetRolesByDepartment(string name, List<int> roleIds)

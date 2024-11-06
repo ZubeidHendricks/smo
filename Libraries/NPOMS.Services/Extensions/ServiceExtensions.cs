@@ -1,5 +1,4 @@
 using AutoMapper;
-using NPOMS.Services.Implementation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,25 +8,28 @@ using NPOMS.Repository.Implementation.Core;
 using NPOMS.Repository.Implementation.Dropdown;
 using NPOMS.Repository.Implementation.Entities;
 using NPOMS.Repository.Implementation.Evaluation;
+using NPOMS.Repository.Implementation.FundingManagement;
 using NPOMS.Repository.Implementation.Indicator;
 using NPOMS.Repository.Implementation.Lookup;
 using NPOMS.Repository.Implementation.Mapping;
+using NPOMS.Repository.Interfaces;
 using NPOMS.Repository.Interfaces.Budget;
 using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Dropdown;
 using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Repository.Interfaces.Evaluation;
+using NPOMS.Repository.Interfaces.FundingManagement;
 using NPOMS.Repository.Interfaces.Indicator;
 using NPOMS.Repository.Interfaces.Lookup;
 using NPOMS.Repository.Interfaces.Mapping;
 using NPOMS.Services.DenodoAPI.Implementation;
 using NPOMS.Services.DenodoAPI.Interfaces;
+using NPOMS.Services.Implementation;
 using NPOMS.Services.Infrastructure.Implementation;
 using NPOMS.Services.Interfaces;
 using NPOMS.Services.Mappings;
 using NPOMS.Services.PowerBI;
 using IProgrammeRepository = NPOMS.Repository.Interfaces.Dropdown.IProgrammeRepository;
-using NPOMS.Domain.Enumerations;
 
 namespace NPOMS.Services.Extensions
 {
@@ -83,6 +85,13 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IFacilityClassRepository, FacilityClassRepository>();
             services.AddScoped<IFacilityDistrictRepository, FacilityDistrictRepository>();
             services.AddScoped<IFacilitySubDistrictRepository, FacilitySubDistrictRepository>();
+            services.AddScoped<IFacilitySubStructureRepository, FacilitySubStructureRepository>();
+            services.AddScoped<IDemographicSubStructureRepository, DemographicSubStructureRepository>();
+            services.AddScoped<IDistrictDemographicRepository, DistrictDemographicRepository>();
+            services.AddScoped<IManicipalityDemographicRepository, ManicipalityDemographicRepository>();
+            services.AddScoped<ISubDistrictDemographicRepository, SubDistrictDemographicRepository>();
+            services.AddScoped<IIndicatorRepository, IndicatorRepository>();
+            services.AddScoped<INPOIndicatorRepository, NPOIndicatorRepository>();
             services.AddScoped<IFacilityTypeRepository, FacilityTypeRepository>();
             services.AddScoped<IOrganisationTypeRepository, OrganisationTypeRepository>();
             services.AddScoped<IPositionRepository, PositionRepository>();
@@ -113,11 +122,22 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<ILanguageRepository, LanguageRepository>();
             services.AddScoped<IRegistrationStatusRepository, RegistrationStatusRepository>();
             services.AddScoped<IStaffCategoryRepository, StaffCategoryRepository>();
+            services.AddScoped<ICalculationTypeRepository, CalculationTypeRepository>();
+            services.AddScoped<IFundingTypeRepository, FundingTypeRepository>();
+            services.AddScoped<IAreaRepository, AreaRepository>();
 
             /* Entities */
             services.AddScoped<IAccessStatusRepository, AccessStatusRepository>();
             services.AddScoped<IActivityRepository, ActivityRepository>();
             services.AddScoped<IApplicationRepository, ApplicationRepository>();
+            services.AddScoped<IIndicatorReportRepository, IndicatorReportRepository>();
+            services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<IAuditPostRepository, AuditPostRepository>();
+            services.AddScoped<IIncomeAndExpenditureRepository, IncomeAndExpenditureRepository>();
+            services.AddScoped<IGovernanceRepository, GovernanceRepository>();
+            services.AddScoped<IAnyOtherRepository, AnyOtherRepository>();
+            services.AddScoped<ISDIPRepository, SDIPRepository>();
+
             services.AddScoped<IApplicationApprovalRepository, ApplicationApprovalRepository>();
             services.AddScoped<IApplicationAuditRepository, ApplicationAuditRepository>();
             services.AddScoped<IApplicationCommentRepository, ApplicationCommentRepository>();
@@ -132,10 +152,10 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<ISustainabilityPlanRepository, SustainabilityPlanRepository>();
             services.AddScoped<ITrainingMaterialRepository, TrainingMaterialRepository>();
             services.AddScoped<IServicesRenderedRepository, ServicesRenderedRepository>();
-            services.AddScoped<IBankDetailRepository, BankDetailRepository>();
+            services.AddScoped<Repository.Interfaces.Entities.IBankDetailRepository, Repository.Implementation.Entities.BankDetailRepository>();
             services.AddScoped<ICompliantCycleRuleRepository, CompliantCycleRuleRepository>();
             services.AddScoped<ICompliantCycleRepository, CompliantCycleRepository>();
-            services.AddScoped<IPaymentScheduleRepository, PaymentScheduleRepository>();
+            services.AddScoped<Repository.Interfaces.Entities.IPaymentScheduleRepository, Repository.Implementation.Entities.PaymentScheduleRepository>();
             services.AddScoped<IFundingApplicationDetailsRepository, FundingApplicationDetailsRepository>();
             //services.AddScoped<IFinancialDetailRepository, FinancialDetailRepository>();
             services.AddScoped<IProjectInformationRepository, ProjectInformationRepository>();
@@ -176,7 +196,12 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IFinancialMattersOthersRepository, FinancialMattersOthersRepository>();
 
             services.AddScoped<IMyContentLinkRepository, MyContentLinkRepository>();
-
+            services.AddScoped<IAuditGovernanceRepository, AuditGovernanceRepository>();
+            services.AddScoped<ISDIPAuditRepository, SDIPAuditRepository>();
+            services.AddScoped<IIncomeAuditRepository, IncomeAuditRepository>();
+            services.AddScoped<IAnyOtherAuditRepository, AnyOtherAuditRepository>();
+            services.AddScoped<IAuditIndicatorRepository, AuditIndicatorRepository>();
+            //IAnyOtherAuditRepository
 
             /* Lookup */
             services.AddScoped<IActivityListRepository, ActivityListRepository>();
@@ -227,6 +252,19 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IProgrameContactDetailRepository, ProgrameContactDetailRepository>();
             services.AddScoped<IProgrameDeliveryRepository, ProgrameDeliveryRepository>();
 
+            services.AddScoped<IActivityDistrictRepository, ActivityDistrictRepository>();
+            services.AddScoped<IActivityManicipalityRepository, ActivityManicipalityRepository>();
+            services.AddScoped<IActivitySubDistrictRepository, ActivitySubDistrictRepository>();
+            services.AddScoped<IActivityAreaRepository, ActivityAreaRepository>();
+            services.AddScoped<IActivitySubStructureRepository, ActivitySubStructureRepository>();
+
+            /* Funding Management */
+            services.AddScoped<Repository.Interfaces.FundingManagement.IBankDetailRepository, Repository.Implementation.FundingManagement.BankDetailRepository>();
+            services.AddScoped<IDocumentRepository, DocumentRepository>();
+            services.AddScoped<IFundingCaptureRepository, FundingCaptureRepository>();
+            services.AddScoped<IFundingDetailRepository, FundingDetailRepository>();
+            services.AddScoped<ISDARepository, SDARepository>();
+            services.AddScoped<Repository.Interfaces.FundingManagement.IPaymentScheduleRepository, Repository.Implementation.FundingManagement.PaymentScheduleRepository>();
 
             #endregion
 
@@ -247,6 +285,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IDocumentStoreService, DocumentStoreService>();
             services.AddScoped<IFundAppDocumentService, FundAppDocumentService>();
             services.AddScoped<IIndicatorService, IndicatorService>();
+            services.AddScoped<IPostService, PostService>();
             services.AddScoped<IBudgetService, BudgetService>();
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IBidService, BidService>();
@@ -256,15 +295,20 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IContactService, ContactService>();
             services.AddScoped<IProgrammeService, ProgrammeService>();
             services.AddScoped<IProgrameDeliveryService, ProgrameDeliveryService>();
+            services.AddScoped<IIncomeAndExpenditureService, IncomeAndExpenditureService>();
+            services.AddScoped<IGovernanceService, GovernanceService>();
+            services.AddScoped<IAnyOtherService, AnyOtherService>();
+            services.AddScoped<ISDIPService, SDIPService>();
 
             services.AddConfiguration<dtoBlobConfig>(builder.Configuration, "BlobStorageSettings");
-
+            services.AddScoped<IFundingManagementService, FundingManagementService>();
 
             //PowerBI
             services.AddScoped(typeof(AadService))
                     .AddScoped(typeof(PbiEmbedService));
             services.AddScoped<IEmbeddedReportService, EmbeddedReportService>();
 
+            services.AddScoped<IApplicationFundingAssessmentService, ApplicationFundingAssessmentService>();
             #endregion
 
             var engine = EngineContext.Create();

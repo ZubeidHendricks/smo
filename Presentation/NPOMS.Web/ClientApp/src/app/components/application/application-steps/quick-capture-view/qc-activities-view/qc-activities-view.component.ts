@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DropdownTypeEnum, FacilityTypeEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityFacilityList, IActivityList, IActivityRecipient, IActivitySubProgramme, IActivityType, IApplication, IApplicationComment, IApplicationReviewerSatisfaction, IFacilityList, IFinancialYear, IFundingApplicationDetails, INpo, IObjective, IPlace, IProjectImplementation, IQuarterlyPeriod, IRecipientType, ISDA, ISubPlace, ISubProgramme } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationReviewerSatisfaction, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IFundingApplicationDetails, IManicipalityDemographic, INpo, IObjective, IPlace, IProjectImplementation, IQuarterlyPeriod, IRecipientType, ISDA, ISubDistrictDemographic, ISubPlace, ISubProgramme, ISubstructureDemographic } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -57,8 +57,7 @@ export class QCActivitiesViewComponent implements OnInit {
   paramSubcriptions: Subscription;
   rangeDates: Date[];
   timeframes: Date[] = [];
-  headerTitle: string;
-  headerTitle2: string;
+
   allActivities: IActivity[];
   activeActivities: IActivity[];
   deletedActivities: IActivity[];
@@ -120,6 +119,35 @@ export class QCActivitiesViewComponent implements OnInit {
   selectedQuarterlyPeriod: IQuarterlyPeriod;
   quarterlyPeriod: IQuarterlyPeriod[];
 
+  
+
+  facilityDistricts: IFacilityDistrict[];
+  selectedDistricts: IFacilityDistrict;
+
+  allFacilitySubDistricts: IFacilitySubDistrict[];
+  facilitySubDistricts: IFacilitySubDistrict[];
+  selectedSubDistricts: IFacilitySubDistrict[];
+
+  allFacilitySubStructures: IFacilitySubStructure[];
+  facilitySubStructures: IFacilitySubStructure[];
+  selectedFacilitySubStructures: IFacilitySubStructure;
+
+  
+  allIDistrictDemographics: IDistrictDemographic[];
+  selectedIDistrictDemographics: IDistrictDemographic;
+
+  allSubDistrictDemographics: ISubDistrictDemographic[];
+  SubDistrictDemographics: ISubDistrictDemographic[];
+  selectedSubDistrictDemographics: ISubDistrictDemographic[];
+
+  allSubstructureDemographics: ISubstructureDemographic[];
+  SubstructureDemographics: ISubstructureDemographic[];
+  selectedSubstructureDemographics: ISubstructureDemographic[];
+
+  allManicipalityDemographics: IManicipalityDemographic[];
+  ManicipalityDemographics: IManicipalityDemographic[];
+  selectedManicipalityDemographics: IManicipalityDemographic[];
+  headerTitle: string;
   public get FacilityTypeEnum(): typeof FacilityTypeEnum {
     return FacilityTypeEnum;
   }
@@ -139,10 +167,10 @@ export class QCActivitiesViewComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-   
     var splitUrl = window.location.href.split('/');
     this.headerTitle = splitUrl[5];
     this._spinner.show();
+
     this.canEdit = (this.application.statusId === StatusEnum.PendingReview ||
       this.application.statusId === StatusEnum.PendingApproval ||
       this.application.statusId === StatusEnum.ApprovalInProgress ||
@@ -162,6 +190,13 @@ export class QCActivitiesViewComponent implements OnInit {
     this.loadAllSubProgrammes();
     this.loadFinancialYears();
     this.loadQuarterlyPeriod();
+    this.loadFacilityDistricts();
+    this.loadFacilitySubDistricts();
+    this.loadFacilitySubStructures();
+    this.loadDemographicDistricts();
+    this.loadDemographicSubStructures();
+    this.loadDemographicManicipalities();
+    this.loadDemographicSubDistricts();
 
     this.activityCols = [
       { header: 'Activity Name', width: '20%' },
@@ -246,6 +281,166 @@ export class QCActivitiesViewComponent implements OnInit {
         this.getFacilityListText(results);
         this.updateRowGroupMetaData();
         this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadFacilitySubStructures() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.FacilitySubStructure, false).subscribe(
+      (results) => {
+        this.allFacilitySubStructures = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadFacilityDistricts() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.FacilityDistricts, false).subscribe(
+      (results) => {
+        this.facilityDistricts = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadDemographicSubStructures() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicSubStructure, false).subscribe(
+      (results) => {
+        this.allSubstructureDemographics = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadFacilitySubDistricts() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.FacilitySubDistricts, false).subscribe(
+      (results) => {
+        this.allFacilitySubDistricts = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadDemographicDistricts() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicDistrict, false).subscribe(
+      (results) => {
+        this.allIDistrictDemographics = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  onDemographicDistrictChange() {
+    this.selectedManicipalityDemographics = [];
+    this.selectedSubstructureDemographics = [];
+    this.selectedSubDistrictDemographics = [];
+  
+    if (this.selectedIDistrictDemographics) {
+      // Filter ManicipalityDemographics based on selected District
+      this.ManicipalityDemographics = this.allManicipalityDemographics.filter(md =>
+        md.districtDemographicId === this.selectedIDistrictDemographics.id
+      );
+  
+      // Reset other arrays
+      this.SubDistrictDemographics = [];
+      this.SubstructureDemographics = [];
+    } else {
+      // Reset all arrays if no district is selected
+      this.ManicipalityDemographics = [];
+      this.SubDistrictDemographics = [];
+      this.SubstructureDemographics = [];
+    }
+  }
+  
+  onDemographicManicipalitiesChange() {
+    this.selectedSubstructureDemographics = [];
+    this.selectedSubDistrictDemographics = [];
+  
+    if (this.selectedManicipalityDemographics && this.selectedManicipalityDemographics.length > 0) {
+      this.SubstructureDemographics = this.allSubstructureDemographics.filter(ss =>
+        this.selectedManicipalityDemographics.some(md => md.id === ss.manicipalityDemographicId)
+      );
+  
+      // Reset other arrays
+      this.SubDistrictDemographics = [];
+    } else {
+      // Reset all arrays if no manicipality demographic is selected
+      this.SubstructureDemographics = [];
+      this.SubDistrictDemographics = [];
+    }
+  }
+  
+  onDemographicSubStructuresChange() {
+    this.selectedSubDistrictDemographics = [];
+  
+    if (this.selectedSubstructureDemographics && this.selectedSubstructureDemographics.length > 0) {
+      // Filter SubDistrictDemographics based on selected SubstructureDemographics
+      this.SubDistrictDemographics = this.allSubDistrictDemographics.filter(sd =>
+        this.selectedSubstructureDemographics.some(ss => ss.id === sd.subSctrcureDemographicId)
+      );
+    } else {
+      // Reset all arrays if no sub-structure demographic is selected
+      this.SubDistrictDemographics = [];
+    }
+  }
+  
+
+  onDistrictChange() {
+    this.selectedSubDistricts = [];
+    this.selectedFacilitySubStructures  = null;
+    
+    if (this.selectedDistricts) {
+      this.facilitySubDistricts = this.allFacilitySubDistricts.filter(sd => 
+        sd.facilityDistrictId === this.selectedDistricts.id
+      );
+  
+      this.facilitySubStructures = this.allFacilitySubStructures.filter(ss => 
+        ss.facilityDistrictId === this.selectedDistricts.id
+      );
+
+    } else {
+      this.selectedSubDistricts = [];
+      this.selectedFacilitySubStructures = null;
+    }
+  }
+  
+
+
+  private loadDemographicManicipalities() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicManicipality, false).subscribe(
+      (results) => {
+        this.allManicipalityDemographics = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  private loadDemographicSubDistricts() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicSubDistrict, false).subscribe(
+      (results) => {
+        this.allSubDistrictDemographics = results;
       },
       (err) => {
         this._loggerService.logException(err);
@@ -375,7 +570,8 @@ export class QCActivitiesViewComponent implements OnInit {
 
     for (let prop in data)
       activity[prop] = data[prop];
-
+    this.selectedFinancialYear = this.financialYears.find(x => x.name === data.financialYear);
+    this.selectedQuarterlyPeriod = this.quarterlyPeriod.find(x=> x.name === data.quarter);
     this.selectedObjective = this.objectives.find(x => x.id === data.objectiveId);
     this.objectiveChange(this.selectedObjective);
     this.selectedActivityType = data.activityType;
@@ -395,7 +591,43 @@ export class QCActivitiesViewComponent implements OnInit {
     });
 
     this.getTextValues();
+    // Handle selected district
+    const districtId = data?.activityDistrict?.find(district => district.isActive)?.demographicDistrictId;
+    this.selectedIDistrictDemographics = this.allIDistrictDemographics.find(item => item.id === districtId);
+    
+    if (this.selectedIDistrictDemographics) {
+      this.ManicipalityDemographics = this.allManicipalityDemographics.filter(md =>
+        md.districtDemographicId === this.selectedIDistrictDemographics.id
+      );
+      this.SubDistrictDemographics = [];
+      this.SubstructureDemographics = [];
+    } else {
+      this.ManicipalityDemographics = [];
+      this.SubDistrictDemographics = [];
+      this.SubstructureDemographics = [];
+    }
 
+    const demographicDistrictIds = data?.activityManicipality?.map(({ demographicDistrictId }) => demographicDistrictId);
+    this.selectedManicipalityDemographics = this.ManicipalityDemographics.filter(item =>
+        demographicDistrictIds.includes(item.districtDemographicId) && 
+        data.activityManicipality.some(({ name }) => name === item.name)
+    );
+    
+    this.onDemographicManicipalitiesChange();
+
+    const subStructureIds = data?.activitySubStructure?.map(({ municipalityId }) => municipalityId);
+    this.selectedSubstructureDemographics = this.SubstructureDemographics.filter(item =>
+        subStructureIds.includes(item.manicipalityDemographicId) && 
+        data.activitySubStructure.some(({ name }) => name === item.name)
+    );
+
+    this.onDemographicSubStructuresChange();
+
+    const subDistrictIds = data?.activitySubDistrict?.map(({ substructureId }) => substructureId);
+    this.selectedSubDistrictDemographics = this.SubDistrictDemographics.filter(item =>
+    subDistrictIds.includes(item.subSctrcureDemographicId) && 
+    data.activitySubDistrict.some(({ name }) => name === item.name)
+    );
     return activity;
   }
 
@@ -499,16 +731,16 @@ export class QCActivitiesViewComponent implements OnInit {
     this.activity.timelineStartDate = this.activity.timelineStartDate == null ? '' : this._datepipe.transform(this.activity.timelineStartDate, 'yyyy-MM-dd');
     this.activity.timelineEndDate = this.activity.timelineEndDate == null ? '' :  this._datepipe.transform(this.activity.timelineEndDate, 'yyyy-MM-dd');
 
-    this.activity.activitySubProgrammes = [];
-    this.selectedSubProgrammes.forEach(item => {
-      let activitySubProgramme = {
-        activityId: this.activity.id,
-        subProgrammeId: item.id,
-        isActive: true
-      } as IActivitySubProgramme;
+    // this.activity.activitySubProgrammes = [];
+    // this.selectedSubProgrammes.forEach(item => {
+    //   let activitySubProgramme = {
+    //     activityId: this.activity.id,
+    //     subProgrammeId: item.id,
+    //     isActive: true
+    //   } as IActivitySubProgramme;
 
-      this.activity.activitySubProgrammes.push(activitySubProgramme);
-    });
+    //   this.activity.activitySubProgrammes.push(activitySubProgramme);
+    // });
 
     this.activity.activityFacilityLists = [];
     this.selectedFacilities.forEach(item => {
@@ -522,6 +754,59 @@ export class QCActivitiesViewComponent implements OnInit {
     });
 
     this.activity.activityRecipients = this.selectedRecipients;
+
+    this.activity.activityDistrict = [];
+
+    //Check if selectedIDistrictDemographics is not null
+if (this.selectedIDistrictDemographics) {
+  // Create the IActivityDistrict object from the selected district
+  let activityDistrict = {
+    demographicDistrictId: this.selectedIDistrictDemographics.id,
+    name: this.selectedIDistrictDemographics.name,
+    isActive: this.selectedIDistrictDemographics.isActive,
+    activityId: this.activity.id
+  } as IActivityDistrict;
+
+//   // Push the object into the array
+  this.activity.activityDistrict.push(activityDistrict);
+}
+
+this.activity.activityManicipality = [];
+
+  this.selectedManicipalityDemographics.forEach(item => {
+    let activityManicipality = {
+      demographicDistrictId: item.districtDemographicId,
+      name: item.name,
+      isActive: item.isActive,
+      activityId: this.activity.id
+    } as IActivityManicipality;
+
+    this.activity.activityManicipality.push(activityManicipality);
+  });
+
+  this.activity.activitySubStructure = [];
+  this.selectedSubstructureDemographics.forEach(item => {
+    let selectedSubStructure = {
+      name: item.name,
+      municipalityId: item.manicipalityDemographicId,
+      isActive: item.isActive,
+      activityId: this.activity.id
+    } as IActivitySubStructure;
+
+    this.activity.activitySubStructure.push(selectedSubStructure);
+  });
+
+  this.activity.activitySubDistrict = [];
+  this.selectedSubDistrictDemographics.forEach(item => {
+    let selectedSubDistrict = {
+      name: item.name,
+      substructureId: item.subSctrcureDemographicId,
+      isActive: item.isActive,
+      activityId: this.activity.id
+    } as IActivitySubDistrict;
+
+    this.activity.activitySubDistrict.push(selectedSubDistrict);
+  });
 
     this._dropdownRepo.createActivityList({ name: this.activity.name, description: this.activity.description, isActive: true } as IActivityList).subscribe(
       (resp) => {
@@ -1063,28 +1348,27 @@ export class QCActivitiesViewComponent implements OnInit {
 
 
   private bidForm(status: StatusEnum) {
-    this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`);
-    // this.application.status = null;
-    // this.application.statusId = status;
-    // const applicationIdOnBid = this.fundingApplicationDetails;
+    this.application.status = null;
+    this.application.statusId = status;
+    const applicationIdOnBid = this.fundingApplicationDetails;
 
-    // if (applicationIdOnBid.id == null) {
-    //   this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
-    //     //this._menuActions[1].visible = false;
-    //     this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`);
-    //     this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-    //     resp;
-    //   });
-    // }
-    // else {
-    //   this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
-    //     if (resp) {
-    //       this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`);
-    //       this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
-    //     }
-    //   });
+    if (applicationIdOnBid.id == null) {
+      this._bidService.addBid(this.fundingApplicationDetails).subscribe(resp => {
+        //this._menuActions[1].visible = false;
+        this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`);
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+        resp;
+      });
+    }
+    else {
+      this._bidService.editBid(this.fundingApplicationDetails.id, this.fundingApplicationDetails).subscribe(resp => {
+        if (resp) {
+          this._router.navigateByUrl(`application/edit/${this.application.id}/${this.activeStep}`);
+          this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Information successfully saved.' });
+        }
+      });
       
-    // }
+    }
     if (status == StatusEnum.PendingReview) {
 
       this.application.statusId = status;
