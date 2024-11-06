@@ -26,6 +26,8 @@ namespace NPOMS.Domain.Entities
         public int QaurterId { get; set; }
         public int ApplicationId { get; set; }
 
+        public int ServiceDeliveryAreaId { get; set; }
+
         public int FinancialYearId { get; set; }
         
         public int CreatedUserId { get; set; }

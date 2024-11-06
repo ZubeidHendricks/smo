@@ -132,7 +132,7 @@ const routes: Routes = [
   { path: 'print/:id/3', outlet: 'print', component: DownloadQuickCaptureDohComponent },
   { path: 'print/:id/4', outlet: 'print', component: DownloadWorkplanComponent },
   { 
-    path: 'print/:id/:year/:qtr/5', 
+    path: 'print/:id/:year/:qtr/:sda/5', 
     outlet: 'print', 
     component: ReportDownloadComponent 
   },

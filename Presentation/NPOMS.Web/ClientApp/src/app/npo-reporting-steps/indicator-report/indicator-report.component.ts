@@ -28,6 +28,8 @@ import { finalize, tap } from 'rxjs/operators';
 
 export class IndicatorReportComponent implements OnInit {
   @Input() selectedQuarter!: number;
+  @Input() selectedsda!: number;
+  
   displayVieHistoryDialog: boolean;
   @Output() rightHeaderIndicatorChange = new EventEmitter<string>();
 
@@ -37,6 +39,11 @@ export class IndicatorReportComponent implements OnInit {
         this.quarterId = quarter;
         this.filterDataByQuarter(quarter);
     }
+
+    if (changes['selectedsda'] && changes['selectedsda'].currentValue) {
+      const selectedsda = changes['selectedsda'].currentValue;
+      this.serviceDeliveryAreaId = selectedsda;
+  }
 }
 
 filterDataByQuarter(quarter: number) {
@@ -96,6 +103,8 @@ filterDataByQuarter(quarter: number) {
   mergedList: any[] = [];
   npoName: string;
   quarterId: number;
+  sdaId: number;
+  serviceDeliveryAreaId: number;
   public get RoleEnum(): typeof RoleEnum {
     return RoleEnum;
   }
@@ -369,16 +378,14 @@ createMergedList() {
         const actualData = this.actuals.find(act => 
           act.indicatorId === +indicator.id && 
           act.financialYearId === this.selectedFinancialYear.id && 
-          act.qaurterId === this.quarterId
+          act.qaurterId === this.quarterId &&
+          act.serviceDeliveryAreaId === this.serviceDeliveryAreaId
       );
       // Use found actualData if available, otherwise create a new object
       const actuals = actualData ? { ...actualData } : this.createEmptyActual(indicator);
 
       // Call setTargetsBasedOnFrequency with the actuals object
       this.setTargetsBasedOnFrequency(actuals, indicator);
-
-      console.log('actuals', actuals); // Ensure the `actuals` object includes `status`
-
       this.mergedList.push({
           ...indicator,
           actuals
@@ -527,6 +534,7 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
       adjustedActual: 0,
       adjustedVariance: 0,
       applicationId: 0,
+      serviceDeliveryAreaId: 0,
       qaurterId: 0,
       actual: 0,
       documents: [],
@@ -1045,6 +1053,7 @@ addOther() {
     adjustedActual: 0,
     adjustedVariance: 0,
     applicationId: 0,
+    serviceDeliveryAreaId: 0,
     subProgrammeId: 0,
     programmeId: 0,
     subProgrammeTypeId: 0,
@@ -1125,6 +1134,7 @@ saveActual(rowData: any) {
   actualobj.applicationId = this.application.id;
   actualobj.financialYearId = this.application.applicationPeriod.financialYear.id;
   actualobj.qaurterId = this.quarterId;
+  actualobj.serviceDeliveryAreaId = this.serviceDeliveryAreaId;
   actualobj.comments = rowData.comments;
 
   // Check if it's a new actual or an update

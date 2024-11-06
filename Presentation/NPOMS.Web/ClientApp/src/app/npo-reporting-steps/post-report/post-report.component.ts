@@ -26,7 +26,10 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 
 export class PostReportComponent implements OnInit {
   @Input() selectedQuarter!: number;
+  @Input() selectedsda!: number;
   quarterId: number;
+
+  
   @Output() rightHeaderChangepost = new EventEmitter<string>();
   displayVieHistoryDialog: boolean;
 
@@ -36,6 +39,11 @@ export class PostReportComponent implements OnInit {
           this.quarterId = quarter;
           this.filterDataByQuarter(quarter);
       }
+
+      if (changes['selectedsda'] && changes['selectedsda'].currentValue) {
+        const selectedsda = changes['selectedsda'].currentValue;
+        this.serviceDeliveryAreaId = selectedsda;
+    }
   }
 
   filterDataByQuarter(quarter: number) {
@@ -80,7 +88,7 @@ export class PostReportComponent implements OnInit {
   selectedDepartmentSummary: IDepartment;
 
   selectedQuartersText: string = '';
-
+  serviceDeliveryAreaId: number;
   posts: IPosts[] = [];
   filteredposts: IPosts[] = [];
   post: IPosts = {} as IPosts;
@@ -432,6 +440,7 @@ export class PostReportComponent implements OnInit {
     this._spinner.show();
     this.baseCompleteViewModel.applicationId = this.application.id;
     this.baseCompleteViewModel.quarterId = this.quarterId;
+    this.baseCompleteViewModel.serviceDeliveryAreaId = this.serviceDeliveryAreaId;
     this.baseCompleteViewModel.finYear = this.application.applicationPeriod.financialYear.id;
 
     this._applicationRepo.completePostAction(this.baseCompleteViewModel).subscribe(
@@ -556,6 +565,7 @@ onDemographicSubStructuresChange() {
   postobj.applicationId = this.application.id;
   postobj.financialYearId = this.application.applicationPeriod.financialYear.id;
   postobj.qaurterId = this.quarterId;
+  postobj.serviceDeliveryAreaId = this.serviceDeliveryAreaId;
 
   postobj.isActive = true;
   postobj.id = rowData.id
@@ -568,10 +578,11 @@ onDemographicSubStructuresChange() {
 }
 
 createPost(post: IPosts) {
+  console.log('sda',post);
     this._spinner.show();
     this._applicationRepo.createPost(post).subscribe(
       (resp) => {
-        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: ' Successfully added.' });
         this.loadPosts();
       },
       (err) => {
@@ -585,7 +596,7 @@ updatePost(post: IPosts) {
     this._applicationRepo.updatePost(post).subscribe(
       (resp) => {
        // this.loadPosts();
-        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully updated.' });
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Successfully updated.' });
       },
       (err) => {
         this._loggerService.logException(err);
@@ -601,12 +612,10 @@ private loadPosts() {
         this.posts = results;
         if(this.quarterId > 0)
         {
-          this.filteredposts = this.posts.filter(x => x.qaurterId === this.quarterId);
+          this.filteredposts = this.posts.filter(x => x.qaurterId === this.quarterId && x.serviceDeliveryAreaId === this.serviceDeliveryAreaId);
           this.filteredposts.forEach(row => {
             row.isEditable = !(row.id > 0);
           });
-          //this.filterDataByQuarter(this.quarterId)
-          this.filteredposts = this.posts.filter(x => x.qaurterId === this.quarterId);
           this.rightHeaderChangepost.emit('Pending');
           const allComplete = this.filteredposts.length > 0 && this.filteredposts.every(dip => dip.statusId === 24);
           const allSubmitted = this.filteredposts.length > 0 && this.filteredposts.every(dip => dip.statusId === 19);
@@ -753,6 +762,7 @@ addNewRow() {
       qaurterId: 0,
       financialYearId: 0,
       applicationId: 0,
+      serviceDeliveryAreaId: 0,
       isActive: true,  
       comments: '', 
       status: {} as IStatus,

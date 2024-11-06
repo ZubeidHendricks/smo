@@ -21,6 +21,8 @@ namespace NPOMS.Domain.Entities
 
         public int ApplicationId { get; set; }
 
+        public int ServiceDeliveryAreaId { get; set; }
+
         public string Progress { get; set; }
 
         public int QaurterId { get; set; }

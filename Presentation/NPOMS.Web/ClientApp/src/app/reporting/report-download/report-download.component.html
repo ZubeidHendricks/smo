@@ -16,6 +16,14 @@
                    class="grey-button" 
                    >
            </button>
+
+           <p-dropdown 
+           [(ngModel)]="selectedOption" 
+           [options]="sdas" 
+           optionLabel="name"
+           placeholder="Select Service Delivery Area">
+       </p-dropdown>
+
            <button pButton 
                    label="Quarter 1" 
                    [ngClass]="{'p-button-primary': activeButton === 1, 'p-button-secondary': activeButton !== 1}"
@@ -47,7 +55,7 @@
             <span style="margin-left: auto;">{{ indicatordynamicHeaderText }}</span>
         </div>
       </ng-template>
-      <app-report-actuals [application]="application" [selectedQuarter]="activeButton" (rightHeaderIndicatorChange)="onRightHeaderChange($event,'indicator')"></app-report-actuals>
+      <app-report-actuals [application]="application"  [selectedsda]="selectedOptionId"  [selectedQuarter]="activeButton" (rightHeaderIndicatorChange)="onRightHeaderChange($event,'indicator')"></app-report-actuals>
 
 
     <ng-template pTemplate="header">
@@ -56,7 +64,7 @@
             <span style="margin-left: auto;">{{ postdynamicHeaderText }}</span>
         </div>
     </ng-template>
-    <app-post-report [application]="application" [selectedQuarter]="activeButton" (rightHeaderChangepost)="onRightHeaderChange($event,'post')"></app-post-report>
+    <app-post-report [application]="application"  [selectedsda]="selectedOptionId"  [selectedQuarter]="activeButton" (rightHeaderChangepost)="onRightHeaderChange($event,'post')"></app-post-report>
 
 
     <ng-template pTemplate="header">
@@ -65,7 +73,7 @@
             <span style="margin-left: auto;">{{ incomedynamicHeaderText }}</span>
         </div>
     </ng-template>
-    <app-details-of-income-and-and-expenditure-report [application]="application" [selectedQuarter]="activeButton" (incomerightHeaderChange)="onRightHeaderChange($event,'income')"></app-details-of-income-and-and-expenditure-report>
+    <app-details-of-income-and-and-expenditure-report [application]="application"  [selectedsda]="selectedOptionId"  [selectedQuarter]="activeButton" (incomerightHeaderChange)="onRightHeaderChange($event,'income')"></app-details-of-income-and-and-expenditure-report>
 
     <ng-template pTemplate="header">
         <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
@@ -73,7 +81,7 @@
             <span style="margin-left: auto;">{{ govnencedynamicHeaderText }}</span>
         </div>
     </ng-template>
-    <app-governance-report [application]="application" [selectedQuarter]="activeButton" (govnencerightHeaderChange)="onRightHeaderChange($event,'govnence')"></app-governance-report>
+    <app-governance-report [application]="application"  [selectedsda]="selectedOptionId"  [selectedQuarter]="activeButton" (govnencerightHeaderChange)="onRightHeaderChange($event,'govnence')"></app-governance-report>
 
     <ng-template pTemplate="header">
         <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
@@ -81,7 +89,7 @@
             <span style="margin-left: auto;">{{ otherdynamicHeaderText }}</span>
         </div>
     </ng-template>
-    <app-any-other-information-report [application]="application" [selectedQuarter]="activeButton" (otherrightHeaderChange)="onRightHeaderChange($event,'other')"></app-any-other-information-report>
+    <app-any-other-information-report [application]="application"  [selectedsda]="selectedOptionId"  [selectedQuarter]="activeButton" (otherrightHeaderChange)="onRightHeaderChange($event,'other')"></app-any-other-information-report>
 
     <ng-template pTemplate="header">
         <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
@@ -89,7 +97,7 @@
             <span style="margin-left: auto;">{{ dynamicHeaderText }}</span>
         </div>
     </ng-template>
-    <app-quarterly-sdip-reporting-report [application]="application" [selectedQuarter]="activeButton" (rightHeaderChange)="onRightHeaderChange($event,'sdip')"></app-quarterly-sdip-reporting-report>
+    <app-quarterly-sdip-reporting-report [application]="application"  [selectedsda]="selectedOptionId"  [selectedQuarter]="activeButton" (rightHeaderChange)="onRightHeaderChange($event,'sdip')"></app-quarterly-sdip-reporting-report>
    </p-accordion>
    <div style="height: 20px;"></div>
    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"

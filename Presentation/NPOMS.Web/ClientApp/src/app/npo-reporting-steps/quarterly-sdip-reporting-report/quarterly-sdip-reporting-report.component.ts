@@ -24,10 +24,12 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 
 export class QuarterlySDIPReportingReportComponent implements OnInit {
   @Input() selectedQuarter!: number;
-
+  @Input() selectedsda!: number;
   @Output() rightHeaderChange = new EventEmitter<string>();
 
   quarterId: number;
+
+  serviceDeliveryAreaId: number;
 
   filteredsdips: ISDIP[];
   displayVieHistoryDialog: boolean;
@@ -38,6 +40,11 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
           this.quarterId = quarter;
           this.filterDataByQuarter(quarter);
       }
+
+      if (changes['selectedsda'] && changes['selectedsda'].currentValue) {
+        const selectedsda = changes['selectedsda'].currentValue;
+        this.serviceDeliveryAreaId = selectedsda;
+    }
   }
 
   filterDataByQuarter(quarter: number) {
@@ -284,6 +291,7 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
     this._spinner.show();
     this.baseCompleteViewModel.applicationId = this.application.id;
     this.baseCompleteViewModel.quarterId = this.quarterId;
+    this.baseCompleteViewModel.serviceDeliveryAreaId = this.serviceDeliveryAreaId;
     this.baseCompleteViewModel.finYear = this.application.applicationPeriod.financialYear.id;
 
     this._applicationRepo.completeSDIPAction(this.baseCompleteViewModel).subscribe(
@@ -445,6 +453,7 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
     sdipobj.applicationId = this.application.id;
     sdipobj.financialYearId = this.application.applicationPeriod.financialYear.id;
     sdipobj.qaurterId = this.quarterId;
+    sdipobj.serviceDeliveryAreaId = this.serviceDeliveryAreaId;
     sdipobj.comments = rowData.comments;
 
     if (rowData.id === 0) {
@@ -492,7 +501,7 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
         this.sdips = results;  
         if(this.quarterId > 0)
           {
-            this.filteredsdips = this.sdips?.filter(x => x.qaurterId === this.quarterId);
+            this.filteredsdips = this.sdips?.filter(x => x.qaurterId === this.quarterId && x.serviceDeliveryAreaId === this.serviceDeliveryAreaId);
             this.filteredsdips.forEach(row => {
               row.isEditable = !(row.id > 0);
             });
@@ -523,6 +532,7 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
       progress: '',
       isActive: true,
       applicationId:0,
+      serviceDeliveryAreaId: 0,
       statusId: 0,
       qaurterId: 0,
       comments: '',

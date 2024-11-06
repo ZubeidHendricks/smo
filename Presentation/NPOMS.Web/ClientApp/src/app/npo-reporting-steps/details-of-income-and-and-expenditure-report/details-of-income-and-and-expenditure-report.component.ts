@@ -26,8 +26,11 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
 
 
   @Input() selectedQuarter!: number;
+  @Input() selectedsda!: number;
+
 
   quarterId: number;
+  serviceDeliveryAreaId: number;
   @Output() incomerightHeaderChange = new EventEmitter<string>();
 displayVieHistoryDialog: any;
   ngOnChanges(changes: SimpleChanges) {
@@ -36,6 +39,11 @@ displayVieHistoryDialog: any;
           this.quarterId = quarter;
           this.filterDataByQuarter(quarter);
       }
+
+      if (changes['selectedsda'] && changes['selectedsda'].currentValue) {
+        const selectedsda = changes['selectedsda'].currentValue;
+        this.serviceDeliveryAreaId = selectedsda;
+    }
   }
   filterDataByQuarter(quarter: number) {
     this.loadExpenditure();
@@ -405,7 +413,7 @@ private loadExpenditure() {
       this.expenditures = results;
       if(this.quarterId > 0)
         {
-            this.filteredexpenditure = this.expenditures.filter(x => x.qaurterId === this.quarterId);
+            this.filteredexpenditure = this.expenditures.filter(x => x.qaurterId === this.quarterId && x.serviceDeliveryAreaId === this.serviceDeliveryAreaId);
             if(this.filteredexpenditure.length > 0)
               {
                 this.calculateTotals();
@@ -537,6 +545,7 @@ addNewRow() {
     total: 0,
     isActive: true,
     applicationId:0,
+    serviceDeliveryAreaId: 0,
     statusId:0,
     financialYearId: 0,
     qaurterId: 0,
@@ -554,6 +563,7 @@ completeAction() {
   this._spinner.show();
   this.baseCompleteViewModel.applicationId = this.application.id;
   this.baseCompleteViewModel.quarterId = this.quarterId;
+  this.baseCompleteViewModel.serviceDeliveryAreaId = this.serviceDeliveryAreaId;
   this.baseCompleteViewModel.finYear = this.application.applicationPeriod.financialYear.id;
 
   this._applicationRepo.completeIncomeAction(this.baseCompleteViewModel).subscribe(
@@ -789,6 +799,7 @@ saveExpenditure(rowData: any) {
   let incomeobj = {} as IExpenditure;
   incomeobj.applicationId = this.application.id;
   incomeobj.qaurterId = this.quarterId;
+  incomeobj.serviceDeliveryAreaId = this.serviceDeliveryAreaId;
   incomeobj.financialYearId = this.application.applicationPeriod.financialYear.id;
   incomeobj.costDrivers = rowData.costDrivers;
   incomeobj.income = rowData.income;
@@ -817,7 +828,7 @@ saveExpenditure(rowData: any) {
 createExpenditure(expenditure: IExpenditure) {
   this._applicationRepo.createExpenditureReport(expenditure).subscribe(
     (resp) => {
-      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
+      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Successfully added.' });
       this.loadExpenditure();
       this.displayExpenditureDialog = false;
     },
@@ -832,7 +843,7 @@ createExpenditure(expenditure: IExpenditure) {
 updateExpenditure(expenditure: IExpenditure) {
   this._applicationRepo.updateExpenditure(expenditure).subscribe(
     (resp) => {
-      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
+      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Successfully updated.' });
       //this.loadExpenditure();
       this.displayExpenditureDialog = false;
     },
