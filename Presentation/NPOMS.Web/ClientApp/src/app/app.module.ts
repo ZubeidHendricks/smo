@@ -445,7 +445,7 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     ReportReviewComponent,
     IndicatorImportComponent,
     ReportDownloadComponent,
-    ReportActualsComponent
+    ReportActualsComponent,
     FCApprovalComponent,
     FundingAssessmentListComponent,
     FundingAssessmentFormComponent,
