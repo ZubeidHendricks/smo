@@ -16,11 +16,20 @@ export interface dtoFundingAssessmentApplicationFormGet{
     applicationId: number,
     organisationName: string,
     cCode: string;
+    approverSubmitted: boolean,
+    capturerSubmitted: boolean,
+    doiApproved: boolean,
+    doiCaptured: boolean,
+
+    canSubmit: boolean,
+
     continueWithAssessment: boolean,
     questions: dtoQuestionGet[]
     summaryItems: dtoFundingAssessmentApplicationFormSummaryItemGet[],
     finalApprovalItem: dtoFundingAssessmentApplicationFormFinalApproverItemGet,
-    serviceDeliveries: dtoFundingAssessmentApplicationFormSDAGet[]
+    serviceDeliveries: dtoFundingAssessmentApplicationFormSDAGet[],
+
+    legislativeComplianceFinalCommentRequired: boolean
 }
 
 export interface dtoFundingAssessmentApplicationFormSummaryItemGet

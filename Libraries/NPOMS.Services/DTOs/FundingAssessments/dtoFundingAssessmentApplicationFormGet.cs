@@ -25,7 +25,7 @@ namespace NPOMS.Services.DTOs.FundingAssessments
         public bool CapturerSubmitted { get; }
         public bool ApproverSubmitted { get; }
 
-
+        public bool CanSubmit => ValidateCanSubmit();
 
 
         public bool ContinueWithAssessment { get; }
@@ -199,23 +199,24 @@ namespace NPOMS.Services.DTOs.FundingAssessments
         {
            // return true;
 
-            var question = this.Questions.FirstOrDefault(x => x.QuestionSectionName == "Legislative Compliance" && x.Name == "Approval");
+            var questionApproval = this.Questions.FirstOrDefault(x => x.QuestionSectionName == "Legislative Compliance" && x.Name == "Approval");
+            var questionFinalComment = this.Questions.FirstOrDefault(x => x.QuestionSectionName == "Legislative Compliance" && x.Name == "Final comment");
 
-            if (question == null)
+            if (questionApproval == null || questionFinalComment == null)
                 return false;
 
-            var selectedResponse = question.ResponseOptions.FirstOrDefault(x => x.Id == question.SelectedResponseOptionId);
-            if (selectedResponse == null) return false;
+            var selectedResponseApproval = questionApproval.ResponseOptions.FirstOrDefault(x => x.Id == questionApproval.SelectedResponseOptionId);
+            if (selectedResponseApproval == null) return false;
 
 
-            if (selectedResponse.Name.ToLower().Equals("approved"))
+            if (selectedResponseApproval.Name.ToLower().Equals("approved"))
             {
                 return true;
             }
-            else if (selectedResponse.Name.ToLower().Equals("approved with condition") && (question.Comment.Length > 0))
+            else if (selectedResponseApproval.Name.ToLower().Equals("approved with conditions"))
             {
-                LegislativeComplianceFinalCommentRequired = true;
-                return true;
+                LegislativeComplianceFinalCommentRequired = questionFinalComment.Comment.Length == 0;
+                return questionFinalComment.Comment.Length > 0;
             }
             else
             {
@@ -241,7 +242,35 @@ namespace NPOMS.Services.DTOs.FundingAssessments
             }
 
         }
-    
+
+        private bool ValidateCanSubmit()
+        {
+            if (this.CapturerSubmitted == false)
+            {
+                return this.ValidateCapturerCanSubmit();
+            }
+            else if (this.ApproverSubmitted == false)
+            {
+                return this.ValidateApproverCanSubmit();
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private bool ValidateCapturerCanSubmit()
+        {
+            var canSubmit = false;
+            return canSubmit;
+        }
+
+        private bool ValidateApproverCanSubmit()
+        {
+            var canSubmit = false;
+            return canSubmit;
+        }
+
     }
 
 
