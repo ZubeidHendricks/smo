@@ -37,7 +37,7 @@ import { AccordionModule } from 'primeng/accordion';
 import { MenuModule } from 'primeng/menu';
 import { ScrollTopModule } from 'primeng/scrolltop';
 import { ToggleButtonModule } from 'primeng/togglebutton';
-
+import {RadioButtonModule} from 'primeng/radiobutton';
 
 // B2B / B2C
 import { IPublicClientApplication, PublicClientApplication, InteractionType, BrowserCacheLocation, LogLevel } from '@azure/msal-browser';
@@ -212,6 +212,9 @@ import { FundingCaptureListComponent } from './components/funding-capture/fundin
 import { EditFundingCaptureComponent } from './components/funding-capture/edit-funding-capture/edit-funding-capture.component';
 import { FCFundingDetailComponent } from './components/funding-capture/fc-steps/fc-funding-detail/fc-funding-detail.component';
 import { FCApprovalComponent } from './components/funding-capture/fc-steps/fc-approval/fc-approval.component';
+import { FundingAssessmentListComponent } from './components/funding-assessment/funding-assessment-list/funding-assessment-list.component';
+import { FundingAssessmentFormComponent } from './components/funding-assessment/funding-assessment-form/funding-assessment-form.component';
+import { FundingAssessmentFormQuestionSectionComponent } from './components/funding-assessment/funding-assessment-form-questionsection/funding-assessment-form-questionsection.component';
 
 import { NpoReportCaptureComponent } from './reporting/npo-report-capture/npo-report-capture.component';
 import { IndicatorReportComponent } from './npo-reporting-steps/indicator-report/indicator-report.component';
@@ -443,6 +446,10 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     IndicatorImportComponent,
     ReportDownloadComponent,
     ReportActualsComponent
+    FCApprovalComponent,
+    FundingAssessmentListComponent,
+    FundingAssessmentFormComponent,
+    FundingAssessmentFormQuestionSectionComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
@@ -487,7 +494,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     MenuModule,
     ScrollTopModule,
     EditorModule,
-    ToggleButtonModule
+    ToggleButtonModule,
+    RadioButtonModule
   ],
   providers: [
     {

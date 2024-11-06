@@ -214,6 +214,16 @@ export class NavigationComponent implements OnInit {
         });
       }
 
+      if (this.IsAuthorized(PermissionsEnum.ViewFundingCaptureMenu)) {
+        this.mainMenu.push({
+          label: 'Funding Assessment',
+          icon: 'fa fa-list wcg-icon',
+          command: () => {
+            this._router.navigateByUrl('funding-assessment');
+          }
+        });
+      }
+
       if (this.IsAuthorized(PermissionsEnum.ViewAdminMenu)) {
         this.mainMenu.push({
           label: 'Admin',
