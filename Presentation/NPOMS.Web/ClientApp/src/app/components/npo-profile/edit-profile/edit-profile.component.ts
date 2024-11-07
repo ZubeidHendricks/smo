@@ -857,6 +857,9 @@ private loadTitles() {
       deliveryDetails : this._npoProfileRepo.getProgrammeDeliveryDetailsById(progId,Number(this.npoProfileId))
     }).subscribe({
       next: (result) => {
+
+        console.log("test", result, subProgId, subProgTypeId);
+
         this.programContactInformation = result.contacts.filter(x=> x.subProgrammeId === subProgId && x.subProgrammeTypeId === subProgTypeId);
         this.programBankDetails = result.bankDetails.filter(x=> x.subProgrammeId === subProgId && x.subProgrammeTypeId === subProgTypeId);
         this.programDeliveryDetails = result.deliveryDetails.filter(x=> x.subProgrammeId === subProgId && x.subProgrammeTypeId === subProgTypeId);
@@ -1462,6 +1465,7 @@ private loadTitles() {
   private getProgrammeDeliveryDetailsById(selectedProgramme: number, selectedSubProgramme: number, selectedSubProgrammeType: number) {
     this._npoProfileRepo.getProgrammeDeliveryDetailsById(selectedProgramme,Number(this.npoProfileId)).subscribe(
       (results) => {
+        console.log("test1", results, this.selectedSubProgramme, this.selectedSubProgrammeType);
         this.programDeliveryDetails = results.filter(x=> x.subProgrammeId === selectedSubProgramme && x.subProgrammeTypeId === selectedSubProgrammeType );
         this.updateServicesRenderedObjects();
       },

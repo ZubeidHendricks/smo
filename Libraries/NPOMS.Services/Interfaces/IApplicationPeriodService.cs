@@ -8,7 +8,9 @@ namespace NPOMS.Services.Interfaces
 	{
 		Task<IEnumerable<ApplicationPeriod>> Get(string userIdentifier);
 
-		Task<ApplicationPeriod> GetById(int id);
+        Task<IEnumerable<ApplicationPeriod>> Get();
+
+        Task<ApplicationPeriod> GetById(int id);
 
 		Task Create(ApplicationPeriod model, string userIdentifier);
 
