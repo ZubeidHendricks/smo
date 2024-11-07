@@ -39,6 +39,12 @@ export class FundingAssessmentManagementService {
     return this._http.put<any>(url, null, httpOptions);
   }
 
+
+  public onSubmitForm(applicationId: number) {
+    const url = `${this._envUrl.urlAddress}/api/funding-assessments/0/application/${applicationId}/submit-form`;
+    return this._http.put<any>(url, null, httpOptions);
+  }
+
   public upsertQuestionResponse(dto: dtoFundingAssessmentFormQuestionResponseUpsert) {
     const url = `${this._envUrl.urlAddress}/api/funding-assessments/${dto.assessmentApplicationFormId}/question/${dto.id}/responses`;
     return this._http.put<any>(url, dto, httpOptions);

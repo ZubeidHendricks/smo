@@ -20,6 +20,11 @@ namespace NPOMS.Domain.FundingAssessment
         public DateTime  DOICapturedDateTime { get;  }
         public int? DOIApproverId { get; private set; }
         public DateTime? DOIApprovedDateTime { get; private set; }
+        public int? SubmittedCapturerId { get; private set; }
+        public DateTime? SubmittedCapturerDateTime { get; private set; }
+
+        public int? SubmittedApproverId { get; private set; }
+        public DateTime? SubmittedApproverDateTime { get; private set; }
 
         public int CreatedUserId { get;  }
 
@@ -59,6 +64,26 @@ namespace NPOMS.Domain.FundingAssessment
 
             this.UpdatedUserId = loggedInUserId;
             this.UpdatedDateTime    = DateTime.UtcNow;
+        }
+
+        public void SubmitForm(int loggedInUserId)
+        {
+            if (this.SubmittedCapturerId == null)
+            {
+                this.SubmittedCapturerId = loggedInUserId;
+                this.SubmittedCapturerDateTime = DateTime.UtcNow;
+
+                this.UpdatedUserId = loggedInUserId;
+                this.UpdatedDateTime = DateTime.UtcNow;
+            }
+            else
+            {
+                this.SubmittedApproverId = loggedInUserId;
+                this.SubmittedApproverDateTime = DateTime.UtcNow;
+
+                this.UpdatedUserId = loggedInUserId;
+                this.UpdatedDateTime = DateTime.UtcNow;
+            }
         }
 
         public void UpsertSDAs(ProgrameServiceDeliveryArea programeServiceDeliveryArea, bool isSelected)

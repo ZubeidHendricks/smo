@@ -131,6 +131,19 @@ namespace NPOMS.Services.Implementation
             }
         }
 
+        public async Task SubmitForm(int applicationId, string loggedInUsername)
+        {
+            var loggedInUser = await this._repositoryContext.Users.Where(x => x.UserName == loggedInUsername).FirstOrDefaultAsync();
+            var fundingAssessmentForm = await this._repositoryContext.FundingAssessmentForms
+                                   .FirstOrDefaultAsync(x => x.ApplicationId == applicationId);
+
+            if (fundingAssessmentForm != null)
+            {
+                fundingAssessmentForm.SubmitForm(loggedInUser.Id);
+                await this._repositoryContext.SaveChangesAsync();
+            }
+        }
+
         public async Task UpsertQuestionResponse(dtoFundingAssessmentFormQuestionResponseUpsert dto, string loggedInUsername)
         {
             var loggedInUser = await this._repositoryContext.Users.Where(x => x.UserName == loggedInUsername).FirstOrDefaultAsync();

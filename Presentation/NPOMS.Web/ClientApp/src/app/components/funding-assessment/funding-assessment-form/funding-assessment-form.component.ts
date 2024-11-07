@@ -10,6 +10,7 @@ import { PermissionsEnum } from 'src/app/models/enums';
 import { IUser } from 'src/app/models/interfaces';
 import { dtoFundingAssessmentApplicationFormFinalApproverItemGet, dtoFundingAssessmentApplicationFormGet, dtoFundingAssessmentApplicationFormSDAGet, dtoFundingAssessmentApplicationFormSDAUpsert, dtoFundingAssessmentApplicationFormSummaryItemGet, dtoFundingAssessmentApplicationGet, dtoFundingAssessmentFormQuestionResponseUpsert } from 'src/app/services/api-services/funding-assessment-management/dtoFundingAssessmentManagement';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { FundingAssessmentUIEventsService } from '../funding-assessment-ui-events.service';
 
 @Component({
   selector: 'app-funding-assessment-form',
@@ -38,6 +39,7 @@ export class FundingAssessmentFormComponent implements OnInit {
   _buttonItems: MenuItem[];
   _fundingAssessments: dtoFundingAssessmentApplicationGet[];
   _showDOIDialog: boolean = false;
+  _showSubmitDialog: boolean = false;
   _doiApprover: boolean = false;
   _showFundingAssessment: boolean = false;
 
@@ -61,7 +63,8 @@ export class FundingAssessmentFormComponent implements OnInit {
     private _loggerService: LoggerService,
     private _confirmationService: ConfirmationService,
     private _messageService: MessageService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private uiEvents: FundingAssessmentUIEventsService
   ) { }
 
   ngOnInit(): void {
@@ -149,14 +152,14 @@ export class FundingAssessmentFormComponent implements OnInit {
         } as dtoFundingAssessmentFormQuestionResponseUpsert;
     
         this._repo.upsertQuestionResponse(response).subscribe(x => {
-          
+          this.uiEvents.onResponseChanged();
         });
   }
 
   onServiceDeliveryAreaModelChange(event: any, dto: dtoFundingAssessmentApplicationFormSDAGet){
    let dtoPayload = {id: dto.id, fundingAssessmentFormId: this.fundingAssessmentForm.id, programServiceDeliveryAreaId: dto.programServiceDeliveryAreaId, isSelected: dto.isSelected} as dtoFundingAssessmentApplicationFormSDAUpsert;
     this._repo.upsertSDA(this.fundingAssessmentForm.id, this.fundingAssessmentForm.applicationId, dtoPayload).subscribe(x => {
-          
+      this.uiEvents.onResponseChanged();   
     });
   }
 
@@ -172,7 +175,29 @@ export class FundingAssessmentFormComponent implements OnInit {
     } as dtoFundingAssessmentFormQuestionResponseUpsert;
 
     this._repo.upsertQuestionResponse(response).subscribe(x => {
-      
+      this.uiEvents.onResponseChanged();
     });
-}
+  }
+
+  confirmSubmit()
+  {
+    this._showSubmitDialog = false;
+  }
+
+  onConfirmSubmit()
+  {
+    this._spinner.show();
+    this._repo.onSubmitForm(this.fundingAssessmentForm.applicationId).subscribe(
+      (result) => {
+        this._showSubmitDialog = false;
+        this._spinner.hide();
+
+        window.location.reload();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
 }

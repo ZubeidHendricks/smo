@@ -215,8 +215,8 @@ namespace NPOMS.Services.DTOs.FundingAssessments
             }
             else if (selectedResponseApproval.Name.ToLower().Equals("approved with conditions"))
             {
-                LegislativeComplianceFinalCommentRequired = questionFinalComment.Comment.Length == 0;
-                return questionFinalComment.Comment.Length > 0;
+                LegislativeComplianceFinalCommentRequired = (questionFinalComment.Comment?.Length ?? 0) == 0;
+                return (questionFinalComment.Comment?.Length ?? 0) > 0;
             }
             else
             {
@@ -262,6 +262,23 @@ namespace NPOMS.Services.DTOs.FundingAssessments
         private bool ValidateCapturerCanSubmit()
         {
             var canSubmit = false;
+
+            var finalScore = this.SummaryItems.FirstOrDefault(x => x.Name == "Final Score");
+            var summaryItems = this.SummaryItems.Where(x => x.Name != "Final Score");
+
+           
+            canSubmit = summaryItems.Where(x => x.SelectedResponseOptionId != null).Count() == summaryItems.Count();
+
+            if (canSubmit)
+            { 
+                canSubmit = this.ServiceDeliveries.Count() > 0;
+            }
+
+            if (canSubmit)
+            {
+                canSubmit = this.ServiceDeliveries.Where(x=>x.IsSelected).Count() > 0;
+            }
+
             return canSubmit;
         }
 
@@ -270,6 +287,8 @@ namespace NPOMS.Services.DTOs.FundingAssessments
             var canSubmit = false;
             return canSubmit;
         }
+
+
 
     }
 

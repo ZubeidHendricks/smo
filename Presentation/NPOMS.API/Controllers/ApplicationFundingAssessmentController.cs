@@ -84,6 +84,21 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpPut("{id}/application/{applicationId}/submit-form", Name = "SubmitForm")]
+        public async Task<IActionResult> SubmitForm(int id, int applicationId)
+        {
+            try
+            {
+                await this._applicationFundingAssessmentService.SubmitForm(applicationId, base.GetUserIdentifier());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside ConfirmDOICapturer action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpPut("{id}/question/{questionId}/responses", Name = "UpsertQuestionResponse")]
         public async Task<IActionResult> UpsertQuestionResponse(int id, [FromBody] dtoFundingAssessmentFormQuestionResponseUpsert dto)
         {
