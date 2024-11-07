@@ -48,7 +48,7 @@
           </ng-template>
 
           <ng-template pTemplate="emptymessage">
-            <tr class="default-font">
+            <tr [ngStyle]="{'background-color': fundingAssessmentForm.serviceDeliveries.length === 0 ? '#ffcccc' : 'transparent'}">
                 <td colspan="5" style="text-align: center;">No Service Delivery Areas are found</td>
             </tr>
         </ng-template>
@@ -163,7 +163,7 @@
       <!-- Submit Button -->
       <p-panel>
         <div style="text-align: right; margin-top: 10px;">
-          <button pButton type="button" label="Submit" icon="pi pi-check" [disabled]="!fundingAssessmentForm.canSubmit"></button>
+          <button pButton type="button" label="Submit" icon="pi pi-check" [disabled]="!fundingAssessmentForm.canSubmit" (click)="confirmSubmit()"></button>
 
         </div>
       </p-panel>
@@ -171,4 +171,16 @@
   </div>
 
 
-</div>
+
+<p-dialog header="Submit Form" [(visible)]="_showSubmitDialog" [modal]="true" [style]="{width: '50vw'}"
+    [maximizable]="false" [resizable]="false">
+    <div style="padding: 10px; background-color: lightgray">
+        <p>
+          Please confirm that you want to submit the completed form.
+        </p>
+      </div>
+    <p-footer>
+        <button type="submit" pButton icon="fa fa-thumbs-o-up" 
+            class="ui-button-success" label="Submit" (click) = "onConfirmSubmit()"></button>
+    </p-footer>
+</p-dialog>
