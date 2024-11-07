@@ -19,6 +19,12 @@
                     class="grey-button" 
                     >
             </button>
+            <!-- <input 
+            type="text" 
+            placeholder="Enter Target Group" 
+            [(ngModel)]="customText"
+            (keyup)="onKeyUp($event)"
+            style="width: 200px; padding: 5px;"> -->
                 <p-dropdown 
                     [(ngModel)]="selectedOption" 
                     [options]="sdas" 
@@ -71,7 +77,7 @@
                     <span style="margin-left: auto;">{{ indicatordynamicHeaderText }}</span>
                 </div>
             </ng-template>
-            <app-indicator-report [application]="application" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (rightHeaderIndicatorChange)="onRightHeaderChange($event,'indicator')"></app-indicator-report>
+            <app-indicator-report [application]="application" [selectedGroup]="targetGroup" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (rightHeaderIndicatorChange)="onRightHeaderChange($event,'indicator')"></app-indicator-report>
         </p-accordionTab>
 
         <p-accordionTab>
@@ -81,7 +87,7 @@
                     <span style="margin-left: auto;">{{ postdynamicHeaderText }}</span>
                 </div>
             </ng-template>
-            <app-post-report [application]="application" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (rightHeaderChangepost)="onRightHeaderChange($event,'post')"></app-post-report>
+            <app-post-report [application]="application" [selectedGroup]="targetGroup" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (rightHeaderChangepost)="onRightHeaderChange($event,'post')"></app-post-report>
         </p-accordionTab>
         
         <p-accordionTab>
@@ -91,7 +97,7 @@
                     <span style="margin-left: auto;">{{ incomedynamicHeaderText }}</span>
                 </div>
             </ng-template>
-            <app-details-of-income-and-and-expenditure-report [selectedsda]="selectedOptionId" [application]="application" [selectedQuarter]="activeButton" (incomerightHeaderChange)="onRightHeaderChange($event,'income')"></app-details-of-income-and-and-expenditure-report>
+            <app-details-of-income-and-and-expenditure-report [selectedsda]="selectedOptionId" [selectedGroup]="targetGroup" [application]="application" [selectedQuarter]="activeButton" (incomerightHeaderChange)="onRightHeaderChange($event,'income')"></app-details-of-income-and-and-expenditure-report>
         </p-accordionTab>
         
         <p-accordionTab>
@@ -101,7 +107,7 @@
                     <span style="margin-left: auto;">{{ govnencedynamicHeaderText }}</span>
                 </div>
             </ng-template>
-            <app-governance-report [application]="application" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (govnencerightHeaderChange)="onRightHeaderChange($event,'govnence')"></app-governance-report>
+            <app-governance-report [application]="application" [selectedGroup]="targetGroup" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (govnencerightHeaderChange)="onRightHeaderChange($event,'govnence')"></app-governance-report>
         </p-accordionTab>
 
         <p-accordionTab>
@@ -111,7 +117,7 @@
                     <span style="margin-left: auto;">{{ otherdynamicHeaderText }}</span>
                 </div>
             </ng-template>
-            <app-any-other-information-report [application]="application" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (otherrightHeaderChange)="onRightHeaderChange($event,'other')"></app-any-other-information-report>
+            <app-any-other-information-report [application]="application" [selectedGroup]="targetGroup" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (otherrightHeaderChange)="onRightHeaderChange($event,'other')"></app-any-other-information-report>
         </p-accordionTab>
 
         <p-accordionTab>
@@ -121,7 +127,7 @@
                     <span style="margin-left: auto;">{{ dynamicHeaderText }}</span>
                 </div>
             </ng-template>
-            <app-quarterly-sdip-reporting-report [application]="application" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (rightHeaderChange)="onRightHeaderChange($event,'sdip')"></app-quarterly-sdip-reporting-report>
+            <app-quarterly-sdip-reporting-report [application]="application" [selectedGroup]="targetGroup" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (rightHeaderChange)="onRightHeaderChange($event,'sdip')"></app-quarterly-sdip-reporting-report>
         </p-accordionTab>
         
     </p-accordion>

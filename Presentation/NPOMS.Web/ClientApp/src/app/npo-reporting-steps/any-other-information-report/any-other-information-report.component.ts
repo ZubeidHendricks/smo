@@ -26,10 +26,12 @@ export class AnyOtherInformationReportComponent implements OnInit {
   
   @Input() selectedQuarter!: number;
   @Input() selectedsda!: number;
+  @Input() selectedGroup!: string;
   @Output() otherrightHeaderChange = new EventEmitter<string>();
 
   quarterId: number;
   serviceDeliveryAreaId: number;
+  group: string;
   filteredotherInfors: IOtherInfor[];
   displayVieHistoryDialog: boolean;
 
@@ -44,6 +46,11 @@ export class AnyOtherInformationReportComponent implements OnInit {
         const selectedsda = changes['selectedsda'].currentValue;
         this.serviceDeliveryAreaId = selectedsda;
     }
+
+    if (changes['selectedGroup'] && changes['selectedGroup'].currentValue) {
+      const selectedGroup = changes['selectedGroup'].currentValue;
+      this.group = selectedGroup;
+  }
   }
 
   filterDataByQuarter(quarter: number) {
@@ -262,6 +269,14 @@ export class AnyOtherInformationReportComponent implements OnInit {
       { header: 'Challenges', width: '50%' },
       { header: 'Status', width: '50%' },
     ];
+
+    this.auditCols = [
+      { header: '', width: '5%' },
+      { header: 'Status', width: '55%' },
+      { header: 'User', width: '20%' },
+      { header: 'Date', width: '20%' }
+    ];
+    
 
     this.commentCols = [
       { header: '', width: '5%' },
@@ -537,7 +552,7 @@ addNewRow() {
         this.otherInfors = results; 
         if(this.quarterId > 0)
         {
-            this.filteredotherInfors = this.otherInfors.filter(x => x.qaurterId === this.quarterId && x.serviceDeliveryAreaId === this.serviceDeliveryAreaId);
+            this.filteredotherInfors = this.otherInfors.filter(x => x.qaurterId === this.quarterId && x.serviceDeliveryAreaId === this.serviceDeliveryAreaId );  
 
             // this.filteredotherInfors = this.otherInfors.filter(x => x.qaurterId === quarter);
             this.otherrightHeaderChange.emit('Pending');

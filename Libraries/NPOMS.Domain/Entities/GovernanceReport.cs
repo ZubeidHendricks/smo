@@ -24,6 +24,7 @@ namespace NPOMS.Domain.Entities
         public bool IsActive { get; set; } = true;
 
         public int QaurterId { get; set; }
+   
         public int ApplicationId { get; set; }
 
         public int ServiceDeliveryAreaId { get; set; }

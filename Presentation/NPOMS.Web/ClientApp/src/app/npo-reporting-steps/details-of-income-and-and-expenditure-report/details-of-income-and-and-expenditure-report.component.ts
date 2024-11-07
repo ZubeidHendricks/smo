@@ -27,10 +27,12 @@ export class DetailsOfIncomeAndAndExpenditureReportComponent implements OnInit {
 
   @Input() selectedQuarter!: number;
   @Input() selectedsda!: number;
+  @Input() selectedGroup!: string;
 
 
   quarterId: number;
   serviceDeliveryAreaId: number;
+  group:string;
   @Output() incomerightHeaderChange = new EventEmitter<string>();
 displayVieHistoryDialog: any;
   ngOnChanges(changes: SimpleChanges) {
@@ -44,6 +46,10 @@ displayVieHistoryDialog: any;
         const selectedsda = changes['selectedsda'].currentValue;
         this.serviceDeliveryAreaId = selectedsda;
     }
+    if (changes['selectedGroup'] && changes['selectedGroup'].currentValue) {
+      const selectedGroup = changes['selectedGroup'].currentValue;
+      this.group = selectedGroup;
+  }
   }
   filterDataByQuarter(quarter: number) {
     this.loadExpenditure();
@@ -267,6 +273,13 @@ displayVieHistoryDialog: any;
       { header: 'Comment', width: '55%' },
       { header: 'Created User', width: '20%' },
       { header: 'Created Date', width: '20%' }
+    ];
+
+    this.auditCols = [
+      { header: '', width: '5%' },
+      { header: 'Status', width: '55%' },
+      { header: 'User', width: '20%' },
+      { header: 'Date', width: '20%' }
     ];
 
     this.reviewerSatisfactionCols = [

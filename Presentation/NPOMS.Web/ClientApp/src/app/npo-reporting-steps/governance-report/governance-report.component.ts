@@ -28,10 +28,12 @@ export class GovernanceReportComponent implements OnInit {
   
   @Input() selectedQuarter!: number;
   @Input() selectedsda!: number;
+  @Input() selectedGroup!: string;
   @Output() govnencerightHeaderChange = new EventEmitter<string>();
 
   quarterId: number;
   serviceDeliveryAreaId: number;
+  group:string;
   displayVieHistoryDialog: boolean;
   ngOnChanges(changes: SimpleChanges) {
       if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
@@ -44,6 +46,11 @@ export class GovernanceReportComponent implements OnInit {
         const selectedsda = changes['selectedsda'].currentValue;
         this.serviceDeliveryAreaId = selectedsda;
     }
+
+    if (changes['selectedGroup'] && changes['selectedGroup'].currentValue) {
+      const selectedGroup = changes['selectedGroup'].currentValue;
+      this.group = selectedGroup;
+  }
   }
 
   filterDataByQuarter(quarter: number) {
@@ -283,7 +290,14 @@ export class GovernanceReportComponent implements OnInit {
       { header: 'Created User', width: '20%' },
       { header: 'Created Date', width: '20%' }
     ];
-
+    
+    this.auditCols = [
+      { header: '', width: '5%' },
+      { header: 'Status', width: '55%' },
+      { header: 'User', width: '20%' },
+      { header: 'Date', width: '20%' }
+    ];
+    
     this.reviewerSatisfactionCols = [
       { header: '', width: '5%' },
       { header: 'Is Satisfied', width: '25%' },
@@ -656,7 +670,7 @@ preventChange(event: any): void {
         this.governances = results;
         if(this.quarterId > 0)
           {
-            this.filteredgov= this.governances.filter(x => x.qaurterId === this.quarterId && x.serviceDeliveryAreaId === this.serviceDeliveryAreaId); 
+            this.filteredgov= this.governances.filter(x => x.qaurterId === this.quarterId && x.serviceDeliveryAreaId === this.serviceDeliveryAreaId );  
 
             this.govnencerightHeaderChange.emit('Pending');
             this.filteredgov = this.governances.filter(x => x.qaurterId === this.quarterId);

@@ -37,7 +37,7 @@
                     </div>
                 </div>
 
-                <div class="p-grid">
+                <!-- <div class="p-grid">
                     <div class="p-col-fixed form-label">
                         <div class="box">
                             <span class="non-mandatory-content">Sub-Programme Type</span>
@@ -46,10 +46,20 @@
                     <div class="p-col">
                         <input type="text" class="form-text" pInputText [value]="getSubProgramTypeValue()" [disabled]="true" [ngModelOptions]="{standalone: true}">
                     </div>
-                </div>
+                </div> -->
             </div>
             <div class="p-col-6">
                 <div class="p-fluid">
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Sub-Programme Type</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <input type="text" class="form-text" pInputText [value]="getSubProgramTypeValue()" [disabled]="true" [ngModelOptions]="{standalone: true}">
+                        </div>
+                    </div>
                     <div class="p-grid">
                         <div class="p-col-fixed form-label">
                             <div class="box">
@@ -61,16 +71,16 @@
                             <input type="text" class="form-text" pInputText [value]="getcCodeValue()" [disabled]="true" [ngModelOptions]="{standalone: true}">
                         </div>
                     </div>
-                    <div class="p-grid">
+                    <!-- <div class="p-grid">
                         <div class="p-col-fixed form-label">
                             <div class="box">
                                 <span class="mandatory-content"> Target Group</span>
                             </div>
                         </div>
                         <div class="p-col">
-                            <input type="text" class="form-text" pInputText  [disabled]="false" [ngModelOptions]="{standalone: true}">
+                            <input type="text" class="form-text" pInputText  [disabled]="false" [(ngModel)]="targetGroup" [ngModelOptions]="{standalone: true}">
                         </div>
-                    </div>
+                    </div> -->
                     <!-- <div class="p-grid">
                         <div class="p-col-fixed form-label">
                             <div class="box">
@@ -113,15 +123,15 @@
                     <tr class="default-font">
                         <td style="text-align: center;">{{rowIndex + 1}}</td>
                         <td>{{rowData.indicatorId}}</td>
-                        <td>{{IndicatorDescription(rowData)}}</td>
-                        <td>{{outputTitle(rowData)}}</td>
+                        <td>{{tIndicatorDescription(rowData)}}</td>
+                        <td>{{toutputTitle(rowData)}}</td>
                         <td>{{rowData.annualTarget}}</td>
                         <td>{{rowData.q1}}</td>
                         <td>{{rowData.q2}}</td>
                         <td>{{rowData.q3}}</td>
                         <td>{{rowData.q4}}</td>
-                        <td> {{shortDefination(rowData)}}</td>
-                        <td>{{purpose(rowData)}}</td>
+                        <td> {{tshortDefination(rowData)}}</td>
+                        <td>{{tpurpose(rowData)}}</td>
                         <td style="text-align: center;">
                             <!-- <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="editActual(rowData)" pTooltip="{{tooltip}}" tooltipPosition="top"></button>
                             <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteActivity(rowData)" pTooltip="Delete" tooltipPosition="top"></button> -->
@@ -179,7 +189,6 @@
             <p-table [rowHover]="true" [columns]="actualCols" [value]="mergedList" styleClass="p-datatable-sm">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
-                        <th style="width: 5%;"></th>
                         <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
                             {{col.header}}
                         </th>
@@ -189,44 +198,39 @@
 
                 <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
                     <tr class="default-font">
-                        <td style="text-align: center;">{{rowIndex + 1}}</td>
                         <td>
                             <p-cellEditor>
-                                <!-- Input Template: Used for editing the outputTitle directly -->
                                 <ng-template pTemplate="input">
                                     <input pInputText [(ngModel)]="rowData.outputTitle" 
                                            [disabled]="!rowData.isEditable && !rowData.inEditMode" />
                                 </ng-template>
                         
-                                <!-- Output Template: Used to display the title based on indicatorId -->
                                 <ng-template pTemplate="output">
                                     {{ outputTitle(rowData) }}
                                 </ng-template>
                             </p-cellEditor>
                         </td>
                         
-                        <!-- Editable Cell for indicatorId -->
                         <td>
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
-                                    <input pInputText [(ngModel)]="rowData.indicatorId" 
+                                    <input pInputText [(ngModel)]="rowData.indicatorValue" 
                                            [disabled]="!rowData.isEditable && !rowData.inEditMode" />
                                 </ng-template>
                                 <ng-template pTemplate="output">
-                                    {{ rowData.indicatorId }}
+                                    {{ rowData.indicatorValue }}
                                 </ng-template>
                             </p-cellEditor>
                         </td>
-                        
-                        <!-- Editable Cell for targets -->
+
                         <td>
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
-                                    <input pInputText [(ngModel)]="rowData.actuals.targets" 
+                                    <input pInputText [(ngModel)]="rowData.targets" 
                                            [disabled]="!rowData.isEditable && !rowData.inEditMode" />
                                 </ng-template>
                                 <ng-template pTemplate="output">
-                                    {{ rowData.actuals.targets }}
+                                    {{ rowData.targets }}
                                 </ng-template>
                             </p-cellEditor>
                         </td>
@@ -235,30 +239,28 @@
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
                                     <input pInputText
-                                           [(ngModel)]="rowData.actuals.actual"
+                                           [(ngModel)]="rowData.actual"
                                            (blur)="onBlurAdjustedActual(rowData)"
                                            (keyup)="onKeyUp(rowData, $event)"
                                            [disabled]="!rowData.isEditable && !rowData.inEditMode" />
                                 </ng-template>
                                 <ng-template pTemplate="output">
-                                    {{ rowData.actuals.actual }}
+                                    {{ rowData.actual }}
                                 </ng-template>
                             </p-cellEditor>
                         </td>
-                        
-                        <!-- Other non-editable fields -->
-                        <td>{{ rowData.actuals.variance }}</td>
+                        <td>{{ rowData.variance }}</td>
                         
                         <td pEditableColumn>
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
                                     <input pInputText 
-                                           [(ngModel)]="rowData.actuals.deviationReason" 
+                                           [(ngModel)]="rowData.deviationReason" 
                                            (blur)="onBlurAdjustedActual(rowData)" 
                                            [disabled]="!rowData.isEditable && !rowData.inEditMode" />
                                 </ng-template>
                                 <ng-template pTemplate="output">
-                                    {{ rowData.actuals.deviationReason }}
+                                    {{ rowData.deviationReason }}
                                 </ng-template>
                             </p-cellEditor>
                         </td>
@@ -267,18 +269,32 @@
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
                                     <input pInputText 
-                                           [(ngModel)]="rowData.actuals.adjustedActual" 
+                                           [(ngModel)]="rowData.adjustedActual" 
                                            (blur)="onBlurAdjustedActual(rowData)"
                                            (keyup)="onKeyUpAdjustedActual($event, rowData)" 
                                            [disabled]="!rowData.isEditable && !rowData.inEditMode" />
                                 </ng-template>
                                 <ng-template pTemplate="output">
-                                    {{ rowData.actuals.adjustedActual }}
+                                    {{ rowData.adjustedActual }}
                                 </ng-template>
                             </p-cellEditor>
                         </td>
       
-                        <td>{{rowData.actuals.adjustedVariance}}</td>
+                        <td>{{rowData.adjustedVariance}}</td>
+
+                        <td pEditableColumn>
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <input pInputText
+                                           [(ngModel)]="rowData.group"
+                                           (blur)="onBlurAdjustedActual(rowData)"
+                                           [disabled]="!rowData.isEditable && !rowData.inEditMode" />
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    {{ rowData.group }}
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
 
                         <td style="text-align: center;">
                             <button pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-files-o" pTooltip="Uploaded Files" tooltipPosition="top" (click)="uploadedFiles(rowData)"></button>
@@ -294,11 +310,6 @@
                                 <p-menu #menu [popup]="true" [model]="buttonItems" appendTo="body"></p-menu>
                             </span>                        
                         </td>
-                        <!-- <td style="text-align: center;">
-                            <button *ngIf="canEdit" pButton pRipple type="button" class="p-button-text p-button-danger action-button" icon="fa fa-trash" (click)="deleteActual(rowData)" pTooltip="Delete" tooltipPosition="top"></button>
-                            <button *ngIf="rowData.changesRequired != null" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-comments-o" (click)="viewComments(rowData, 'allComments')" pTooltip="Comments" tooltipPosition="top"></button>
-                            <button *ngIf="showReviewerSatisfaction" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-handshake-o" (click)="viewReviewerSatisfaction(rowData)" pTooltip="Reviewer Satisfaction" tooltipPosition="left"></button>
-                        </td> -->
                     </tr>
                 </ng-template>
 
@@ -384,7 +395,7 @@
     </ng-template>
 </p-dialog>
 
-<p-dialog header="View Comments"
+<!-- <p-dialog header="View Comments"
           [(visible)]="displayAllCommentDialog"
           [style]="{width: '70vw'}"
           [focusOnShow]="false"
@@ -418,7 +429,7 @@
             </div>
         </ng-template>
     </p-table>
-</p-dialog>
+</p-dialog> -->
 
 <p-dialog header="Reviewer Satisfaction"
           [(visible)]="displayReviewerSatisfactionDialog"
@@ -508,7 +519,7 @@
           showEffect="fade"
           [transitionOptions]="'0ms'"
           [modal]="true">
-        <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="auditCols" [paginator]="true" [rows]="10" [value]="merged?.actuals?.indicatorReportAudits" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+        <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="auditCols" [paginator]="true" [rows]="10" [value]="merged?.indicatorReportAudits" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">

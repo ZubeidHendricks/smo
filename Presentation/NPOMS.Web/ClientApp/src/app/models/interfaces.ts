@@ -392,6 +392,7 @@ export interface IBaseCompleteViewModel {
     quarterId: number;     // Corresponds to int QuarterId
     finYear: number;  
     serviceDeliveryAreaId:number; // Corresponds to int FinYear
+
 }
 
 export interface ISubProgramme {
@@ -551,11 +552,18 @@ export interface IIndicator {
     indicatorId: string;
   }
 
+  export interface IMergedActuals {
+    actuals: IActuals;
+    indicator: INPOIndicator;
+    isEditable: boolean;
+  }
+  
+
   export interface IActuals {
     id: number;
     programmeId: number;
     subProgrammeId: number;
-    group: number;
+    group: string;
     subProgrammeTypeId: number;
     serviceDeliveryArea : string;
     outputTitle : string;

@@ -18,6 +18,7 @@ namespace NPOMS.Domain.Entities
 
         public int QaurterId { get; set; }
 
+
         public int CreatedUserId { get; set; }
 
         public DateTime CreatedDateTime { get; set; }

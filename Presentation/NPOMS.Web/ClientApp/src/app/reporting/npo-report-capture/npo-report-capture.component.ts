@@ -37,6 +37,7 @@ export class NpoReportCaptureComponent implements OnInit {
   
   selectedOption: ISDA;
   selectedOptionId: number = 0;
+  targetGroup: string;
   dynamicHeaderText: string = '';
   postdynamicHeaderText: string = '';
   incomedynamicHeaderText: string = '';
@@ -83,6 +84,7 @@ export class NpoReportCaptureComponent implements OnInit {
   @Input() source: string;
   @Input() programId: number;
   
+  customText:string;
   applicationPeriodId: number;
   paramSubcriptions: Subscription;
   id: string;
@@ -522,8 +524,20 @@ getfinFund(event: FinancialMatters) {
     );
   }
 
+//   onKeyUp(event: KeyboardEvent): void {
+//     if(this.selectedOption?.id > 0){
+//       this.btnEnabled = true;
+//     }
+//     else{
+//       this.btnEnabled = false;
+//     }
+//     this.targetGroup = this.customText;
+// }
+
   onDropdownChange(event: any) {
-    this.btnEnabled = true;
+        this.btnEnabled = true;
+ 
+  
     this.selectedOptionId = this.selectedOption.id;
   }
 

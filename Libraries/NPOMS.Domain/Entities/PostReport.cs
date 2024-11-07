@@ -42,6 +42,8 @@ namespace NPOMS.Domain.Entities
 
         public int? UpdatedUserId { get; set; }
 
+   
+
         public DateTime? UpdatedDateTime { get; set; }
 
         public DateTime? ApprovalDateTime { get; set; }

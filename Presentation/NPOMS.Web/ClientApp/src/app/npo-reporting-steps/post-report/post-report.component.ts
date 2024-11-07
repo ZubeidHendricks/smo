@@ -27,6 +27,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 export class PostReportComponent implements OnInit {
   @Input() selectedQuarter!: number;
   @Input() selectedsda!: number;
+  @Input() selectedGroup: string;
   quarterId: number;
 
   
@@ -44,6 +45,11 @@ export class PostReportComponent implements OnInit {
         const selectedsda = changes['selectedsda'].currentValue;
         this.serviceDeliveryAreaId = selectedsda;
     }
+
+    if (changes['selectedGroup'] && changes['selectedGroup'].currentValue) {
+      const selectedGroup = changes['selectedGroup'].currentValue;
+      this.group = selectedGroup;
+  }
   }
 
   filterDataByQuarter(quarter: number) {
@@ -89,6 +95,7 @@ export class PostReportComponent implements OnInit {
 
   selectedQuartersText: string = '';
   serviceDeliveryAreaId: number;
+  group:string;
   posts: IPosts[] = [];
   filteredposts: IPosts[] = [];
   post: IPosts = {} as IPosts;
@@ -235,8 +242,8 @@ export class PostReportComponent implements OnInit {
     this.auditCols = [
       { header: '', width: '5%' },
       { header: 'Status', width: '55%' },
-      { header: 'Created User', width: '20%' },
-      { header: 'Created Date', width: '20%' }
+      { header: 'User', width: '20%' },
+      { header: 'Date', width: '20%' }
     ];
     
     this.postCols = [
@@ -567,6 +574,7 @@ onDemographicSubStructuresChange() {
   postobj.qaurterId = this.quarterId;
   postobj.serviceDeliveryAreaId = this.serviceDeliveryAreaId;
 
+
   postobj.isActive = true;
   postobj.id = rowData.id
 
@@ -612,7 +620,7 @@ private loadPosts() {
         this.posts = results;
         if(this.quarterId > 0)
         {
-          this.filteredposts = this.posts.filter(x => x.qaurterId === this.quarterId && x.serviceDeliveryAreaId === this.serviceDeliveryAreaId);
+          this.filteredposts = this.posts.filter(x => x.qaurterId === this.quarterId && x.serviceDeliveryAreaId === this.serviceDeliveryAreaId );
           this.filteredposts.forEach(row => {
             row.isEditable = !(row.id > 0);
           });
@@ -755,7 +763,7 @@ addNewRow() {
       numberOfPosts: 0,
       numberFilled: 0,
       monthsFilled: '',              // Initialized as number
-      vacant: '',                  // Default value could be 'Yes' or 'No'
+      vacant: '',                 // Default value could be 'Yes' or 'No'
       dateofVacancies: '',           // Can be a string in the form of a date, e.g. '2024-10-01'
       vacancyReasons: '',
       plans: '',
