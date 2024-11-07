@@ -30,6 +30,8 @@ namespace NPOMS.Domain.Entities
 
         public int ApplicationId { get; set; }
 
+        public int ServiceDeliveryAreaId { get; set; }
+
         public int QaurterId { get; set; }
 
         public bool IsActive { get; set; } = true;
@@ -39,6 +41,8 @@ namespace NPOMS.Domain.Entities
         public DateTime CreatedDateTime { get; set; }
 
         public int? UpdatedUserId { get; set; }
+
+   
 
         public DateTime? UpdatedDateTime { get; set; }
 

@@ -9,7 +9,8 @@ import { IActivity, IApplication, IApplicationDetails, IApplicationPeriod, IDocu
   IFundingApplicationDetails, IMonitoringAndEvaluation, IObjective, IPlace,
   IProjectInformation, IResource, ISubPlace, ISustainabilityPlan, IUser,
   IFinancialYear,
-  INpo} from 'src/app/models/interfaces';
+  INpo,
+  ISDA} from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { BidService } from 'src/app/services/api-services/bid/bid.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -17,6 +18,7 @@ import { LoggerService } from 'src/app/services/logger/logger.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { UserService } from 'src/app/services/api-services/user/user.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
+import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 
 @Component({
   selector: 'app-report-download',
@@ -40,6 +42,8 @@ export class ReportDownloadComponent implements OnInit {
   public postdynamicHeaderText$ = new BehaviorSubject<string>(this.postdynamicHeaderText);
   public otherdynamicHeaderText$ = new BehaviorSubject<string>(this.otherdynamicHeaderText);
   public dynamicHeaderText$ = new BehaviorSubject<string>(this.dynamicHeaderText);
+
+  selectedOptionId: number = 0;
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -68,10 +72,12 @@ export class ReportDownloadComponent implements OnInit {
   }
   @Input() source: string;
   @Input() programId: number;
-  
+  sdas:ISDA[] = [];
+  selectedOption: ISDA;
   applicationPeriodId: number;
   paramSubcriptions: Subscription;
   id: string;
+  sda: number;
   financialMattersIncome: IFinancialMattersIncome[];
   bidId: number;
   placeAll: IPlace[] = [];
@@ -120,6 +126,7 @@ export class ReportDownloadComponent implements OnInit {
     private _loggerService: LoggerService,
     private _userRepo: UserService,
     private _npoRepo: NpoService,
+    private _npoProfileRepo: NpoProfileService,
     private cdr: ChangeDetectorRef
   ) { }
 
@@ -135,6 +142,7 @@ export class ReportDownloadComponent implements OnInit {
       this.paramSubcriptions = this._activeRouter.paramMap.subscribe(params => {
       const quarterNumber = Number(params.get('qtr')) || 0; // Convert to number, default to 0 if invalid
       this.id = params.get('id');
+      this.selectedOptionId = Number(params.get('sda')) || 0;
       this.toggleButton(quarterNumber);
       this.subscribeToHeaderTextChanges();
       this.loadApplication();
@@ -211,6 +219,7 @@ export class ReportDownloadComponent implements OnInit {
     this._npoRepo.getNpoById(this.application?.npoId).subscribe(
       (results) => {
         this.npo = results;
+        this.MasterServiceDelivery()
       },
       (err) => {
         this._loggerService.logException(err);
@@ -219,6 +228,20 @@ export class ReportDownloadComponent implements OnInit {
     );
   }
 
+
+  
+  private MasterServiceDelivery() {
+    this. _npoProfileRepo.getProgrammeMasterDeliveryDetailsById(this.application.applicationPeriod.programmeId,this.application?.npoId).subscribe(
+     (results) => {
+       this.sdas = results;
+       this.selectedOption = this.sdas.find(x => x.id === this.selectedOptionId);
+     },
+     (err) => {
+       this._loggerService.logException(err);
+       this._spinner.hide();
+     }
+   );
+ }
 
   private loadFinancialYears() {
     this._spinner.show();

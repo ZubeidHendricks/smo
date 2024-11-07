@@ -25,10 +25,13 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 export class AnyOtherInformationReportComponent implements OnInit {
   
   @Input() selectedQuarter!: number;
-
+  @Input() selectedsda!: number;
+  @Input() selectedGroup!: string;
   @Output() otherrightHeaderChange = new EventEmitter<string>();
 
   quarterId: number;
+  serviceDeliveryAreaId: number;
+  group: string;
   filteredotherInfors: IOtherInfor[];
   displayVieHistoryDialog: boolean;
 
@@ -38,6 +41,16 @@ export class AnyOtherInformationReportComponent implements OnInit {
           this.quarterId = quarter;
           this.filterDataByQuarter(quarter);
       }
+
+      if (changes['selectedsda'] && changes['selectedsda'].currentValue) {
+        const selectedsda = changes['selectedsda'].currentValue;
+        this.serviceDeliveryAreaId = selectedsda;
+    }
+
+    if (changes['selectedGroup'] && changes['selectedGroup'].currentValue) {
+      const selectedGroup = changes['selectedGroup'].currentValue;
+      this.group = selectedGroup;
+  }
   }
 
   filterDataByQuarter(quarter: number) {
@@ -257,6 +270,14 @@ export class AnyOtherInformationReportComponent implements OnInit {
       { header: 'Status', width: '50%' },
     ];
 
+    this.auditCols = [
+      { header: '', width: '5%' },
+      { header: 'Status', width: '55%' },
+      { header: 'User', width: '20%' },
+      { header: 'Date', width: '20%' }
+    ];
+    
+
     this.commentCols = [
       { header: '', width: '5%' },
       { header: 'Comment', width: '55%' },
@@ -457,6 +478,7 @@ preventChange(event: any): void {
     let otherInforobj = {} as IOtherInfor;
     otherInforobj.applicationId = this.application.id;
     otherInforobj.qaurterId = this.quarterId;
+    otherInforobj.serviceDeliveryAreaId = this.serviceDeliveryAreaId;
     otherInforobj.financialYearId = this.application.applicationPeriod.financialYear.id;
     otherInforobj.challenges = rowData.challenges;
     otherInforobj.highlights = rowData.highlights;
@@ -476,7 +498,7 @@ preventChange(event: any): void {
   updateOtherInfor(otherInfor: IOtherInfor) {
     this._applicationRepo.updateOtherInfor(otherInfor).subscribe(
       (resp) => {
-        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'successfully updated.' });
       
       },
       (err) => {
@@ -489,7 +511,7 @@ preventChange(event: any): void {
   createOtherInfor(otherInfor: IOtherInfor) {
     this._applicationRepo.createOtherInforReport(otherInfor).subscribe(
       (resp) => {
-        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: ' successfully added.' });
         this.loadotherInfor();
       },
       (err) => {
@@ -516,6 +538,7 @@ addNewRow() {
     comments: '',
     status: {} as IStatus,
     isEditable:true,
+    serviceDeliveryAreaId: 0,
     anyOtherReportAudits: {} as IOtherInforAudit[]
   };
   
@@ -529,7 +552,7 @@ addNewRow() {
         this.otherInfors = results; 
         if(this.quarterId > 0)
         {
-            this.filteredotherInfors = this.otherInfors.filter(x => x.qaurterId === this.quarterId);
+            this.filteredotherInfors = this.otherInfors.filter(x => x.qaurterId === this.quarterId && x.serviceDeliveryAreaId === this.serviceDeliveryAreaId );  
 
             // this.filteredotherInfors = this.otherInfors.filter(x => x.qaurterId === quarter);
             this.otherrightHeaderChange.emit('Pending');
@@ -750,6 +773,7 @@ addNewRow() {
     this._spinner.show();
     this.baseCompleteViewModel.applicationId = this.application.id;
     this.baseCompleteViewModel.quarterId = this.quarterId;
+    this.baseCompleteViewModel.serviceDeliveryAreaId = this.serviceDeliveryAreaId;
     this.baseCompleteViewModel.finYear = this.application.applicationPeriod.financialYear.id;
 
     this._applicationRepo.completeOtherInfoAction(this.baseCompleteViewModel).subscribe(
