@@ -22,6 +22,7 @@ export interface dtoFundingAssessmentApplicationFormGet{
     doiCaptured: boolean,
 
     canSubmit: boolean,
+    serviceDeliverySelectionRequired: boolean,
 
     continueWithAssessment: boolean,
     questions: dtoQuestionGet[]

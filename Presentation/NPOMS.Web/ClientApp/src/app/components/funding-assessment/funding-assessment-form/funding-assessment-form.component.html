@@ -2,7 +2,7 @@
 
   <div class="col-md-12">
     <div class="mb-3">
-      <p-panel header="NPO Info" [toggleable]="true">
+      <p-panel header="NPO Info" [toggleable]="true" class="custom-panel" >
         <div class="form-group p-fluid grid">
           <div class="col-md-2">
             <label for="npoName">NPO</label>
@@ -24,7 +24,7 @@
 
     </div>
     <div class="mb-3">
-      <p-panel header="Service Delivery Areas" [toggleable]="true">
+      <p-panel header="Service Delivery Areas" [toggleable]="true" class="custom-panel">
         <p-table [value]="fundingAssessmentForm.serviceDeliveries">
           <ng-template pTemplate="header">
             <tr>
@@ -36,7 +36,7 @@
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-serviceDeliveryArea>
-            <tr>
+            <tr [ngStyle]="{'background-color': fundingAssessmentForm.serviceDeliverySelectionRequired ? '#ffcccc' : 'transparent'}">
               <td>
                 <p-checkbox binary="true" [(ngModel)]="serviceDeliveryArea.isSelected" (ngModelChange)="onServiceDeliveryAreaModelChange($event, serviceDeliveryArea)"></p-checkbox>
               </td>
@@ -72,15 +72,15 @@
       </app-funding-assessment-form-questionsection>
 
       <div class="mb-3">
-        <p-panel header="Summary" [toggleable]="true">
+        <p-panel header="Summary" [toggleable]="true" class="custom-panel">
           <p-table [value]="fundingAssessmentForm.summaryItems">
             <ng-template pTemplate="header">
               <tr>
 
-                <th>Summary of Assessment</th>
-                <th>% Score</th>
-                <th>Final Score</th>
-                <th>Approved / Not Approved</th>
+                <th style="width: 25%;">Summary of Assessment</th>
+                <th style="width: 15%;">% Score</th>
+                <th style="width: 15%;">Final Score</th>
+                <th >Approved / Approved with conditions / Not Approved</th>
 
               </tr>
             </ng-template>
@@ -95,7 +95,7 @@
                   <span *ngFor="let option of summaryItem.responseOptions">
                     <p-radioButton name="option-{{summaryItem.id}}" [value]="option.id"
                       [(ngModel)]="summaryItem.selectedResponseOptionId" label="{{ option.name }}"
-                      (ngModelChange)="onSummaryChange(summaryItem)"></p-radioButton> &nbsp; &nbsp;
+                      (ngModelChange)="onSummaryChange(summaryItem)" disabled></p-radioButton> &nbsp; &nbsp;
                   </span>
                 </td>
 
@@ -106,7 +106,7 @@
       </div>
     </ng-container>
     <div class="mb-3" >
-      <p-panel header="Final Approver Section" [toggleable]="true" *ngIf="fundingAssessmentForm.capturerSubmitted">
+      <p-panel header="Final Approver Section" [toggleable]="true" *ngIf="fundingAssessmentForm.capturerSubmitted" class="custom-panel">
 
           <div class="form-group p-fluid grid">
             <div class="col-md-2">

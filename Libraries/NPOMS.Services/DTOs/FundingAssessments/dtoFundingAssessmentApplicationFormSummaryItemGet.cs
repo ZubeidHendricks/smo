@@ -36,13 +36,13 @@ namespace NPOMS.Services.DTOs.FundingAssessments
         public dtoFundingAssessmentApplicationFormSummaryItemGet(Question question, decimal score, int finalRating, List<ResponseOption> responseOptions, List<FundingAssessmentFormResponse> fundingAssessmentFormResponses)
         {
             this.Id = question.Id;
-            this.Name = question.Name;
+            this.Name = question.QuestionSection.Name;
             this.Score = score; 
             this.FinalRating = finalRating;
 
             responseOptions.Where(x => x.SystemName == "Option").ToList().ForEach(responseOption => this._responseOptions.Add(new(responseOption)));
 
-            var responseOption = fundingAssessmentFormResponses?.Where(x => x.QuestionId == this.Id && x.ResponseOptionSystemType == "Option").FirstOrDefault();
+            var responseOption = fundingAssessmentFormResponses?.Where(x =>  x.QuestionId == this.Id && x.ResponseOptionSystemType == "Option").FirstOrDefault();
 
             if (responseOption != null)
             {
