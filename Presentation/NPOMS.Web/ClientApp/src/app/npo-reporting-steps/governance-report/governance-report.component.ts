@@ -27,9 +27,13 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 export class GovernanceReportComponent implements OnInit {
   
   @Input() selectedQuarter!: number;
+  @Input() selectedsda!: number;
+  @Input() selectedGroup!: string;
   @Output() govnencerightHeaderChange = new EventEmitter<string>();
 
   quarterId: number;
+  serviceDeliveryAreaId: number;
+  group:string;
   displayVieHistoryDialog: boolean;
   ngOnChanges(changes: SimpleChanges) {
       if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
@@ -37,6 +41,16 @@ export class GovernanceReportComponent implements OnInit {
           this.quarterId = quarter;
           this.filterDataByQuarter(quarter);
       }
+
+      if (changes['selectedsda'] && changes['selectedsda'].currentValue) {
+        const selectedsda = changes['selectedsda'].currentValue;
+        this.serviceDeliveryAreaId = selectedsda;
+    }
+
+    if (changes['selectedGroup'] && changes['selectedGroup'].currentValue) {
+      const selectedGroup = changes['selectedGroup'].currentValue;
+      this.group = selectedGroup;
+  }
   }
 
   filterDataByQuarter(quarter: number) {
@@ -276,7 +290,14 @@ export class GovernanceReportComponent implements OnInit {
       { header: 'Created User', width: '20%' },
       { header: 'Created Date', width: '20%' }
     ];
-
+    
+    this.auditCols = [
+      { header: '', width: '5%' },
+      { header: 'Status', width: '55%' },
+      { header: 'User', width: '20%' },
+      { header: 'Date', width: '20%' }
+    ];
+    
     this.reviewerSatisfactionCols = [
       { header: '', width: '5%' },
       { header: 'Is Satisfied', width: '25%' },
@@ -435,6 +456,7 @@ export class GovernanceReportComponent implements OnInit {
     govobj.comments = rowData.comments;
     govobj.applicationId = this.application.id;
     govobj.qaurterId = this.quarterId;
+    govobj.serviceDeliveryAreaId = this.serviceDeliveryAreaId;
     govobj.financialYearId = this.application.applicationPeriod.financialYear.id;
     govobj.isActive = rowData.isActive;
     govobj.id = rowData.id;
@@ -486,6 +508,7 @@ export class GovernanceReportComponent implements OnInit {
     this._spinner.show();
     this.baseCompleteViewModel.applicationId = this.application.id;
     this.baseCompleteViewModel.quarterId = this.quarterId;
+    this.baseCompleteViewModel.serviceDeliveryAreaId = this.serviceDeliveryAreaId;
     this.baseCompleteViewModel.finYear = this.application.applicationPeriod.financialYear.id;
 
     this._applicationRepo.completeGovAction(this.baseCompleteViewModel).subscribe(
@@ -567,6 +590,7 @@ preventChange(event: any): void {
       comments: '',
       isActive: true,
       applicationId:0,
+      serviceDeliveryAreaId: 0,
       statusId: 0,
       financialYearId: 0,
       qaurterId: 0,
@@ -616,7 +640,7 @@ preventChange(event: any): void {
   createGovernance(governance: IGovernance) {
     this._applicationRepo.createGovernanceReport(governance).subscribe(
       (resp) => {
-        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Successfully added.' });
         this.loadGovernance();
       },
       (err) => {
@@ -629,7 +653,7 @@ preventChange(event: any): void {
   updateGovernance(governance: IGovernance) {
     this._applicationRepo.updateGovernance(governance).subscribe(
       (resp) => {
-        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Successfully updated.' });
        //this.loadGovernance();
       },
       (err) => {
@@ -646,7 +670,7 @@ preventChange(event: any): void {
         this.governances = results;
         if(this.quarterId > 0)
           {
-            this.filteredgov= this.governances.filter(x => x.qaurterId === this.quarterId);
+            this.filteredgov= this.governances.filter(x => x.qaurterId === this.quarterId && x.serviceDeliveryAreaId === this.serviceDeliveryAreaId );  
 
             this.govnencerightHeaderChange.emit('Pending');
             this.filteredgov = this.governances.filter(x => x.qaurterId === this.quarterId);

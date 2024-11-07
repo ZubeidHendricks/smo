@@ -390,7 +390,9 @@ export interface IServiceType {
 export interface IBaseCompleteViewModel {
     applicationId: number; // Corresponds to int ApplicationId
     quarterId: number;     // Corresponds to int QuarterId
-    finYear: number;       // Corresponds to int FinYear
+    finYear: number;  
+    serviceDeliveryAreaId:number; // Corresponds to int FinYear
+
 }
 
 export interface ISubProgramme {
@@ -550,11 +552,18 @@ export interface IIndicator {
     indicatorId: string;
   }
 
+  export interface IMergedActuals {
+    actuals: IActuals;
+    indicator: INPOIndicator;
+    isEditable: boolean;
+  }
+  
+
   export interface IActuals {
     id: number;
     programmeId: number;
     subProgrammeId: number;
-    group: number;
+    group: string;
     subProgrammeTypeId: number;
     serviceDeliveryArea : string;
     outputTitle : string;
@@ -567,6 +576,7 @@ export interface IIndicator {
     adjustedActual: number;
     adjustedVariance: number;
     applicationId: number;
+    serviceDeliveryAreaId: number;
     qaurterId: number;
     actual: number;
     documents: IDocumentStore[];
@@ -596,6 +606,7 @@ export interface IIndicator {
     vacancyReasons: string;
     plans: string;
     applicationId: number;
+    serviceDeliveryAreaId: number;
     isActive: boolean;
     statusId: number;
     status: IStatus;
@@ -621,6 +632,7 @@ export interface IPostAudit {
     lastSubmissionDateNat:string;
     comments: string;
     applicationId: number;
+    serviceDeliveryAreaId: number;
     isActive: boolean;
     statusId: number;
     status: IStatus;
@@ -644,6 +656,7 @@ export interface IPostAudit {
     highlights: string;
     challenges: string;
     applicationId: number;
+    serviceDeliveryAreaId: number;
     isActive: boolean;
     statusId: number;
     status: IStatus;
@@ -670,6 +683,7 @@ export interface IPostAudit {
     surplus: number;
     total: number;
     applicationId: number;
+    serviceDeliveryAreaId: number;
     isActive: boolean;
     statusId: number;
     status: IStatus;
@@ -696,6 +710,7 @@ export interface IPostAudit {
     targetDate: string;
     meansOfVerification: string;
     applicationId: number;
+    serviceDeliveryAreaId: number;
     isActive: boolean;
     progress: string;
     statusId: number;

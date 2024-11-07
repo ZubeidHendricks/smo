@@ -308,6 +308,7 @@ namespace NPOMS.Services.Extensions
                     .AddScoped(typeof(PbiEmbedService));
             services.AddScoped<IEmbeddedReportService, EmbeddedReportService>();
 
+            services.AddScoped<IApplicationFundingAssessmentService, ApplicationFundingAssessmentService>();
             #endregion
 
             var engine = EngineContext.Create();

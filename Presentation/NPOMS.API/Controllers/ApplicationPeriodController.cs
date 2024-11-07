@@ -108,4 +108,48 @@ namespace NPOMS.API.Controllers
 
 		#endregion
 	}
+
+    [Route("public/api/application-periods")]
+    [ApiController]
+    public class PublicApplicationPeriodController : Controller
+	{
+        #region Fields
+
+        private ILogger<ApplicationPeriodController> _logger;
+        private IApplicationPeriodService _applicationPeriodService;
+
+        #endregion
+
+        #region Constructors
+
+        public PublicApplicationPeriodController(
+            ILogger<ApplicationPeriodController> logger,
+            IApplicationPeriodService applicationPeriodService
+            )
+        {
+            _logger = logger;
+            _applicationPeriodService = applicationPeriodService;
+        }
+
+        #endregion
+
+        #region Methods
+
+        [HttpGet(Name = "GetAllApplicationPeriodsPublic")]
+        public async Task<IActionResult> GetAllApplicationPeriods()
+        {
+            try
+            {
+                var results = await _applicationPeriodService.Get();
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetAllApplicationPeriods action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        #endregion
+    }
 }

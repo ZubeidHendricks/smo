@@ -115,6 +115,7 @@ import { NpoReportCaptureComponent } from './reporting/npo-report-capture/npo-re
 import { ReportReviewComponent } from './reporting/report-review/report-review.component';
 import { IndicatorImportComponent } from './reporting/indicator-import/indicator-import.component';
 import { ReportDownloadComponent } from './reporting/report-download/report-download.component';
+import { FundingAssessmentListComponent } from './components/funding-assessment/funding-assessment-list/funding-assessment-list.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -132,7 +133,7 @@ const routes: Routes = [
   { path: 'print/:id/3', outlet: 'print', component: DownloadQuickCaptureDohComponent },
   { path: 'print/:id/4', outlet: 'print', component: DownloadWorkplanComponent },
   { 
-    path: 'print/:id/:year/:qtr/5', 
+    path: 'print/:id/:year/:qtr/:sda/5', 
     outlet: 'print', 
     component: ReportDownloadComponent 
   },
@@ -268,6 +269,9 @@ const routes: Routes = [
   { path: 'funding-capture/approve/:id', component: ApproveFundingCaptureComponent },
   { path: 'funding-capture/view/:id', component: ViewFundingCaptureComponent },
   // { path: 'funding-capture/download/:id', component: DownloadFundingCaptureComponent }
+
+    // Funding Assessment
+    { path: 'funding-assessment', component: FundingAssessmentListComponent },
 ];
 
 @NgModule({

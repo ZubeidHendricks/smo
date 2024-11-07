@@ -131,6 +131,22 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpGet("masterdelivery/programmeId/{programmeId}/npoProfileId/{npoProfileId}", Name = "GetMasterDeliveryByProgramId")]
+        public async Task<IActionResult> GetMasterDeliveryByProgramId(int programmeId, int npoProfileId)
+        {
+            try
+            {
+                var npoId = await _npoProfilService.GetById(npoProfileId);
+                var results = await _programeDeliveryService.GetServiveDeliveryMasterByProgramId(programmeId, npoProfileId);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetMasterDeliveryByProgramId action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         //[HttpGet("delivery", Name = "GetProgrammeDeliveryArea")]
         //public async Task<IActionResult> GetProgrammeDeliveryArea()
         //{

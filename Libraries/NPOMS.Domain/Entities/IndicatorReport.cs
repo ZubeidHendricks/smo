@@ -39,7 +39,9 @@ namespace NPOMS.Domain.Entities
 
         public int AdjustedVariance { get; set; }
 
-        public int ApplicationId { get; set; }   
+        public int ApplicationId { get; set; }
+
+        public int ServiceDeliveryAreaId { get; set; }
 
         public int QaurterId { get; set; }
 
