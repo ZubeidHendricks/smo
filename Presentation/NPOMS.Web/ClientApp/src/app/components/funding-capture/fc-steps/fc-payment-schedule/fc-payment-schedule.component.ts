@@ -44,6 +44,7 @@ export class FCPaymentScheduleComponent implements OnInit {
 
   showComplianceDialog: boolean = false;
   showComplianceDetail: boolean = false;
+  blockEditCompliance: boolean = false;
 
   yesNoOptions: any[] = [
     {name: 'YES', value: 'YES'},
@@ -53,15 +54,15 @@ export class FCPaymentScheduleComponent implements OnInit {
 
   yesNoValue: any;
 
-  selectedTpaOption: any;
+  selectedTpaOption: any = 'NO';
 
-  selectedProgressOption: any;
+  selectedProgressOption: any = 'NO';
 
-  selectedNonFinancialOption: any;
+  selectedNonFinancialOption: any = 'NO';
 
-  selectedOverrideOption: any;
+  selectedOverrideOption: any = 'NO';
 
-  selectedComplianceOption: any;
+  selectedComplianceOption: any = 'NO';
 
 
   cols: any[];
@@ -116,9 +117,25 @@ export class FCPaymentScheduleComponent implements OnInit {
     }
   }
 
-  onComplianceChange(){
+  onComplianceChange(rowdata: any){
 
-    console.log(this.showComplianceDialog);
+    this.selectedCycleNo = rowdata.cycleNumber;
+    this.selectedComplianceOption = rowdata.isCompliant;
+
+    if (rowdata.isCompliant) {
+
+      this.compliances = [
+        {finyear: rowdata.paymentDate,
+         complianceCycle: rowdata.cycleNumber,
+         signedTpa: !rowdata.isCompliant, 
+         progressReport: !rowdata.isCompliant, 
+         nonFinData: !rowdata.isCompliant, 
+         isOverridden: !rowdata.isCompliant, 
+         isCompliant: !rowdata.isCompliant}
+      ];
+
+    }
+
     this.showComplianceDialog = true;
   }
 
@@ -127,17 +144,51 @@ export class FCPaymentScheduleComponent implements OnInit {
   }
 
   onEditCompliance(selectedCompliance){
+
     console.log('onEditCompliance', selectedCompliance);
     this.showComplianceDialog = false;
     this.showComplianceDetail = true;
+
   }
 
   onSaveCompliance(){
+    let id = this.paymentSchedule.paymentScheduleItemViewModels.filter(x => x.cycleNumber === this.selectedCycleNo)[0]?.id;
+    let compliant = this.paymentSchedule.paymentScheduleItemViewModels.filter(x => x.cycleNumber === this.selectedCycleNo)[0]?.isCompliant;
+    console.log('id',id);
+    console.log('compliant',compliant);
+
+    if (this.selectedComplianceOption === 'YES'){
+    this._fundingManagementRepo.updatePaymentSchedules(this.paymentSchedule).subscribe(
+      (results) => {
+        //this.paymentSchedule = results;
+        this.paymentScheduleChanged.emit(this.paymentSchedule);
+        this._spinner.hide();
+        this.blockEditCompliance = true;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+
     this.showComplianceDetail = false;
+
+
+    console.log('----',  this.paymentSchedule.paymentScheduleItemViewModels.filter(x => x.cycleNumber === this.selectedCycleNo)[0]?.isCompliant);
+
+    //this.paymentSchedule.paymentScheduleItemViewModels.filter(x => x.cycleNumber === this.selectedCycleNo)[0]?.isCompliant.value = this.selectedComplianceOption
     //this.selectedCompliance
   }
 
+  blockEditComplianceCheck(){
+
+    return this.blockEditCompliance;
+  }
+
   onOptionChange(){
+
 
     if (this.selectedTpaOption==='YES' && this.selectedProgressOption==='YES' && this.selectedNonFinancialOption === 'YES'){
       this.selectedComplianceOption = 'YES'

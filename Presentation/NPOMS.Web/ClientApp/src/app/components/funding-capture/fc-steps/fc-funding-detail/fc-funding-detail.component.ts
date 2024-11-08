@@ -31,6 +31,7 @@ export class FCFundingDetailComponent implements OnInit {
 
   minDate: Date;
   maxDate: Date;
+  finYearStartDate: Date;
 
   stateOptions: any[];
 
@@ -76,9 +77,10 @@ export class FCFundingDetailComponent implements OnInit {
     let newStartDate = new Date(startDate);
     let newEndDate = new Date(endDate);
     let today = new Date();
+    let finDateMin = new Date(this.fundingDetail.financialYearStartDate);
 
-    if (today > newStartDate)
-      this.minDate = new Date();
+    if (finDateMin > newStartDate)
+      this.minDate = new Date(finDateMin);
     else
       this.minDate = newStartDate;
 

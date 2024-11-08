@@ -399,7 +399,8 @@ namespace NPOMS.Services.Implementation
                 var compliantCycleRules = await _compliantCycleRuleRepository.GetEntities(false);
                 var compliantCycles = await _compliantCycleRepository.GetCompliantCyclesByIds(fundingDetail.Programme.DepartmentId, Convert.ToInt32(fundingCapture.FinancialYearId));
                 var departmentPaymentSchedules = await _paymentScheduleRepository.GetPaymentSchedulesByIds(fundingDetail.Programme.DepartmentId, Convert.ToInt32(fundingCapture.FinancialYearId));
-                var paymentSchedules = departmentPaymentSchedules.OrderBy(x => x.StartDate).Where(x => x.StartDate > Convert.ToDateTime(startDate) && x.StartDate.Date >= DateTime.Now.Date);
+                //var paymentSchedules = departmentPaymentSchedules.OrderBy(x => x.StartDate).Where(x => x.StartDate > Convert.ToDateTime(startDate) && x.StartDate.Date >= DateTime.Now.Date);
+                var paymentSchedules = departmentPaymentSchedules.OrderBy(x => x.StartDate).Where(x => x.StartDate >= Convert.ToDateTime(startDate)); //Allow back dated payment schedules
 
                 // Get months between funding detail start date and financial year end date
                 var financialYearMonths = MonthsBetween(Convert.ToDateTime(startDate), fundingDetail.FinancialYear.EndDate).ToArray();
@@ -435,8 +436,8 @@ namespace NPOMS.Services.Implementation
                             PaymentDate = applicableSchedule.PaymentDate.ToString("yyyy-MM-dd"),
                             PaymentStatus = string.Empty,
                             AllocatedAmount = amount,
-                            ApprovedAmount = 0,
-                            PaidAmount = 0,
+                            ApprovedAmount = applicableSchedule.PaymentDate < DateTime.Now.Date ? amount : 0,
+                            PaidAmount = applicableSchedule.PaymentDate < DateTime.Now.Date ? amount : 0,
                             IsActive = true
                         };
                         paymentScheduleItems.Add(paymentScheduleItem);
@@ -474,23 +475,35 @@ namespace NPOMS.Services.Implementation
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
             var paymentSchedule = await _fundingPaymentScheduleRepository.GetByFundingCaptureId(model.FundingCaptureId);
 
+
+
             foreach (var paymentScheduleItem in model.PaymentScheduleItemViewModels)
             {
-                paymentSchedule.PaymentScheduleItems.Add(new()
+                var psi = paymentSchedule.PaymentScheduleItems.Where(x => x.Id == paymentScheduleItem.Id).FirstOrDefault();
+                if (psi == null)
                 {
-                    PaymentScheduleId = paymentScheduleItem.PaymentScheduleId,
-                    CompliantCycleId = paymentScheduleItem.CompliantCycleId,
-                    CycleNumber = paymentScheduleItem.CycleNumber,
-                    PaymentDate = paymentScheduleItem.PaymentDate,
-                    PaymentStatus = paymentScheduleItem.PaymentStatus,
-                    AllocatedAmount = paymentScheduleItem.AllocatedAmount,
-                    ApprovedAmount = paymentScheduleItem.ApprovedAmount,
-                    PaidAmount = paymentScheduleItem.PaidAmount,
-                    IsCompliant = paymentScheduleItem.IsCompliant,
-                    IsActive = paymentScheduleItem.IsActive,
-                    CreatedUserId = loggedInUser.Id,
-                    CreatedDateTime = DateTime.Now
-                });
+                    paymentSchedule.PaymentScheduleItems.Add(new()
+                    {
+                        PaymentScheduleId = paymentScheduleItem.PaymentScheduleId,
+                        CompliantCycleId = paymentScheduleItem.CompliantCycleId,
+                        CycleNumber = paymentScheduleItem.CycleNumber,
+                        PaymentDate = paymentScheduleItem.PaymentDate,
+                        PaymentStatus = paymentScheduleItem.PaymentStatus,
+                        AllocatedAmount = paymentScheduleItem.AllocatedAmount,
+                        ApprovedAmount = paymentScheduleItem.ApprovedAmount,
+                        PaidAmount = paymentScheduleItem.PaidAmount,
+                        IsCompliant = paymentScheduleItem.IsCompliant,
+                        IsActive = paymentScheduleItem.IsActive,
+                        CreatedUserId = loggedInUser.Id,
+                        CreatedDateTime = DateTime.Now
+                    });
+                }
+                else
+                {
+                    psi.IsCompliant = paymentScheduleItem.IsCompliant;
+                    psi.UpdatedUserId = loggedInUser.Id;
+                    psi.UpdatedDateTime = DateTime.Now;
+                }
             }
 
             paymentSchedule.AllocatedAmountTotal = model.AllocatedAmountTotal;
@@ -503,6 +516,15 @@ namespace NPOMS.Services.Implementation
             paymentSchedule.UpdatedDateTime = DateTime.Now;
 
             await _fundingPaymentScheduleRepository.UpdateAsync(paymentSchedule);
+        }
+
+        public async Task UpdateCompliance(int id, string compliance, string userIdentifier)
+        {
+
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+            //var paymentSchedule = await _fundingPaymentScheduleRepository.GetByFundingCaptureId(model.FundingCaptureId);
+
+            //var paymentScheduleItem = await _fundingPaymentScheduleRepository.FindAllAsync()
         }
 
         public async Task UpdateBankDetail(BankDetailViewModel model, string userIdentifier)
