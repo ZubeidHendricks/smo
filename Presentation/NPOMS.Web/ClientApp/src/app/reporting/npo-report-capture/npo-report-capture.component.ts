@@ -111,6 +111,7 @@ export class NpoReportCaptureComponent implements OnInit {
   resources: IResource[] = [];
   activeButton: number | null = null;
   financialYears: IFinancialYear[];
+  isLoading: boolean = false;
   npo: INpo;
   sdas:ISDA[] = [];
   servicedeliveryAreas: ISDA[] = [];
@@ -232,10 +233,13 @@ export class NpoReportCaptureComponent implements OnInit {
   }
 
   private MasterServiceDelivery() {
+    this.isLoading = true;
     this._spinner.show();
-     this. _npoProfileRepo.getProgrammeMasterDeliveryDetailsById(this.application.applicationPeriod.programmeId,this.application?.npoId).subscribe(
+     this. _npoProfileRepo.getProgrammeMasterDeliveryDetailsById(this.application.applicationPeriod.programmeId, this.application?.npoId).subscribe(
       (results) => {
         this.sdas = results;
+        this.isLoading = false;
+        this._spinner.hide();
       },
       (err) => {
         this._loggerService.logException(err);

@@ -25,14 +25,14 @@
             [(ngModel)]="customText"
             (keyup)="onKeyUp($event)"
             style="width: 200px; padding: 5px;"> -->
-                <p-dropdown 
-                    [(ngModel)]="selectedOption" 
-                    [options]="sdas" 
-                    optionLabel="name"
-                    placeholder="Select Service Delivery Area"
-                    (onChange)="onDropdownChange($event)">
-                </p-dropdown>
-       
+            <p-dropdown
+                [(ngModel)]="selectedOption"
+                [options]="sdas"
+                placeholder="{{ isLoading ? 'Loading...' : 'Select service delivery area' }}"
+                optionLabel="name"
+                (onChange)="onDropdownChange($event)">
+          </p-dropdown>
+          
             <button pButton 
                     label="Quarter 1" 
                     [disabled]="!btnEnabled"

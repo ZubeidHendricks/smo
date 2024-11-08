@@ -31,9 +31,9 @@ namespace NPOMS.Services.Implementation
         }
 
 
-        public async Task<IEnumerable<ServiceDeliveryArea>> GetServiveDeliveryMasterByProgramId(int programmeId, int npoProfileId)
+        public async Task<IEnumerable<ServiceDeliveryArea>> GetServiveDeliveryMasterByProgramId(int programmeId, int npoId)
         {
-            return await _programeDeliveryRepository.GetServiveDeliveryMasterByProgramId(programmeId, npoProfileId);
+            return await _programeDeliveryRepository.GetServiveDeliveryMasterByProgramId(programmeId, npoId);
 
         }
 

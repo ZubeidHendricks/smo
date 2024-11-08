@@ -130,12 +130,12 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpGet("masterdelivery/programmeId/{programmeId}/npoProfileId/{npoProfileId}", Name = "GetMasterDeliveryByProgramId")]
-        public async Task<IActionResult> GetMasterDeliveryByProgramId(int programmeId, int npoProfileId)
+        [HttpGet("masterdelivery/programmeId/{programmeId}/npoProfileId/{npoId}", Name = "GetMasterDeliveryByProgramId")]
+        public async Task<IActionResult> GetMasterDeliveryByProgramId(int programmeId, int npoId)
         {
             try
             {
-                var results = await _programeDeliveryService.GetServiveDeliveryMasterByProgramId(programmeId, npoProfileId);
+                var results = await _programeDeliveryService.GetServiveDeliveryMasterByProgramId(programmeId, npoId);
                 return Ok(results);
             }
             catch (Exception ex)
