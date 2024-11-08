@@ -6,7 +6,7 @@ namespace NPOMS.Repository.Interfaces.Entities
     public interface IProgrameDeliveryRepository : IBaseRepository<ProgrammeServiceDelivery>
     {
         Task<IEnumerable<ProgrammeServiceDelivery>> GetDeliveryDetailsByProgramId(int programmeId, int npoProfileId);
-        Task<IEnumerable<ServiceDeliveryArea>> GetServiveDeliveryMasterByProgramId(int programmeId, int npoProfileId);
+        Task<IEnumerable<ServiceDeliveryArea>> GetServiveDeliveryMasterByProgramId(int programmeId, int npoId);
        
         Task<IEnumerable<ProgrammeServiceDelivery>> GetProgrammeDeliveryArea();
         Task<IEnumerable<ProgrammeServiceDelivery>> GetDeliveryByProgramId(int programmeId, int npoProfileId);
