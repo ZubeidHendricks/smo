@@ -223,7 +223,6 @@ export class NpoReportCaptureComponent implements OnInit {
     this._npoRepo.getNpoById(this.application?.npoId).subscribe(
       (results) => {
         this.npo = results;
-        this.MasterServiceDelivery();
       },
       (err) => {
         this._loggerService.logException(err);
@@ -233,6 +232,7 @@ export class NpoReportCaptureComponent implements OnInit {
   }
 
   private MasterServiceDelivery() {
+    this._spinner.show();
      this. _npoProfileRepo.getProgrammeMasterDeliveryDetailsById(this.application.applicationPeriod.programmeId,this.application?.npoId).subscribe(
       (results) => {
         this.sdas = results;
@@ -317,6 +317,7 @@ getfinFund(event: FinancialMatters) {
       (results) => {
         if (results != null) {
           this.application = results;
+          this.MasterServiceDelivery();
           this.loadNpo();
           this.buildSteps(results.applicationPeriod);
           this.loadCreatedUser();

@@ -26,6 +26,7 @@ namespace NPOMS.Services.DTOs.FundingAssessments
         public bool ApproverSubmitted { get; }
 
         public bool CanSubmit => ValidateCanSubmit();
+        public bool ServiceDeliverySelectionRequired => !this.ServiceDeliveries.Any(x=>x.IsSelected);
 
 
         public bool ContinueWithAssessment { get; }
@@ -157,11 +158,10 @@ namespace NPOMS.Services.DTOs.FundingAssessments
                 score = Math.Round(score, 2);
             }
 
-            var question = _originalQuestions.First(x => x.Name == questionSectionName);
-            var filteredResponseOptions = _orginalResponseOptions.Where(x => x.ResponseTypeId == question.ResponseTypeId).ToList();
+            var questionApproval = _originalQuestions.FirstOrDefault(x => x.Name == "Approval" && x.QuestionSection.Name == questionSectionName);
+            var filteredResponseOptions = _orginalResponseOptions.Where(x => x.ResponseTypeId == questionApproval.ResponseTypeId).ToList();
 
-
-            this._summaryItems.Add(new(question, score, count==0 ? 0 : ratingValue / count, filteredResponseOptions, _fundingAssessmentForm?.FundingAssessmentFormResponses.ToList()));
+            this._summaryItems.Add(new(questionApproval, score, count==0 ? 0 : ratingValue / count, filteredResponseOptions, _fundingAssessmentForm?.FundingAssessmentFormResponses.ToList()));
         }
 
         private void CreateSummaryFinalItem()

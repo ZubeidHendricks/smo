@@ -1,3 +1,11 @@
+::ng-deep .custom-panel .p-panel-header {
+    background-color:  rgb(0, 51, 153)!important; /* Tomato background */
+}
+
+::ng-deep .custom-panel .p-panel-header .p-panel-title {
+    color: #ffffff !important; /* White title */
+}
+
 .form-label {
     width: 25%;
     text-align: right;
