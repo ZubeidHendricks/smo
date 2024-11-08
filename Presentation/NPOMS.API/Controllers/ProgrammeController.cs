@@ -120,7 +120,6 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-                var npoId = await _npoProfilService.GetById(npoProfileId);
                 var results = await _programeDeliveryService.GetDeliveryDetailsByProgramId(programmeId, npoProfileId);
                 return Ok(results);
             }
@@ -136,7 +135,6 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-                var npoId = await _npoProfilService.GetById(npoProfileId);
                 var results = await _programeDeliveryService.GetServiveDeliveryMasterByProgramId(programmeId, npoProfileId);
                 return Ok(results);
             }
