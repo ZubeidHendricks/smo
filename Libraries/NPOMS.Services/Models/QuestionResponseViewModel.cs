@@ -68,12 +68,14 @@ namespace NPOMS.Services.Models
 			this.QuestionName = question.Name;
 			this.QuestionSortOrder = question.SortOrder;
 
-			this.HasComment = question.QuestionProperty.HasComment;
-			this.CommentRequired = question.QuestionProperty.CommentRequired;
-			this.HasDocument = question.QuestionProperty.HasDocument;
-			this.DocumentRequired = question.QuestionProperty.DocumentRequired;
-			this.Weighting = question.QuestionProperty.Weighting;
-
+			if (question.QuestionProperty != null)
+			{
+				this.HasComment = question.QuestionProperty.HasComment ;
+				this.CommentRequired = question.QuestionProperty.CommentRequired;
+				this.HasDocument = question.QuestionProperty.HasDocument;
+				this.DocumentRequired = question.QuestionProperty.DocumentRequired;
+				this.Weighting = question.QuestionProperty.Weighting;
+			}
 			this.Response = response;
 		}
 

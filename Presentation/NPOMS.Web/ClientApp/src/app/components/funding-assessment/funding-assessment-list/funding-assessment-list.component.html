@@ -46,6 +46,8 @@
                 <td style="text-align: center;">
                   <button *ngIf="fundingAssessment.fundingAssessmentStatusName === 'Pending DOI Capturer'" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-gavel" (click)="showDOIDialog(fundingAssessment)" pTooltip="DOI" tooltipPosition="left"></button>
                   <button *ngIf="fundingAssessment.fundingAssessmentStatusName === 'Pending Assessment Capturer'" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="showFundingAssessmentForm(fundingAssessment)" pTooltip="Edit Form" tooltipPosition="left"></button>
+                  <button *ngIf="fundingAssessment.fundingAssessmentStatusName === 'Pending Assessment Approver'" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-pencil-square-o" (click)="showFundingAssessmentForm(fundingAssessment)" pTooltip="Edit Form" tooltipPosition="left"></button>
+                  <button *ngIf="fundingAssessment.fundingAssessmentStatusName === 'Assessment Completed'" pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-eye" (click)="showFundingAssessmentForm(fundingAssessment)" pTooltip="View Form" tooltipPosition="left"></button>
                     <!-- <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="_selectedApplicationId=fundingAssessment.applicationId;menu.toggle($event); " pTooltip="Actions" tooltipPosition="left"></button>
                     <p-menu #menu [popup]="true" [model]="_buttonItems" appendTo="body"></p-menu> -->
                 </td>

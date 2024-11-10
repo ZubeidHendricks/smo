@@ -20,7 +20,6 @@ namespace NPOMS.Services.DTOs.FundingAssessments
         public int SelectedAreaCount { get; private set; }
 
 
-
         public dtoFundingAssessmentApplicationGet(Application application, FundingAssessmentForm fundingAssessmentForm)
         {
             this.Id = fundingAssessmentForm?.Id ?? 0;
@@ -35,13 +34,13 @@ namespace NPOMS.Services.DTOs.FundingAssessments
             {
                 this.FundingAssessmentStatusName = "Pending DOI Capturer";
             }
-            else if (fundingAssessmentForm.DOICapturerId > 0 && fundingAssessmentForm.DOIApproverId == null)
-            {
-                this.FundingAssessmentStatusName = "Pending Assessment Capturer";
-            }
-            else if (fundingAssessmentForm.DOICapturerId > 0 && fundingAssessmentForm.DOIApproverId > 0)
+            else if (fundingAssessmentForm.IsFormComplete)
             {
                 this.FundingAssessmentStatusName = "Assessment Completed";
+            }
+            else if (fundingAssessmentForm.DOICapturerId > 0 && fundingAssessmentForm.SubmittedCapturerId == null)
+            {
+                this.FundingAssessmentStatusName = "Pending Assessment Capturer";
             }
             else 
             {

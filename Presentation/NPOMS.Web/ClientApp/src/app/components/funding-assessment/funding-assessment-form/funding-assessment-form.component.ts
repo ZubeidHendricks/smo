@@ -40,6 +40,7 @@ export class FundingAssessmentFormComponent implements OnInit {
   _fundingAssessments: dtoFundingAssessmentApplicationGet[];
   _showDOIDialog: boolean = false;
   _showSubmitDialog: boolean = false;
+  _showEndDialog: boolean = false;
   _doiApprover: boolean = false;
   _showFundingAssessment: boolean = false;
 
@@ -181,9 +182,33 @@ export class FundingAssessmentFormComponent implements OnInit {
 
   confirmSubmit()
   {
-    this._showSubmitDialog = false;
+    if(this.fundingAssessmentForm.canEndAssessment)
+    {
+      this._showEndDialog = true;
+    }
+    else{
+      this._showSubmitDialog = true;
+    }
+   
   }
 
+  onConfirmEndSubmit()
+  {
+    this._spinner.show();
+    this._repo.onSubmitEndForm(this.fundingAssessmentForm.applicationId).subscribe(
+      (result) => {
+        this._showSubmitDialog = false;
+        this._spinner.hide();
+
+        window.location.reload();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+  
   onConfirmSubmit()
   {
     this._spinner.show();
@@ -200,4 +225,24 @@ export class FundingAssessmentFormComponent implements OnInit {
       }
     );
   }
+
+  onDOIApproverConfirm()
+  {
+    this._spinner.show();
+    this._repo.updateDOIApprover(this.fundingAssessmentForm.applicationId).subscribe(
+      (result) => {
+
+        this._spinner.hide();
+
+        this.uiEvents.onResponseChanged();
+        
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+
+  }
+
 }
