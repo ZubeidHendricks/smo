@@ -9,13 +9,16 @@ import { IActivity, IApplication, IApplicationDetails, IApplicationPeriod, IDocu
   IFundingApplicationDetails, IMonitoringAndEvaluation, IObjective, IPlace,
   IProjectInformation, IResource, ISubPlace, ISustainabilityPlan, IUser,
   IFinancialYear,
-  INpo} from 'src/app/models/interfaces';
+  INpo,
+  IProgrammeServiceDelivery,
+  ISDA} from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { UserService } from 'src/app/services/api-services/user/user.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
+import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 
 
 @Component({
@@ -26,6 +29,15 @@ import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 })
 export class NpoReportCaptureComponent implements OnInit {
 
+  // dropdownOptions = [
+  //   { label: 'Option 1', value: 1 },
+  //   { label: 'Option 2', value: 2 },
+  //   { label: 'Option 3', value: 3 }
+  // ];
+  
+  selectedOption: ISDA;
+  selectedOptionId: number = 0;
+  targetGroup: string;
   dynamicHeaderText: string = '';
   postdynamicHeaderText: string = '';
   incomedynamicHeaderText: string = '';
@@ -34,6 +46,8 @@ export class NpoReportCaptureComponent implements OnInit {
   indicatordynamicHeaderText: string = '';
   selectedYear: string | undefined;
   downloadEnabled: boolean = false;
+  btnEnabled: boolean = false;
+  
 
   public govnencedynamicHeaderText$ = new BehaviorSubject<string>(this.govnencedynamicHeaderText);
   public indicatordynamicHeaderText$ = new BehaviorSubject<string>(this.indicatordynamicHeaderText);
@@ -70,6 +84,7 @@ export class NpoReportCaptureComponent implements OnInit {
   @Input() source: string;
   @Input() programId: number;
   
+  customText:string;
   applicationPeriodId: number;
   paramSubcriptions: Subscription;
   id: string;
@@ -96,7 +111,11 @@ export class NpoReportCaptureComponent implements OnInit {
   resources: IResource[] = [];
   activeButton: number | null = null;
   financialYears: IFinancialYear[];
+  isLoading: boolean = false;
   npo: INpo;
+  sdas:ISDA[] = [];
+  servicedeliveryAreas: ISDA[] = [];
+  dropdownOptions: { label: string, value: number }[] = [];
   fundingApplicationDetails: IFundingApplicationDetails = {
     financialMatters: [],
     implementations: [],
@@ -120,6 +139,7 @@ export class NpoReportCaptureComponent implements OnInit {
     private _loggerService: LoggerService,
     private _userRepo: UserService,
     private _npoRepo: NpoService,
+    private _npoProfileRepo: NpoProfileService,
     private cdr: ChangeDetectorRef
   ) { }
 
@@ -212,6 +232,59 @@ export class NpoReportCaptureComponent implements OnInit {
     );
   }
 
+  private MasterServiceDelivery() {
+    this.isLoading = true;
+    this._spinner.show();
+     this. _npoProfileRepo.getProgrammeMasterDeliveryDetailsById(this.application.applicationPeriod.programmeId, this.application?.npoId).subscribe(
+      (results) => {
+        this.sdas = results;
+        this.isLoading = false;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  
+//   private MasterServiceDelivery() {
+//     this._npoProfileRepo.getProgrammeMasterDeliveryDetailsById(
+//         this.application.applicationPeriod.programmeId,
+//         this.application?.npoId
+//     ).subscribe(
+//         (results) => {
+//             this.sdas = results;
+//             console.log('Service Delivery Areas:', this.sdas);
+
+//             // Safely handle serviceDeliveryAreas to prevent errors
+//             this.dropdownOptions = this.sdas
+//                 .reduce((acc, psd) => {
+//                     // Check if serviceDeliveryAreas is defined and is an array
+//                     if (psd.serviceDeliveryAreas && Array.isArray(psd.serviceDeliveryAreas)) {
+//                         const activeSDAs = psd.serviceDeliveryAreas
+//                             .filter(sda => sda.isActive) // Only active service delivery areas
+//                             .map(sda => ({
+//                                 label: sda.name,        // Display name in dropdown
+//                                 value: sda.id           // ID for the dropdown value
+//                             }));
+//                         acc.push(...activeSDAs);         // Add active entries to the accumulator
+//                     }
+//                     return acc;
+//                 }, []);
+
+//             console.log('Dropdown Options:', this.dropdownOptions);
+//         },
+//         (err) => {
+//             this._loggerService.logException(err);
+//             this._spinner.hide();
+//         }
+//     );
+// }
+
+
+
 
   private loadFinancialYears() {
     this._spinner.show();
@@ -248,6 +321,7 @@ getfinFund(event: FinancialMatters) {
       (results) => {
         if (results != null) {
           this.application = results;
+          this.MasterServiceDelivery();
           this.loadNpo();
           this.buildSteps(results.applicationPeriod);
           this.loadCreatedUser();
@@ -455,9 +529,26 @@ getfinFund(event: FinancialMatters) {
     );
   }
 
+//   onKeyUp(event: KeyboardEvent): void {
+//     if(this.selectedOption?.id > 0){
+//       this.btnEnabled = true;
+//     }
+//     else{
+//       this.btnEnabled = false;
+//     }
+//     this.targetGroup = this.customText;
+// }
+
+  onDropdownChange(event: any) {
+        this.btnEnabled = true;
+ 
+  
+    this.selectedOptionId = this.selectedOption.id;
+  }
+
   onDownload(){
     this._router.navigate(
-      [{ outlets: { print: ['print', this.application.id, this.selectedYear, this.activeButton, 5] } }]
+      [{ outlets: { print: ['print', this.application.id, this.selectedYear, this.activeButton,this.selectedOptionId, 5] } }]
     );
   }
 }

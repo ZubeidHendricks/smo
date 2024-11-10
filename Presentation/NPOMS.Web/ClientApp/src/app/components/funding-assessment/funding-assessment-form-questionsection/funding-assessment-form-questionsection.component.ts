@@ -20,10 +20,12 @@ import { FundingAssessmentUIEventsService } from '../funding-assessment-ui-event
 })
 export class FundingAssessmentFormQuestionSectionComponent implements OnInit {
   @Input() Questions: dtoQuestionGet;
-  @Input() AssessmentApplicationFormId: number;
+
   @Input() HeaderName: string;
   @Input() FinalCommentRequired: boolean = false;
+  @Input() fundingAssessmentForm: dtoFundingAssessmentApplicationFormGet;
 
+  AssessmentApplicationFormId: number;
   // Used for table filtering
   @ViewChild('dt') dt: Table | undefined;
 
@@ -41,8 +43,8 @@ export class FundingAssessmentFormQuestionSectionComponent implements OnInit {
 
   ngOnInit(): void {
 
-
-
+    this.AssessmentApplicationFormId =  this.fundingAssessmentForm.id;
+    console.log("id", this.AssessmentApplicationFormId);
   }
 
   onQuestionChange(question: dtoQuestionGet) {

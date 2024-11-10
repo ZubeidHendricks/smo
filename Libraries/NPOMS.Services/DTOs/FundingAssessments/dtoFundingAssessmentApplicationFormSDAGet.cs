@@ -27,19 +27,19 @@ namespace NPOMS.Services.DTOs.FundingAssessments
         {
             
         }
-        public dtoFundingAssessmentApplicationFormSDAGet(ProgrameServiceDeliveryArea programeServiceDeliveryArea, ProgrammeServiceDelivery programmeServiceDelivery, FundingAssessmentForm fundingAssessmentForm  )
+        public dtoFundingAssessmentApplicationFormSDAGet(ProgrameServiceDeliveryArea programeServiceDeliveryArea, FundingAssessmentForm fundingAssessmentForm  )
         {
             var psda = fundingAssessmentForm.FundingAssessmentFormSDAs.FirstOrDefault(x => x.ProgrameServiceDeliveryAreaId == programeServiceDeliveryArea.Id);
 
             this.Id = psda != null ? psda.Id : 0;
 
             this.ProgramServiceDeliveryAreaId = programeServiceDeliveryArea.Id;
-            this.RegionName = programmeServiceDelivery.Regions.FirstOrDefault()?.Region?.Name;
-            this.DistrictCouncilName = programmeServiceDelivery.DistrictCouncil.Name;
-            this.LocalMunicipalityName = programmeServiceDelivery.LocalMunicipality.Name;
+            this.RegionName = programeServiceDeliveryArea.ProgrameServiceDelivery?.Regions.FirstOrDefault()?.Region.Name;
+            this.DistrictCouncilName = programeServiceDeliveryArea.ProgrameServiceDelivery?.DistrictCouncil.Name;
+            this.LocalMunicipalityName = programeServiceDeliveryArea.ProgrameServiceDelivery?.LocalMunicipality.Name;
             this.ServiceDeliveryAreaName = programeServiceDeliveryArea.ServiceDeliveryArea.Name;
 
-            this.IsSelected =  (psda?.ProgrameServiceDeliveryAreaId ?? 0) == programeServiceDeliveryArea.Id ? true : false;
+            this.IsSelected = psda?.IsSelected ?? false;
         }
     }
 }

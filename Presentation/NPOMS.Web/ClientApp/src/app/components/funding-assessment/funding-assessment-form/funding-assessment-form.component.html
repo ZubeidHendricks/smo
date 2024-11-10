@@ -2,7 +2,7 @@
 
   <div class="col-md-12">
     <div class="mb-3">
-      <p-panel header="NPO Info" [toggleable]="true">
+      <p-panel header="NPO Info" [toggleable]="true" class="custom-panel" >
         <div class="form-group p-fluid grid">
           <div class="col-md-2">
             <label for="npoName">NPO</label>
@@ -24,7 +24,7 @@
 
     </div>
     <div class="mb-3">
-      <p-panel header="Service Delivery Areas" [toggleable]="true">
+      <p-panel header="Service Delivery Areas" [toggleable]="true" class="custom-panel">
         <p-table [value]="fundingAssessmentForm.serviceDeliveries">
           <ng-template pTemplate="header">
             <tr>
@@ -36,9 +36,9 @@
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-serviceDeliveryArea>
-            <tr>
+            <tr [ngStyle]="{'background-color': fundingAssessmentForm.serviceDeliverySelectionRequired ? '#ffcccc' : 'transparent'}">
               <td>
-                <p-checkbox binary="true" [(ngModel)]="serviceDeliveryArea.isSelected" (ngModelChange)="onServiceDeliveryAreaModelChange($event, serviceDeliveryArea)"></p-checkbox>
+                <p-checkbox binary="true" [(ngModel)]="serviceDeliveryArea.isSelected" (ngModelChange)="onServiceDeliveryAreaModelChange($event, serviceDeliveryArea)" [disabled]="fundingAssessmentForm.disableCapturerControls"></p-checkbox>
               </td>
               <td>{{ serviceDeliveryArea.regionName }}</td>
               <td>{{ serviceDeliveryArea.districtCouncilName }}</td>
@@ -56,31 +56,31 @@
       </p-panel>
     </div>
     <app-funding-assessment-form-questionsection [Questions]="getLegislativeCompliance()"
-      [AssessmentApplicationFormId]="fundingAssessmentForm.id" [HeaderName]="'Legislative Compliance'" [FinalCommentRequired]="fundingAssessmentForm.legislativeComplianceFinalCommentRequired">
+      [fundingAssessmentForm]="fundingAssessmentForm" [HeaderName]="'Legislative Compliance'" [FinalCommentRequired]="fundingAssessmentForm.legislativeComplianceFinalCommentRequired">
 
     </app-funding-assessment-form-questionsection>
 
     <ng-container *ngIf="fundingAssessmentForm.continueWithAssessment === true">
       <app-funding-assessment-form-questionsection [Questions]="getPFMACompliance()"
-        [AssessmentApplicationFormId]="fundingAssessmentForm.id" [HeaderName]="'PFMA Compliance'">
+      [fundingAssessmentForm]="fundingAssessmentForm" [HeaderName]="'PFMA Compliance'">
 
       </app-funding-assessment-form-questionsection>
 
       <app-funding-assessment-form-questionsection [Questions]="getAnalysisPerformance()"
-        [AssessmentApplicationFormId]="fundingAssessmentForm.id" [HeaderName]="'Analysis Of Performance'">
+      [fundingAssessmentForm]="fundingAssessmentForm" [HeaderName]="'Analysis Of Performance'">
 
       </app-funding-assessment-form-questionsection>
 
       <div class="mb-3">
-        <p-panel header="Summary" [toggleable]="true">
+        <p-panel header="Summary" [toggleable]="true" class="custom-panel">
           <p-table [value]="fundingAssessmentForm.summaryItems">
             <ng-template pTemplate="header">
               <tr>
 
-                <th>Summary of Assessment</th>
-                <th>% Score</th>
-                <th>Final Score</th>
-                <th>Approved / Not Approved</th>
+                <th style="width: 25%;">Summary of Assessment</th>
+                <th style="width: 15%;">% Score</th>
+                <th style="width: 15%;">Final Score</th>
+                <th >Approved / Approved with conditions / Not Approved</th>
 
               </tr>
             </ng-template>
@@ -95,7 +95,7 @@
                   <span *ngFor="let option of summaryItem.responseOptions">
                     <p-radioButton name="option-{{summaryItem.id}}" [value]="option.id"
                       [(ngModel)]="summaryItem.selectedResponseOptionId" label="{{ option.name }}"
-                      (ngModelChange)="onSummaryChange(summaryItem)"></p-radioButton> &nbsp; &nbsp;
+                      (ngModelChange)="onSummaryChange(summaryItem)" disabled></p-radioButton> &nbsp; &nbsp;
                   </span>
                 </td>
 
@@ -106,7 +106,7 @@
       </div>
     </ng-container>
     <div class="mb-3" >
-      <p-panel header="Final Approver Section" [toggleable]="true" *ngIf="fundingAssessmentForm.capturerSubmitted">
+      <p-panel header="Final Approver Section" [toggleable]="true" *ngIf="fundingAssessmentForm.capturerSubmitted" class="custom-panel">
 
           <div class="form-group p-fluid grid">
             <div class="col-md-2">
@@ -121,6 +121,7 @@
                 placeholder="Select an option"
                 [style]="{'width':'100%'}"
                 (ngModelChange)="onFinalApproverChange(fundingAssessmentForm.finalApprovalItem)"
+                [disabled] = "fundingAssessmentForm.disableAllControls"
               ></p-dropdown>
             </div>
           </div>
@@ -129,7 +130,7 @@
               <label for="ccid">Recommendation Reason</label>
             </div>
             <div class="col-md-8">
-              <textarea [(ngModel)]="fundingAssessmentForm.finalApprovalItem.comment" rows="3" [style]="{'width':'100%'}" placeholder="" (blur)="onFinalApproverChange(fundingAssessmentForm.finalApprovalItem)"></textarea>
+              <textarea [(ngModel)]="fundingAssessmentForm.finalApprovalItem.comment" rows="3" [style]="{'width':'100%'}" placeholder="" (blur)="onFinalApproverChange(fundingAssessmentForm.finalApprovalItem)" [disabled] = "fundingAssessmentForm.disableAllControls"></textarea>
             </div>
           </div>
 
@@ -155,7 +156,7 @@
             </li>
           </ul>
           <div class="text-right">
-            <p-checkbox binary="true"></p-checkbox>
+            <p-checkbox binary="true" [(ngModel)]="fundingAssessmentForm.doiApproved" (ngModelChange)="onDOIApproverConfirm()" [disabled] = "fundingAssessmentForm.disableAllControls"></p-checkbox>
           </div>
         </div>
       </p-panel>
@@ -182,5 +183,18 @@
     <p-footer>
         <button type="submit" pButton icon="fa fa-thumbs-o-up" 
             class="ui-button-success" label="Submit" (click) = "onConfirmSubmit()"></button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog header="End Assessment Form" [(visible)]="_showEndDialog" [modal]="true" [style]="{width: '50vw'}"
+    [maximizable]="false" [resizable]="false">
+    <div style="padding: 10px; background-color: lightgray">
+        <p>
+          Please confirm that you want to end the assessment. <br/> <b>Please note:</b> The assessessment will be marked as complete and will not be submitted any approval.
+        </p>
+      </div>
+    <p-footer>
+        <button type="submit" pButton icon="fa fa-thumbs-o-up" 
+            class="ui-button-success" label="Submit" (click) = "onConfirmEndSubmit()"></button>
     </p-footer>
 </p-dialog>

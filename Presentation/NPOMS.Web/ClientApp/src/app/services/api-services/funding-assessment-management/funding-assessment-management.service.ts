@@ -39,9 +39,18 @@ export class FundingAssessmentManagementService {
     return this._http.put<any>(url, null, httpOptions);
   }
 
+  public updateDOIApprover(applicationId: number) {
+    const url = `${this._envUrl.urlAddress}/api/funding-assessments/0/application/${applicationId}/doi-confirm-approver`;
+    return this._http.put<any>(url, null, httpOptions);
+  }
 
   public onSubmitForm(applicationId: number) {
     const url = `${this._envUrl.urlAddress}/api/funding-assessments/0/application/${applicationId}/submit-form`;
+    return this._http.put<any>(url, null, httpOptions);
+  }
+
+  public onSubmitEndForm(applicationId: number) {
+    const url = `${this._envUrl.urlAddress}/api/funding-assessments/0/application/${applicationId}/end-assessment-form`;
     return this._http.put<any>(url, null, httpOptions);
   }
 

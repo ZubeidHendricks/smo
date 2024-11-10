@@ -26,9 +26,13 @@ namespace NPOMS.Services.DTOs.FundingAssessments
         public bool ApproverSubmitted { get; }
 
         public bool CanSubmit => ValidateCanSubmit();
+        public bool ServiceDeliverySelectionRequired => !this.ServiceDeliveries.Any(x=>x.IsSelected);
 
+        public bool DisableCapturerControls { get; private set; } = false;
+        public bool DisableAllControls { get; private set; } = false;
 
         public bool ContinueWithAssessment { get; }
+        public bool CanEndAssessment { get; set; }
         public bool LegislativeComplianceFinalCommentRequired { get; private set; } = false;
         public bool PFMAComplianceAnalysisCommentRequired { get; private set; } = false;
         public bool PerformanceAnalysisCommentRequired { get; private set; } = false;
@@ -66,7 +70,9 @@ namespace NPOMS.Services.DTOs.FundingAssessments
             this.ApplicationId = application.Id;
             this.OrganisationName = npoProfile.Npo.Name;
             this.CCode = npoProfile.Npo.CCode;
-            this.DOICaptured = fundingAssessmentForm?.DOICapturerId > 0;
+            this.CapturerSubmitted = (fundingAssessmentForm?.SubmittedCapturerId ?? 0) > 0;
+            this.ApproverSubmitted = (fundingAssessmentForm?.SubmittedApproverId ?? 0) > 0;
+            this.DOICaptured = (fundingAssessmentForm?.DOICapturerId ?? 0) > 0;
             this.DOIApproved = (fundingAssessmentForm?.DOIApproverId ?? 0) > 0;
 
             questions.OrderBy(x=>x.SortOrder).ToList().ForEach(question =>
@@ -84,6 +90,9 @@ namespace NPOMS.Services.DTOs.FundingAssessments
             this.CalcOverallRatingValue();
             this.CalSummaryByQuestionSection();
             this.ContinueWithAssessment = this.onContinueWithAssessment();
+
+            this.DisableAllControls = fundingAssessmentForm.IsFormComplete;
+            this.DisableCapturerControls = (fundingAssessmentForm.SubmittedCapturerId ?? 0) > 0 || DisableAllControls;
 
         }
 
@@ -157,11 +166,10 @@ namespace NPOMS.Services.DTOs.FundingAssessments
                 score = Math.Round(score, 2);
             }
 
-            var question = _originalQuestions.First(x => x.Name == questionSectionName);
-            var filteredResponseOptions = _orginalResponseOptions.Where(x => x.ResponseTypeId == question.ResponseTypeId).ToList();
+            var questionApproval = _originalQuestions.FirstOrDefault(x => x.Name == "Approval" && x.QuestionSection.Name == questionSectionName);
+            var filteredResponseOptions = _orginalResponseOptions.Where(x => x.ResponseTypeId == questionApproval.ResponseTypeId).ToList();
 
-
-            this._summaryItems.Add(new(question, score, count==0 ? 0 : ratingValue / count, filteredResponseOptions, _fundingAssessmentForm?.FundingAssessmentFormResponses.ToList()));
+            this._summaryItems.Add(new(questionApproval, score, count==0 ? 0 : ratingValue / count, filteredResponseOptions, _fundingAssessmentForm?.FundingAssessmentFormResponses.ToList()));
         }
 
         private void CreateSummaryFinalItem()
@@ -197,7 +205,8 @@ namespace NPOMS.Services.DTOs.FundingAssessments
 
         public bool onContinueWithAssessment()
         {
-           // return true;
+            // return true;
+            this.CanEndAssessment = false;
 
             var questionApproval = this.Questions.FirstOrDefault(x => x.QuestionSectionName == "Legislative Compliance" && x.Name == "Approval");
             var questionFinalComment = this.Questions.FirstOrDefault(x => x.QuestionSectionName == "Legislative Compliance" && x.Name == "Final comment");
@@ -217,6 +226,10 @@ namespace NPOMS.Services.DTOs.FundingAssessments
             {
                 LegislativeComplianceFinalCommentRequired = (questionFinalComment.Comment?.Length ?? 0) == 0;
                 return (questionFinalComment.Comment?.Length ?? 0) > 0;
+            } else if (selectedResponseApproval.Name.ToLower().Equals("not approved"))
+            {
+                this.CanEndAssessment = !this._fundingAssessmentForm.IsFormComplete;
+                return false;
             }
             else
             {
@@ -230,15 +243,10 @@ namespace NPOMS.Services.DTOs.FundingAssessments
             if (this._programServiceDeliveries.Count() == 0)
                 return;
 
-            foreach (var servicesRendered in this._servicesRendered)
+            foreach (var programServiceDelivery in this._programServiceDeliveries)
             {
-                var programServiceDelivery = this._programServiceDeliveries.FirstOrDefault(x => x.SubProgrammeTypeId == servicesRendered.SubProgrammeTypeId && x.SubProgrammeId == servicesRendered.SubProgrammeId);
+                programServiceDelivery.ServiceDeliveryAreas.ToList().ForEach(x => this._serviceDeliveries.Add(new(x, this._fundingAssessmentForm)));
 
-                if (programServiceDelivery != null)
-                { 
-                    programServiceDelivery.ServiceDeliveryAreas.ToList().ForEach(x => this._serviceDeliveries.Add(new(x, programServiceDelivery, this._fundingAssessmentForm)));
-                }
-            
             }
 
         }
@@ -270,8 +278,14 @@ namespace NPOMS.Services.DTOs.FundingAssessments
             canSubmit = summaryItems.Where(x => x.SelectedResponseOptionId != null).Count() == summaryItems.Count();
 
             if (canSubmit)
+            {
+                canSubmit = this.ContinueWithAssessment;
+            }
+            
+
+            if (canSubmit)
             { 
-                canSubmit = this.ServiceDeliveries.Count() > 0;
+                canSubmit = this.ServiceDeliveries.Count() > 0 ;
             }
 
             if (canSubmit)
@@ -279,16 +293,32 @@ namespace NPOMS.Services.DTOs.FundingAssessments
                 canSubmit = this.ServiceDeliveries.Where(x=>x.IsSelected).Count() > 0;
             }
 
-            return canSubmit;
+            if (canSubmit)
+            {
+                canSubmit = this.Questions.Where(x=>x.IsValid == false).Count() == 0;
+            }
+
+            if (canSubmit)
+            {
+                canSubmit = (this._fundingAssessmentForm.DOIApproverId ?? 0 ) == 0 || this._fundingAssessmentForm.IsFormComplete;
+            }
+
+            if (CanEndAssessment)
+            {
+                canSubmit = CanEndAssessment;
+            }
+
+            return canSubmit ;
         }
 
         private bool ValidateApproverCanSubmit()
         {
             var canSubmit = false;
+
+            canSubmit = (this._fundingAssessmentForm.DOIApproverId ?? 0) > 0;
+
             return canSubmit;
         }
-
-
 
     }
 

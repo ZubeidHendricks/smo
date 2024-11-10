@@ -154,6 +154,9 @@ export class FundingAssessmentListComponent implements OnInit {
 
   showDOIDialog(application: dtoFundingAssessmentApplicationGet)
   {
+    this._selectedApplicationId = null;
+    this._selectedAssessmentApplication = null;
+
     this._selectedApplicationId = application.applicationId;
     this._selectedAssessmentApplication = application;
     this._showDOIDialog = true
@@ -161,9 +164,10 @@ export class FundingAssessmentListComponent implements OnInit {
 
   showFundingAssessmentForm(application: dtoFundingAssessmentApplicationGet)
   {
+
     this._selectedApplicationId = application.applicationId;
     this._selectedAssessmentApplication = application;
-
+    this._fundingAssessmentForm = null;
     this._spinner.show();
     this._repo.getFundingAssessmentApplicationForm(this._selectedApplicationId).subscribe(
       (result) => {
@@ -185,8 +189,10 @@ export class FundingAssessmentListComponent implements OnInit {
       (result) => {
         this._showDOIDialog = false;
         this._spinner.hide();
+      
+        this.showFundingAssessmentForm(this._selectedAssessmentApplication);
 
-        this.showFundingAssessmentForm(this._selectedAssessmentApplication)
+
       },
       (err) => {
         this._loggerService.logException(err);

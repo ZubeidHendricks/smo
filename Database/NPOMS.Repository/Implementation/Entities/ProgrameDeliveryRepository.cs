@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
 using NPOMS.Repository.Interfaces.Entities;
 using System;
@@ -11,11 +12,11 @@ namespace NPOMS.Repository.Implementation.Entities
 {
     public class ProgrameDeliveryRepository : BaseRepository<ProgrammeServiceDelivery>, IProgrameDeliveryRepository
     {
-
+        RepositoryContext _repositoryContext;
         public ProgrameDeliveryRepository(RepositoryContext repositoryContext)
             : base(repositoryContext)
         {
-
+            _repositoryContext = repositoryContext;
         }
 
         public async Task<IEnumerable<ProgrammeServiceDelivery>> GetDeliveryDetailsByProgramId(int programmeId, int npoProfileId)
@@ -37,6 +38,31 @@ namespace NPOMS.Repository.Implementation.Entities
             });
 
             return result;
+        }
+
+
+        public async Task<IEnumerable<ServiceDeliveryArea>> GetServiveDeliveryMasterByProgramId(int programmeId, int npoId)
+        {
+            var npoProfile =  await _repositoryContext.NpoProfiles.Where(pro => pro.NpoId == npoId).FirstOrDefaultAsync();
+
+            var result = await FindByCondition(x => x.ProgramId.Equals(programmeId) && x.IsActive && x.NpoProfileId == npoProfile.Id)
+                        .Include(x => x.DistrictCouncil)
+                        .Include(x => x.ApprovalStatus)
+                        .Include(x => x.LocalMunicipality)
+                        .Include(x => x.ServiceDeliveryAreas)
+                        .AsNoTracking().ToListAsync();
+
+            var serviceDeliveryAreaIds = result.SelectMany(psd =>
+                                  psd.ServiceDeliveryAreas
+                                 .Where(sda => sda.IsActive)
+                                 .Select(sda => sda.ServiceDeliveryAreaId))
+                                 .Distinct();
+
+            var activeServiceDeliveryAreas = await _repositoryContext.ServiceDeliveryAreas
+                                       .Where(sda => serviceDeliveryAreaIds.Contains(sda.Id))
+                                       .ToListAsync();
+
+            return activeServiceDeliveryAreas;
         }
 
         public async Task<IEnumerable<ProgrammeServiceDelivery>> GetProgrammeDeliveryArea()

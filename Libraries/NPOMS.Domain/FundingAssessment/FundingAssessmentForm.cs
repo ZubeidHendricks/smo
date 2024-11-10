@@ -26,6 +26,9 @@ namespace NPOMS.Domain.FundingAssessment
         public int? SubmittedApproverId { get; private set; }
         public DateTime? SubmittedApproverDateTime { get; private set; }
 
+        public bool IsFormComplete { get; private set; }
+
+
         public int CreatedUserId { get;  }
 
         public DateTime CreatedDateTime { get;  }
@@ -58,9 +61,19 @@ namespace NPOMS.Domain.FundingAssessment
         }
 
         public void SetDOIApprover(int loggedInUserId)
-        { 
-            this.DOIApproverId = loggedInUserId;
-            this.DOIApprovedDateTime = DateTime.UtcNow;
+        {
+
+            if (this.DOIApproverId != null)
+            {
+                this.DOIApproverId = null;
+                this.DOIApprovedDateTime = null;
+            }
+            else
+            {
+                this.DOIApproverId = loggedInUserId;
+                this.DOIApprovedDateTime = DateTime.UtcNow;
+            }
+       
 
             this.UpdatedUserId = loggedInUserId;
             this.UpdatedDateTime    = DateTime.UtcNow;
@@ -81,9 +94,18 @@ namespace NPOMS.Domain.FundingAssessment
                 this.SubmittedApproverId = loggedInUserId;
                 this.SubmittedApproverDateTime = DateTime.UtcNow;
 
+                this.IsFormComplete = true;
+
                 this.UpdatedUserId = loggedInUserId;
                 this.UpdatedDateTime = DateTime.UtcNow;
             }
+        }
+
+        public void CompleteAssessmentForm(int loggedInUserId)
+        { 
+            this.IsFormComplete = true;
+            this.UpdatedUserId = loggedInUserId;
+            this.UpdatedDateTime = DateTime.UtcNow;
         }
 
         public void UpsertSDAs(ProgrameServiceDeliveryArea programeServiceDeliveryArea, bool isSelected)

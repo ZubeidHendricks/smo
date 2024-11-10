@@ -84,6 +84,36 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpPut("{id}/application/{applicationId}/doi-confirm-approver", Name = "ConfirmDOIApprover")]
+        public async Task<IActionResult> ConfirmDOIApprover(int id, int applicationId)
+        {
+            try
+            {
+                await this._applicationFundingAssessmentService.ConfirmDOIApprover(applicationId, base.GetUserIdentifier());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside ConfirmDOIApprover action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("{id}/application/{applicationId}/end-assessment-form", Name = "EndAssessmentForm")]
+        public async Task<IActionResult> EndAssessmentForm(int id, int applicationId)
+        {
+            try
+            {
+                await this._applicationFundingAssessmentService.EndAssessmentForm(applicationId, base.GetUserIdentifier());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside ConfirmDOICapturer action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpPut("{id}/application/{applicationId}/submit-form", Name = "SubmitForm")]
         public async Task<IActionResult> SubmitForm(int id, int applicationId)
         {
