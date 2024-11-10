@@ -41,9 +41,11 @@ namespace NPOMS.Repository.Implementation.Entities
         }
 
 
-        public async Task<IEnumerable<ServiceDeliveryArea>> GetServiveDeliveryMasterByProgramId(int programmeId, int npoProfileId)
+        public async Task<IEnumerable<ServiceDeliveryArea>> GetServiveDeliveryMasterByProgramId(int programmeId, int npoId)
         {
-            var result = await FindByCondition(x => x.ProgramId.Equals(programmeId) && x.IsActive && x.NpoProfileId == npoProfileId)
+            var npoProfile =  await _repositoryContext.NpoProfiles.Where(pro => pro.NpoId == npoId).FirstOrDefaultAsync();
+
+            var result = await FindByCondition(x => x.ProgramId.Equals(programmeId) && x.IsActive && x.NpoProfileId == npoProfile.Id)
                         .Include(x => x.DistrictCouncil)
                         .Include(x => x.ApprovalStatus)
                         .Include(x => x.LocalMunicipality)

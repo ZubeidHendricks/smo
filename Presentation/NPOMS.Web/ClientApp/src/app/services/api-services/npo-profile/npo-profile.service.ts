@@ -46,8 +46,8 @@ export class NpoProfileService {
     return this._http.get<IProgramBankDetails[]>(url, httpOptions);
   }
 
-  public getProgrammeMasterDeliveryDetailsById(programmeId: number,npoProfileId: number) {
-    const url = `${this._envUrl.urlAddress}/api/programme/masterdelivery/programmeId/${programmeId}/npoProfileId/${npoProfileId}`;
+  public getProgrammeMasterDeliveryDetailsById(programmeId: number,npoId: number) {
+    const url = `${this._envUrl.urlAddress}/api/programme/masterdelivery/programmeId/${programmeId}/npoProfileId/${npoId}`;
     return this._http.get<ISDA[]>(url, httpOptions);
   }
 
