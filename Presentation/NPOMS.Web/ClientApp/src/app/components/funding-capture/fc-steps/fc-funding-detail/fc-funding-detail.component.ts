@@ -24,6 +24,8 @@ export class FCFundingDetailComponent implements OnInit {
   @Output() amountAwardedChanged: EventEmitter<number> = new EventEmitter<number>();
   @Input() isEdit: boolean;
 
+  canEditAward: boolean;
+
   private _validated: boolean;
   @Input()
   get validated(): boolean { return this._validated; }
@@ -56,6 +58,19 @@ export class FCFundingDetailComponent implements OnInit {
       { label: 'Yes', value: true },
       { label: 'No', value: false }
     ];
+  }
+
+
+  editAwardAmount(){
+    console.log('this.isEdit', this.isEdit);
+    console.log('this.fundingDetail.programmeBudget', this.fundingDetail.programmeBudget);
+    if (!this.isEdit)
+      return false;
+
+    if (this.fundingDetail.programmeBudget === 0){
+      console.log('funding true');    
+      return true;
+    }
   }
 
   private loadFrequencies() {
