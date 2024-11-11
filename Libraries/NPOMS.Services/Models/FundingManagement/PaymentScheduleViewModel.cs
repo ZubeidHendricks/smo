@@ -17,6 +17,8 @@ namespace NPOMS.Services.Models.FundingManagement
         public double? AllocatedAmountBalance { get; set; }
         public double? ApprovedAmountBalance { get; set; }
         public double? PaidAmountBalance { get; set; }
+
+        public bool IsCompliant { get; set; }
         public bool IsActive { get; set; }
 
         public List<PaymentScheduleItemViewModel> PaymentScheduleItemViewModels { get; set; }

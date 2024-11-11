@@ -161,6 +161,22 @@ namespace NPOMS.API.Controllers
             }
         }
 
+
+        [HttpGet("update-compliance/{id}/{compliant}", Name = "UpdateCompliance")]
+        public async Task<IActionResult> UpdateCompliance(int id, string compliant)
+        {
+            try
+            {
+                //await this._fundingManagementService.UpdatePaymentSchedules(model, base.GetUserIdentifier());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdatePaymentSchedules action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpPut("bank-detail", Name = "UpdateBankDetails")]
         public async Task<IActionResult> UpdateBankDetails([FromBody] BankDetailViewModel model)
         {
