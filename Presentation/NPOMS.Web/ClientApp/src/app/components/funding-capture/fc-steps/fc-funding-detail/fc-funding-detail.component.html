@@ -53,7 +53,7 @@
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Amount Awarded</label>
-                <p-inputNumber [style]="{'width': '100%'}" [(ngModel)]="fundingDetail.amountAwarded" [ngModelOptions]="{standalone: true}" (onInput)="valueChanged()" (onBlur)="valueChanged()" #amountAwarded="ngModel" [ngClass]="{'ng-dirty': (amountAwarded.invalid && validated) || (amountAwarded.dirty && amountAwarded.invalid)}" required [disabled]="!isEdit"></p-inputNumber>
+                <p-inputNumber [style]="{'width': '100%'}" [(ngModel)]="fundingDetail.amountAwarded" [ngModelOptions]="{standalone: true}" (onInput)="valueChanged()" (onBlur)="valueChanged()" #amountAwarded="ngModel" [ngClass]="{'ng-dirty': (amountAwarded.invalid && validated) || (amountAwarded.dirty && amountAwarded.invalid)}" required [disabled]="editAwardAmount()"></p-inputNumber>
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="non-mandatory-content">Allocated Amount</label>

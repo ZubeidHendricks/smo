@@ -21,6 +21,8 @@ namespace NPOMS.Domain.FundingManagement
 
         public double? PaidAmountBalance { get; set; }
 
+
+
         public bool IsActive { get; set; }
 
         public int CreatedUserId { get; set; }

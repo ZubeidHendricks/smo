@@ -18,6 +18,9 @@
                     <td>{{rowData.allocatedAmount | currency: 'R'}}</td>
                     <td>{{rowData.approvedAmount | currency: 'R'}}</td>
                     <td>{{rowData.paidAmount | currency: 'R'}}</td>
+                    <td>
+                        <p-checkbox  (onChange)="onComplianceChange(rowData)" [(ngModel)]="rowData.isCompliant" [binary]="true"></p-checkbox>
+                    </td>
                     <td *ngIf="paymentFrequencyId === FrequencyEnum.Adhoc"></td>
                 </tr>
             </ng-template>
@@ -28,6 +31,7 @@
                     <td>{{paymentSchedule.approvedAmountTotal | currency: 'R'}}</td>
                     <td>{{paymentSchedule.paidAmountTotal | currency: 'R'}}</td>
                     <td *ngIf="paymentFrequencyId === FrequencyEnum.Adhoc"></td>
+                    <td></td>
                 </tr>
                 <tr class="default-font">
                     <td colspan="4" style="text-align: right;">Balance</td>
@@ -35,6 +39,7 @@
                     <td>{{paymentSchedule.approvedAmountBalance | currency: 'R'}}</td>
                     <td>{{paymentSchedule.paidAmountBalance | currency: 'R'}}</td>
                     <td *ngIf="paymentFrequencyId === FrequencyEnum.Adhoc"></td>
+                    <td></td>
                 </tr>
             </ng-template>
         </p-table>
@@ -44,3 +49,136 @@
         Please select a payment frequency and capture an amount awarded...
     </div>
 </p-panel>
+
+
+
+<p-dialog header="Compliance" [(visible)]="showComplianceDialog" modal="true" closeOnEscape="true" (onHide)="hideComplianceDialog()">
+    <ng-template pTemplate="header">
+        Compliance Status
+    </ng-template>
+
+    <p-table [rowHover]="true" [style]="{'border':'none'}" [value]="compliances">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width:10%; text-align: center;">Financial Year</th>
+                <th style="width:10%; text-align: center;">Compliance Cycle</th>
+                <th style="width:10%; text-align: center;">Signed TPA</th>
+                <th style="width:10%; text-align: center;">Progress Report</th>
+                <th style="width:10%; text-align: center;">Non Financial Data</th>
+                <th style="width:10%; text-align: center;">Is Overidden</th>
+                <th style="width:10%; text-align: center;">Is Compliant</th>
+                <th style="width:10%; text-align: center;">Edit</th>
+            </tr>
+        </ng-template>
+    
+        <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+            <tr class="default-font">
+                <td style="text-align: center;">{{rowData.finyear}}</td>
+                <td style="text-align: center;">{{rowData.complianceCycle}}</td>
+                <td style="text-align: center;">
+                    <div >
+                        <button *ngIf="rowData.signedTpa===true" pButton type="button"  icon="pi pi-check" class="p-button-success p-button-raised p-button-rounded p-button-outlined"></button>
+                        <button *ngIf="!rowData.signedTpa===true"pButton type="button"  icon="pi pi-times" class="p-button-danger p-button-raised p-button-rounded p-button-outlined"></button>
+                    </div>
+                </td>
+                <td style="text-align: center;">
+                    <div >
+                        <button *ngIf="rowData.progressReport===true" pButton type="button"  icon="pi pi-check" class="p-button-success p-button-raised p-button-rounded p-button-outlined"></button>
+                        <button *ngIf="!rowData.progressReport===true"pButton type="button"  icon="pi pi-times" class="p-button-danger p-button-raised p-button-rounded p-button-outlined"></button>
+                    </div>
+                </td>
+                <td style="text-align: center;">
+                    <div >
+                        <button *ngIf="rowData.nonFinData===true" pButton type="button"  icon="pi pi-check" class="p-button-success p-button-raised p-button-rounded p-button-outlined"></button>
+                        <button *ngIf="!rowData.nonFinData===true"pButton type="button"  icon="pi pi-times" class="p-button-danger p-button-raised p-button-rounded p-button-outlined"></button>
+                    </div>
+                </td>
+                <td style="text-align: center;">
+                    <div >
+                        <button *ngIf="rowData.isOverridden===true" pButton type="button"  icon="pi pi-check" class="p-button-success p-button-raised p-button-rounded p-button-outlined"></button>
+                        <button *ngIf="!rowData.isOverridden===true"pButton type="button"  icon="pi pi-times" class="p-button-danger p-button-raised p-button-rounded p-button-outlined"></button>
+                    </div>
+                </td>
+                <td style="text-align: center;">
+                    <div >
+                        <button *ngIf="rowData.isCompliant===true" pButton type="button"  icon="pi pi-check" class="p-button-success p-button-raised p-button-rounded p-button-outlined"></button>
+                        <button *ngIf="!rowData.isCompliant===true"pButton type="button"  icon="pi pi-times" class="p-button-danger p-button-raised p-button-rounded p-button-outlined"></button>
+                    </div>
+                </td>
+                <td style="text-align: center;">
+                    <button pButton  label="Edit" icon="pi pi-times" (click)="selectedCompliance=rowData;onEditCompliance(rowData)"></button>
+                </td>
+            </tr>
+        </ng-template>  
+    </p-table>  
+    <p-footer>
+    </p-footer>
+</p-dialog>
+
+
+<p-dialog [(visible)]="showComplianceDetail">
+    <ng-template pTemplate="header">
+        NPO Compliance Management
+    </ng-template>
+
+    <ng-template pTemplate="body">
+
+    <p-panel [style]="{'font-size':'12px'}" header="Compliance Detail">
+
+        <table>
+            <tr>
+                <td style="width:50%; text-align: right;">Cycle No</td>
+                <td style="width:50%; text-align: left;padding-left: 10px;">
+                    <input type="text" pInputText  disabled="true" [(ngModel)]="selectedCycleNo"/>
+                </td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td style="width:70%; text-align: right;">Have you received TPA / Submission</td>
+                <td style="width:50%; text-align: left;">
+                    <p-dropdown [options]="yesNoOptions" (onChange)="onOptionChange()" [(ngModel)]="selectedTpaOption" optionLabel="name" optionValue="value"></p-dropdown>              
+                </td>
+            </tr>
+            <tr>
+                <td style="width:70%; text-align: right;">Have you received Progress Report</td>
+                <td style="width:50%; text-align: left;">
+                    <p-dropdown [options]="yesNoOptions"  (onChange)="onOptionChange()"   [(ngModel)]="selectedProgressOption" optionLabel="name" optionValue="value"></p-dropdown>              
+                </td>
+            </tr>
+            <tr>
+                <td style="width:70%; text-align: right;">Have you received Non Financial Data</td>
+                <td style="width:50%; text-align: left;">
+                    <p-dropdown [options]="yesNoOptions"  (onChange)="onOptionChange()"  [(ngModel)]="selectedNonFinancialOption" optionLabel="name" optionValue="value"></p-dropdown>              
+                </td>
+            </tr>
+            <tr>
+                <td style="width:70%; text-align: right;">Do you want to Override check</td>
+                <td style="width:50%; text-align: left;">
+                    <p-dropdown [options]="yesNoOptions"  (onChange)="onOptionChange()"   [(ngModel)]="selectedOverrideOption" optionLabel="name" optionValue="value"></p-dropdown>              
+                </td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td style="width:70%; text-align: right;">Has Passed Compliance Check</td>
+                <td style="width:50%; text-align: left;">
+                    <p-dropdown [options]="yesNoOptions" [(ngModel)]="selectedComplianceOption" optionLabel="name" optionValue="value"></p-dropdown>              
+                </td>
+            </tr>
+
+        </table>
+    </p-panel>
+
+
+</ng-template>
+    <p-footer>
+        <div style="text-align: center;">
+            <button pButton label="Save" icon="pi pi-save" (click)="onSaveCompliance()"></button>
+        </div>
+    </p-footer>
+</p-dialog>
