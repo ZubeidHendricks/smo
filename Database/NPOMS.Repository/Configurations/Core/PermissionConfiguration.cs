@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NPOMS.Domain.Core;
 
@@ -853,6 +853,7 @@ namespace NPOMS.Repository.Configurations.Core
                     SystemName = "Bud.VBS",
                     CategoryName = "Budgets"
                 },
+
                 new Permission
                 {
                     Id = 122,

@@ -20,7 +20,9 @@ export interface dtoFundingAssessmentApplicationFormGet{
     capturerSubmitted: boolean,
     doiApproved: boolean,
     doiCaptured: boolean,
-
+    canEndAssessment:boolean,
+    disableAllControls: boolean,
+    disableCapturerControls: boolean,
     canSubmit: boolean,
     serviceDeliverySelectionRequired: boolean,
 

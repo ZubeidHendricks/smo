@@ -24,6 +24,8 @@ export class FCFundingDetailComponent implements OnInit {
   @Output() amountAwardedChanged: EventEmitter<number> = new EventEmitter<number>();
   @Input() isEdit: boolean;
 
+  canEditAward: boolean;
+
   private _validated: boolean;
   @Input()
   get validated(): boolean { return this._validated; }
@@ -31,6 +33,7 @@ export class FCFundingDetailComponent implements OnInit {
 
   minDate: Date;
   maxDate: Date;
+  finYearStartDate: Date;
 
   stateOptions: any[];
 
@@ -57,6 +60,19 @@ export class FCFundingDetailComponent implements OnInit {
     ];
   }
 
+
+  editAwardAmount(){
+    console.log('this.isEdit', this.isEdit);
+    console.log('this.fundingDetail.programmeBudget', this.fundingDetail.programmeBudget);
+    if (!this.isEdit)
+      return false;
+
+    if (this.fundingDetail.programmeBudget === 0){
+      console.log('funding true');    
+      return true;
+    }
+  }
+
   private loadFrequencies() {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.Frequencies, false).subscribe(
@@ -76,9 +92,10 @@ export class FCFundingDetailComponent implements OnInit {
     let newStartDate = new Date(startDate);
     let newEndDate = new Date(endDate);
     let today = new Date();
+    let finDateMin = new Date(this.fundingDetail.financialYearStartDate);
 
-    if (today > newStartDate)
-      this.minDate = new Date();
+    if (finDateMin > newStartDate)
+      this.minDate = new Date(finDateMin);
     else
       this.minDate = newStartDate;
 

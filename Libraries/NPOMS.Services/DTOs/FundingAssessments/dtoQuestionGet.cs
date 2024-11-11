@@ -3,6 +3,7 @@ using NPOMS.Domain.FundingAssessment;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,6 +20,7 @@ namespace NPOMS.Services.DTOs.FundingAssessments
         public int? SelectedResponseRatingId { get; }
         public int? SelectedRatingValue { get; }
         public string Comment { get; private set; }
+        public bool IsValid => IsQuestionValidMarkedAsValid();
 
         private List<dtoResponseOptionGet> _responseOptions { get; set; } = new();
         public IReadOnlyList<dtoResponseOptionGet> ResponseOptions => _responseOptions;
@@ -56,11 +58,42 @@ namespace NPOMS.Services.DTOs.FundingAssessments
             {
                 this.Comment = responseComment.Comment;
             }
+
+            if (!string.IsNullOrEmpty(responseOption?.Comment))
+            {
+                this.Comment = responseOption.Comment;
+            }
         }
 
         public void UpdateOverallValue(string value)
         {
             this.Comment = $"{value}";
+        }
+
+        private bool IsQuestionValidMarkedAsValid()
+        { 
+            bool isValid = true;
+
+            if (this._responseOptions.Count > 0)
+            {
+                isValid = this.SelectedResponseOptionId != null;
+            }
+
+            if (isValid && this._responseRatings.Count > 0)
+            {
+                isValid = this.SelectedResponseRatingId != null;
+            }
+
+            if (isValid && this._responseOptions.Count > 0 && this._responseRatings.Count > 0 && this.HasComment)
+            {
+                isValid = !string.IsNullOrEmpty(this.Comment);
+            }
+
+            if (this.Name == "Approver Recommendation" || this.QuestionSectionName == "Assessment Summary") {
+                isValid = true;
+            }
+
+            return isValid;
         }
 
     }

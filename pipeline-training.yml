@@ -11,7 +11,7 @@ stages:
   displayName: 'Build the web application'
   jobs: 
   - job: 'Build'
-    displayName: 'Build job - lastest-working'
+    displayName: 'Build job - (Training)'
     pool:
       vmImage: windows-latest
 
@@ -30,7 +30,7 @@ stages:
       displayName: 'Build the project - $(buildConfiguration)'
       inputs:
         command: 'build'
-        arguments: '--no-restore --configuration $(buildConfiguration)'
+        arguments: '--no-restore --configuration $(buildConfiguration) -v diag'
         projects: '**/NPOMS.API.csproj'
 
     - task: DotNetCoreCLI@2
@@ -92,7 +92,7 @@ stages:
     - Build
     - BuildSPAJob
     pool:
-      vmImage: windows-latest
+      vmImage: windows-2019
     steps:
     - checkout: none
     - download: current

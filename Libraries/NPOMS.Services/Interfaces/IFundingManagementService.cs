@@ -22,6 +22,8 @@ namespace NPOMS.Services.Interfaces
 
         Task UpdatePaymentSchedules(PaymentScheduleViewModel model, string userIdentifier);
 
+        Task UpdateCompliance(int id, string compliance, string userIdentifier);
+
         Task UpdateBankDetail(BankDetailViewModel model, string userIdentifier);
 
         Task UpdateDocument(DocumentViewModel model, string userIdentifier);

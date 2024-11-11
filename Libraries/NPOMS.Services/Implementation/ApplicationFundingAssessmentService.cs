@@ -109,7 +109,7 @@ namespace NPOMS.Services.Implementation
                                    .FirstOrDefaultAsync(x => x.Id == fundingAssessmentFormId);
 
             var programmeServiceDeliveries = await this._repositoryContext.ProgrammeServiceDelivery.Include(x => x.ServiceDeliveryAreas).ToListAsync();
-            var psda = programmeServiceDeliveries.SelectMany(x => x.ServiceDeliveryAreas).FirstOrDefault(x => x.ProgrameServiceDeliveryId == dto.ProgramServiceDeliveryAreaId);
+            var psda = programmeServiceDeliveries.SelectMany(x => x.ServiceDeliveryAreas).FirstOrDefault(x => x.Id == dto.ProgramServiceDeliveryAreaId);
 
             fundingAssessmentForm.UpsertSDAs(psda, dto.IsSelected);
             
@@ -127,6 +127,32 @@ namespace NPOMS.Services.Implementation
             {
                 FundingAssessmentForm form = new FundingAssessmentForm(applicationId, loggedInUser.Id);
                 this._repositoryContext.FundingAssessmentForms.Add(form);
+                await this._repositoryContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task ConfirmDOIApprover(int applicationId, string loggedInUsername)
+        {
+            var loggedInUser = await this._repositoryContext.Users.Where(x => x.UserName == loggedInUsername).FirstOrDefaultAsync();
+            var fundingAssessmentForm = await this._repositoryContext.FundingAssessmentForms
+                                   .FirstOrDefaultAsync(x => x.ApplicationId == applicationId);
+
+            if (fundingAssessmentForm != null)
+            {
+                fundingAssessmentForm.SetDOIApprover(loggedInUser.Id);
+                await this._repositoryContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task EndAssessmentForm(int applicationId, string loggedInUsername)
+        {
+            var loggedInUser = await this._repositoryContext.Users.Where(x => x.UserName == loggedInUsername).FirstOrDefaultAsync();
+            var fundingAssessmentForm = await this._repositoryContext.FundingAssessmentForms
+                                   .FirstOrDefaultAsync(x => x.ApplicationId == applicationId);
+
+            if (fundingAssessmentForm != null)
+            {
+                fundingAssessmentForm.CompleteAssessmentForm(loggedInUser.Id);
                 await this._repositoryContext.SaveChangesAsync();
             }
         }

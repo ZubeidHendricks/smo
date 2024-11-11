@@ -9,6 +9,9 @@
     <app-fc-payment-schedule [toggleable]="true" [isEdit]="true" [paymentSchedule]="paymentSchedule" (paymentScheduleChanged)="updatePaymentSchedule($event)" [fundingCapture]="fundingCapture" [paymentFrequencyId]="paymentFrequencyId" [startDate]="startDate" [amountAwarded]="amountAwarded" [validated]="validated" *ngIf="paymentSchedule && fundingCapture"></app-fc-payment-schedule>
     <app-fc-bank-detail [toggleable]="true" [isEdit]="true" [bankDetail]="bankDetail" [npo]="npo" [fundingDetail]="fundingDetail" [validated]="validated" *ngIf="bankDetail && npo && fundingDetail"></app-fc-bank-detail>
     <app-fc-document [toggleable]="true" [isEdit]="true" [document]="document" [validated]="validated" *ngIf="document"></app-fc-document>
+
+    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}" *ngIf="IsAuthorized(PermissionsEnum.ShowFundingCaptureActions)"></p-menubar>
+
 </p-panel>
 
 <div class="content-section implementation">

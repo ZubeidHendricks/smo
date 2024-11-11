@@ -21,11 +21,12 @@
               placeholder="Select an option"
               [style]="{'width':'100%'}"
               (ngModelChange)="onQuestionChange(question)"
+              [disabled]="fundingAssessmentForm.disableCapturerControls"
             ></p-dropdown>
           </td>
           <td>
             <div *ngIf="question.hasComment">
-              <input pInputText id="npoName" [(ngModel)]="question.comment" (ngModelChange)="onQuestionChange(question)" />
+              <input pInputText id="npoName" [(ngModel)]="question.comment" (ngModelChange)="onQuestionChange(question)" [disabled]="fundingAssessmentForm.disableCapturerControls"/>
             </div>
           </td>
           <td>
@@ -37,6 +38,7 @@
               placeholder="Select an option"
               [style]="{'width':'100%'}"
               (ngModelChange)="onQuestionChange(question)"
+              [disabled]="fundingAssessmentForm.disableCapturerControls"
             ></p-dropdown>
           </td>
         </tr>
@@ -45,7 +47,7 @@
         <tr *ngIf="question.name === 'Analysis of Finding'">
           <td>{{question.name}}</td>
           <td colspan="3">
-            <textarea [(ngModel)]="question.comment" rows="3" [style]="{'width':'100%'}" placeholder="" (blur)="onQuestionChange(question)"></textarea>
+            <textarea [(ngModel)]="question.comment" rows="3" [style]="{'width':'100%'}" placeholder="" (blur)="onQuestionChange(question)" [disabled]="fundingAssessmentForm.disableCapturerControls"></textarea>
           </td>
         </tr>
 
@@ -57,7 +59,7 @@
           <tr>
             <td>{{question.name}}</td>
             <td colspan="3" style="text-align: left;">
-              <input pInputText id="npoName" [readonly]="true" [(ngModel)]="question.comment"/>
+              <input pInputText id="npoName" [readonly]="true" [(ngModel)]="question.comment"  [disabled]="fundingAssessmentForm.disableCapturerControls"/>
             </td>
           </tr>
         </ng-container>
@@ -72,6 +74,7 @@
                 [(ngModel)]="question.selectedResponseOptionId" 
                 label="{{ option.name }}" 
                 (ngModelChange)="onQuestionChange(question)"
+                [disabled]="fundingAssessmentForm.disableCapturerControls"
               ></p-radioButton> &nbsp; &nbsp;
             </span>
           </td>
@@ -82,7 +85,7 @@
           [ngStyle]="{'background-color': FinalCommentRequired === true ? '#ffcccc' : 'transparent'}">
           <td>{{question.name}}</td>
           <td colspan="3">
-            <textarea [(ngModel)]="question.comment" rows="3" [style]="{'width':'100%'}" (blur)="onQuestionChange(question)"></textarea>
+            <textarea [(ngModel)]="question.comment" rows="3" [style]="{'width':'100%'}" (blur)="onQuestionChange(question)" [disabled]="fundingAssessmentForm.disableCapturerControls"></textarea>
           </td>
         </tr>
       </ng-template>
