@@ -73,7 +73,7 @@ namespace NPOMS.Services.Implementation
 
             var npoProfile = await this._repositoryContext.NpoProfiles
                                                                     .Include(x => x.Npo).ThenInclude(x => x.OrganisationType)
-                                                                    .FirstOrDefaultAsync(x => x.Id == application.NpoId);
+                                                                    .FirstOrDefaultAsync(x => x.NpoId == application.NpoId);
 
             var servicesRendered = await this._repositoryContext.ServicesRendered
                                                                     .Where(x => x.NpoProfileId == npoProfile.Id)
