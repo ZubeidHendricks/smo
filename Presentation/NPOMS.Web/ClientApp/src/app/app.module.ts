@@ -37,7 +37,7 @@ import { AccordionModule } from 'primeng/accordion';
 import { MenuModule } from 'primeng/menu';
 import { ScrollTopModule } from 'primeng/scrolltop';
 import { ToggleButtonModule } from 'primeng/togglebutton';
-
+import {RadioButtonModule} from 'primeng/radiobutton';
 
 // B2B / B2C
 import { IPublicClientApplication, PublicClientApplication, InteractionType, BrowserCacheLocation, LogLevel } from '@azure/msal-browser';
@@ -212,6 +212,9 @@ import { FundingCaptureListComponent } from './components/funding-capture/fundin
 import { EditFundingCaptureComponent } from './components/funding-capture/edit-funding-capture/edit-funding-capture.component';
 import { FCFundingDetailComponent } from './components/funding-capture/fc-steps/fc-funding-detail/fc-funding-detail.component';
 import { FCApprovalComponent } from './components/funding-capture/fc-steps/fc-approval/fc-approval.component';
+import { FundingAssessmentListComponent } from './components/funding-assessment/funding-assessment-list/funding-assessment-list.component';
+import { FundingAssessmentFormComponent } from './components/funding-assessment/funding-assessment-form/funding-assessment-form.component';
+import { FundingAssessmentFormQuestionSectionComponent } from './components/funding-assessment/funding-assessment-form-questionsection/funding-assessment-form-questionsection.component';
 
 import { NpoReportCaptureComponent } from './reporting/npo-report-capture/npo-report-capture.component';
 import { IndicatorReportComponent } from './npo-reporting-steps/indicator-report/indicator-report.component';
@@ -223,6 +226,8 @@ import { QuarterlySDIPReportingReportComponent } from './npo-reporting-steps/qua
 import { IndicatorsComponent } from './reporting/indicators/indicators.component';
 import { ReportReviewComponent } from './reporting/report-review/report-review.component';
 import { IndicatorImportComponent } from './reporting/indicator-import/indicator-import.component';
+import { ReportDownloadComponent } from './reporting/report-download/report-download.component';
+import { ReportActualsComponent } from './reporting/report-actuals/report-actuals.component';
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
 export function loggerCallback(logLevel: LogLevel, message: string) {
@@ -438,7 +443,13 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     QuarterlySDIPReportingReportComponent,
     IndicatorsComponent,
     ReportReviewComponent,
-    IndicatorImportComponent
+    IndicatorImportComponent,
+    ReportDownloadComponent,
+    ReportActualsComponent,
+    FCApprovalComponent,
+    FundingAssessmentListComponent,
+    FundingAssessmentFormComponent,
+    FundingAssessmentFormQuestionSectionComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
@@ -483,7 +494,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     MenuModule,
     ScrollTopModule,
     EditorModule,
-    ToggleButtonModule
+    ToggleButtonModule,
+    RadioButtonModule
   ],
   providers: [
     {

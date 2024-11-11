@@ -11,5 +11,8 @@ namespace NPOMS.Services.Models
         public int ApplicationId { get; set; }
         public int QuarterId { get; set; }
         public int FinYear { get; set; }
+        public int serviceDeliveryAreaId { get; set; }
+
+        
     }
 }

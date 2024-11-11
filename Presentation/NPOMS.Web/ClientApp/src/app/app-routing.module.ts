@@ -107,7 +107,6 @@ import { ReviewAdjudicatedNpoComponent } from './components/application/review-a
 import { BudgetSummaryComponent } from './components/admin/budgets/budget-summary/budget-summary.component';
 import { UploadBudgetComponent } from './components/admin/budgets/upload-budget/upload-budget.component';
 import { DownloadWorkplanComponent } from './components/application/download-workplan/download-workplan.component';
-import { QcApplicationDetailEditComponent } from './components/application/application-steps/quick-capture/qc-application-detail-edit/qc-application-detail-edit.component';
 import { FundingCaptureListComponent } from './components/funding-capture/funding-capture-list/funding-capture-list.component';
 import { EditFundingCaptureComponent } from './components/funding-capture/edit-funding-capture/edit-funding-capture.component';
 import { ApproveFundingCaptureComponent } from './components/funding-capture/approve-funding-capture/approve-funding-capture.component';
@@ -115,6 +114,8 @@ import { ViewFundingCaptureComponent } from './components/funding-capture/view-f
 import { NpoReportCaptureComponent } from './reporting/npo-report-capture/npo-report-capture.component';
 import { ReportReviewComponent } from './reporting/report-review/report-review.component';
 import { IndicatorImportComponent } from './reporting/indicator-import/indicator-import.component';
+import { ReportDownloadComponent } from './reporting/report-download/report-download.component';
+import { FundingAssessmentListComponent } from './components/funding-assessment/funding-assessment-list/funding-assessment-list.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -131,6 +132,11 @@ const routes: Routes = [
   { path: 'print/:id/2', outlet: 'print', component: PrintScorecardComponent },
   { path: 'print/:id/3', outlet: 'print', component: DownloadQuickCaptureDohComponent },
   { path: 'print/:id/4', outlet: 'print', component: DownloadWorkplanComponent },
+  { 
+    path: 'print/:id/:year/:qtr/:sda/5', 
+    outlet: 'print', 
+    component: ReportDownloadComponent 
+  },
 
   { path: 'access-request', component: AccessRequestComponent },
   { path: 'access-review', component: AccessReviewComponent },
@@ -263,6 +269,9 @@ const routes: Routes = [
   { path: 'funding-capture/approve/:id', component: ApproveFundingCaptureComponent },
   { path: 'funding-capture/view/:id', component: ViewFundingCaptureComponent },
   // { path: 'funding-capture/download/:id', component: DownloadFundingCaptureComponent }
+
+    // Funding Assessment
+    { path: 'funding-assessment', component: FundingAssessmentListComponent },
 ];
 
 @NgModule({

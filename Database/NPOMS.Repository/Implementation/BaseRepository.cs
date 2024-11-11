@@ -122,7 +122,22 @@ namespace NPOMS.Repository.Implementation
 			}
 		}
 
-		public async Task DeleteAsync(T entity)
+        public async Task UpdateRangeAsync(IEnumerable<T> newEntities, int currentUserId)
+		{
+			try {
+                // Update the entities in the DbContext
+                this.RepositoryContext.Set<T>().UpdateRange(newEntities);
+
+                // Save changes to the database
+                await this.RepositoryContext.SaveChangesAsync();
+            } catch(Exception ex) {
+			throw ex;
+			}
+
+        }
+
+
+        public async Task DeleteAsync(T entity)
 		{
 			this.RepositoryContext.Set<T>().Remove(entity);
 			await this.RepositoryContext.SaveChangesAsync();

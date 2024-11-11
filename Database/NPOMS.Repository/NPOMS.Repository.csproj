@@ -19,4 +19,8 @@
     <ProjectReference Include="..\..\Libraries\NPOMS.Domain\NPOMS.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTO\NewFolder\" />
+  </ItemGroup>
+
 </Project>

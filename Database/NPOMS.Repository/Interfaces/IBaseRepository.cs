@@ -29,7 +29,7 @@ namespace NPOMS.Repository.Interfaces
 
 		Task SaveAsync();
 
-
+		Task UpdateRangeAsync(IEnumerable<T> newEntities, int currentUserId);
         Task InsertMultiItemsAsync(List<T> entity);
 
         Task UpdateAsync(T entity);

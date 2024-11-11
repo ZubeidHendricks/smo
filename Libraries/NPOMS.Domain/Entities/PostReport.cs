@@ -1,6 +1,7 @@
 ﻿using NPOMS.Domain.Core;
 using NPOMS.Domain.Dropdown;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NPOMS.Domain.Entities
@@ -29,6 +30,8 @@ namespace NPOMS.Domain.Entities
 
         public int ApplicationId { get; set; }
 
+        public int ServiceDeliveryAreaId { get; set; }
+
         public int QaurterId { get; set; }
 
         public bool IsActive { get; set; } = true;
@@ -39,6 +42,8 @@ namespace NPOMS.Domain.Entities
 
         public int? UpdatedUserId { get; set; }
 
+   
+
         public DateTime? UpdatedDateTime { get; set; }
 
         public DateTime? ApprovalDateTime { get; set; }
@@ -47,5 +52,7 @@ namespace NPOMS.Domain.Entities
 
         public Status Status { get; set; }
         public StaffCategory StaffCategory { get; set; }
+        public string Comments { get; set; }
+        public ICollection<PostAudit> PostAudits { get; set; }
     }
 }

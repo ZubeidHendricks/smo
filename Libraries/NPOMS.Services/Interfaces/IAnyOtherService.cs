@@ -21,6 +21,8 @@ namespace NPOMS.Services.Interfaces
 
         Task UpdateEntity(AnyOtherInformationReport model, string currentUserId);
         Task UpdateEntityQC(AnyOtherInformationReport model, string currentUserId);
-        Task UpdateAnyOtherStatus(BaseCompleteViewModel model, string currentUserId);
+        Task<IEnumerable<AnyOtherInformationReport>> UpdateAnyOtherStatus(BaseCompleteViewModel model, string currentUserId);
+        
+        Task CreateAudit(AnyOtherReportAudit audit, string currentUderId);
     }
 }

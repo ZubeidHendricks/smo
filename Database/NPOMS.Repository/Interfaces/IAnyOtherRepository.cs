@@ -1,11 +1,4 @@
 ﻿using NPOMS.Domain.Entities;
-using NPOMS.Repository.Implementation.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NPOMS.Repository.Interfaces
 {
@@ -25,6 +18,6 @@ namespace NPOMS.Repository.Interfaces
 
         Task UpdateEntity(AnyOtherInformationReport model, int currentUserId);
         Task UpdateEntityQC(AnyOtherInformationReport model, int currentUserId);
-        Task UpdateAnyOtherStatus(int applicationId, int finYear, int quarterId, int id);
+        Task<IEnumerable<AnyOtherInformationReport>> UpdateAnyOtherStatus(int applicationId, int finYear, int quarterId, int id);
     }
 }

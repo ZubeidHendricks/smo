@@ -16,11 +16,14 @@ namespace NPOMS.Services.Implementation
     {
         private IUserRepository _userRepository;
         private IIncomeAndExpenditureRepository _incomeRepository;
-        public IncomeAndExpenditureService(IUserRepository userRepository, IIncomeAndExpenditureRepository incomeRepository)
+        private IIncomeAuditRepository _incomeAuditRepository;
+        public IncomeAndExpenditureService(IUserRepository userRepository, IIncomeAndExpenditureRepository incomeRepository, IIncomeAuditRepository incomeAuditRepository)
         {
             _userRepository = userRepository;
             _incomeRepository = incomeRepository;
-                
+            _incomeAuditRepository = incomeAuditRepository;
+
+
         }
         public async Task<IEnumerable<IncomeAndExpenditureReport>> GetPostReports()
         {
@@ -112,11 +115,31 @@ namespace NPOMS.Services.Implementation
             throw new NotImplementedException();
         }
 
-        public async Task UpdateIncomeReportStatus(BaseCompleteViewModel model, string currentUserId)
-        {
-            var loggedInUser = await _userRepository.GetByUserNameWithDetails(currentUserId);
+        //public async Task UpdateIncomeReportStatus(BaseCompleteViewModel model, string currentUserId)
+        //{
+        //    var loggedInUser = await _userRepository.GetByUserNameWithDetails(currentUserId);
 
-            await _incomeRepository.UpdateIncomeReportStatus(model.ApplicationId, model.FinYear, model.QuarterId, loggedInUser.Id);
+        //    await _incomeRepository.UpdateIncomeReportStatus(model.ApplicationId, model.FinYear, model.QuarterId, loggedInUser.Id);
+        //}
+
+      public async  Task<IEnumerable<IncomeAndExpenditureReport>> UpdateIncomeReportStatus(BaseCompleteViewModel model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            return  await _incomeRepository.UpdateIncomeReportStatus(model.ApplicationId, model.FinYear, model.QuarterId, loggedInUser.Id);
+
+      
         }
+
+        public async  Task CreateAudit(IncomeReportAudit model, string currentUderId)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(currentUderId);
+
+            model.CreatedUser = loggedInUser.FullName;
+            model.CreatedDateTime = DateTime.Now;
+
+            await _incomeAuditRepository.CreateEntity(model);
+        }
+
     }
 }

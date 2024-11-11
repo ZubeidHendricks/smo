@@ -1,10 +1,10 @@
 import { DatePipe } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IActuals, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IDocumentType, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IFrequencyPeriod, IIndicator, IManicipalityDemographic, IndicatorReport, INpo, INPOIndicator, IObjective, IProgramme, IQuarterlyPeriod, IRecipientType, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IActuals, IActualsAudit, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IDocumentType, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IFrequencyPeriod, IIndicator, IManicipalityDemographic, IndicatorReport, INpo, INPOIndicator, IObjective, IProgramme, IQuarterlyPeriod, IRecipientType, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -16,7 +16,8 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { DocumentStoreService } from 'src/app/services/api-services/document-store/document-store.service';
 import { HttpEventType } from '@angular/common/http';
 import { group } from 'console';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { finalize, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-indicator-report',
@@ -26,29 +27,37 @@ import { BehaviorSubject } from 'rxjs';
 })
 
 export class IndicatorReportComponent implements OnInit {
-
   @Input() selectedQuarter!: number;
+  @Input() selectedsda!: number;
+ @Input() selectedGroup!: string;
+  
+  displayVieHistoryDialog: boolean;
+  @Output() rightHeaderIndicatorChange = new EventEmitter<string>();
 
-    
   ngOnChanges(changes: SimpleChanges) {
     if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
         const quarter = changes['selectedQuarter'].currentValue;
         this.quarterId = quarter;
-        console.log('Quarter', this.quarterId);
         this.filterDataByQuarter(quarter);
     }
+
+    if (changes['selectedsda'] && changes['selectedsda'].currentValue) {
+      const selectedsda = changes['selectedsda'].currentValue;
+      this.serviceDeliveryAreaId = selectedsda;
+  }
+  
+  if (changes['selectedGroup'] && changes['selectedGroup'].currentValue) {
+    const selectedGroup = changes['selectedGroup'].currentValue;
+    this.group = selectedGroup;    
+  }
 }
 
 filterDataByQuarter(quarter: number) {
-  this.qselected = true;
-     if (this.yearSelected && this.qselected) {
-      this.GetIndicatorReportsByAppid();
-     }
+  this.loadNpo();
 }
 
-
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
-
+  auditCols: any[];
   menuActions: MenuItem[];
   profile: IUser;
   validationErrors: Message[];
@@ -84,15 +93,12 @@ filterDataByQuarter(quarter: number) {
   isSystemAdmin: boolean;
   isDepartmentAdmin: boolean;
   selectedDepartmentSummary: IDepartment;
-
   selectedQuartersText: string = '';
   indicators: IIndicator[];
   iNPOIndicators: INPOIndicator[] = [];
   actuals: IActuals[] = [];
-
   actual: IActuals = {} as IActuals;
   seletedAactuals: IActuals;
-  
   @ViewChild('addDoc') element: ElementRef;
   displayUploadedFilesDialog: boolean;
   documentCols: any[];
@@ -100,12 +106,14 @@ filterDataByQuarter(quarter: number) {
   yearSelected: boolean = false;
   qselected: boolean = false;
   selectedSubStructures: any[] = [];
-
   mergedList: any[] = [];
-
+  merged: any = null;
   npoName: string;
   quarterId: number;
-
+  sdaId: number;
+  targetGroup:string
+  serviceDeliveryAreaId: number;
+  group: string;
   public get RoleEnum(): typeof RoleEnum {
     return RoleEnum;
   }
@@ -120,29 +128,22 @@ filterDataByQuarter(quarter: number) {
   @Input()
   get financialYears(): IFinancialYear[] { return this._financialYears; }
   set financialYears(financialYears: IFinancialYear[]) { this._financialYears = financialYears; }
-
   allActivities: IActivity[];
   activeActivities: IActivity[];
   deletedActivities: IActivity[];
-
   indicatorCols: any[];
   actualCols: any[];
   displayActualDialog: boolean;
   newActivity: boolean;
   newIndicatorReport: boolean;
-
   activity: IActivity = {} as IActivity;
-
   objectives: IObjective[];
   selectedObjective: IObjective;
-
   activityTypes: IActivityType[];
   selectedActivityType: IActivityType;
-
   yearRange: string;
   rowGroupMetadata: any[];
   deletedRowGroupMetadata: any[];
-
   facilities: IFacilityList[];
   facilitiesList: IFacilityList[];
   selectedFacilities: IFacilityList[];
@@ -197,13 +198,12 @@ filterDataByQuarter(quarter: number) {
   selectedOutputTitle:any={};
   workplanIndicators: IWorkplanIndicator[];
   buttonItems: MenuItem[];
-  selectedActual: IActuals;
+  selectedActual: IActuals = {} as IActuals;
   documentTypes: IDocumentType[] = [];
   quartelyPeriods: IQuarterlyPeriod[];
   private financialYearsSubject = new BehaviorSubject<IFinancialYear[]>([]);
   private financialYears$ = this.financialYearsSubject.asObservable();
   baseCompleteViewModel: IBaseCompleteViewModel = {} as IBaseCompleteViewModel;
-
 
   public get FacilityTypeEnum(): typeof FacilityTypeEnum {
     return FacilityTypeEnum;
@@ -241,8 +241,7 @@ filterDataByQuarter(quarter: number) {
     private _authService: AuthService,
     private _applicationPeriodRepo: ApplicationPeriodService,
     private _documentStore: DocumentStoreService,
-    
-   
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -265,22 +264,20 @@ filterDataByQuarter(quarter: number) {
 
         this.showReviewerSatisfaction = this.application.statusId === StatusEnum.PendingReview ? true : false;
         this.tooltip = this.canEdit ? 'Edit' : 'View';
-
         //this.loadIndicators();
         this.loadSubIndicators();
-        this.loadNpo();
         this.loadProgrammes();
         this.loadSubProgrammes();
         this.loadSubProgrammeTypes();   
-
         this.loadFrequencyPeriods();
         this.buildButtonItems();
       }
     });
 
+  
+
     this.npoName = this.npo?.name;
    // this.GetIndicatorReportsByAppid();
-    
     this.indicatorCols = [
       { header: ' Indicator Id', width: '10%' },
       { header: 'Indicator Description/Title', width: '10%' },
@@ -294,7 +291,6 @@ filterDataByQuarter(quarter: number) {
       { header: 'Purpose', width: '10%' },
     ];
     
-
     this.actualCols = [
       { header: 'Output Title', width: '10%' },
       { header: 'Indicator Id', width: '10%' },
@@ -305,10 +301,17 @@ filterDataByQuarter(quarter: number) {
       { header: 'Deviation Reason', width: '10%' },
       { header: 'Adjusted Actual ', width: '10%' },
       { header: 'Adjusted Variance ', width: '10%' },
+      { header: 'Target Group ', width: '10%' },
       { header: 'Evidence', width: '10%' },
       { header: 'Status', width: '10%' },
     ];
-
+    this.auditCols = [
+      { header: '', width: '5%' },
+      { header: 'Status', width: '55%' },
+      { header: 'User', width: '20%' },
+      { header: 'Date', width: '20%' }
+    ];
+    
     this.commentCols = [
       { header: '', width: '5%' },
       { header: 'Comment', width: '55%' },
@@ -331,7 +334,6 @@ filterDataByQuarter(quarter: number) {
       { header: 'Actions', width: '10%' }
     ];
 
-
     this.cols = [
       { field: 'activityList.name', header: 'Activity', width: '50%' },
       { field: 'successIndicator', header: 'Indicator', width: '30%' },
@@ -341,33 +343,31 @@ filterDataByQuarter(quarter: number) {
 
 onKeyUp(rowData: any, event: any) {
 const inputValue = event.target.value;
-// Update the actual value
-rowData.actuals.actual = Number(inputValue); // Ensure it's a number
+rowData.actual = Number(inputValue); // Ensure it's a number
 
 // Calculate the variance
-if (rowData.actuals.targets !== undefined && !isNaN(rowData.actuals.actual)) {
-    rowData.actuals.variance = rowData.actuals.targets - rowData.actuals.actual;
+if (rowData.targets !== undefined && !isNaN(rowData.actual)) {
+    rowData.variance = rowData.targets - rowData.actual;
 } else {
-    rowData.actuals.variance = 0; // Set to zero or handle it as per your requirement
+    rowData.variance = 0; // Set to zero or handle it as per your requirement
 }
 }
 
 onKeyUpAdjustedActual(event: any, rowData: any) {
 const inputValue = Number(event.target.value); // Convert the input to a number
-rowData.actuals.adjustedActual = inputValue;
+rowData.adjustedActual = inputValue;
 
 // Calculate adjusted variance if targets is defined
-if (rowData.actuals.targets !== undefined) {
-    rowData.actuals.adjustedVariance = rowData.actuals.targets - rowData.actuals.adjustedActual;
+if (rowData.targets !== undefined) {
+  rowData.adjustedVariance = rowData.targets - rowData.adjustedActual;
 } else {
-    rowData.actuals.adjustedVariance = 0; // Or handle this case as needed
+  rowData.adjustedVariance = 0; // Or handle this case as needed
 }
 }
 
 onBlurAdjustedActual(rowData: any) {
    this.saveActual(rowData);
 }
-
 
 disableAdd(): any {
 if(this.qselected === false || this.yearSelected === false)
@@ -376,7 +376,7 @@ if(this.qselected === false || this.yearSelected === false)
   }
 }
 
-  private loadSubIndicators() {
+private loadSubIndicators() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Indicator, false).subscribe(
       (results) => {
         this.indicators = results;
@@ -387,32 +387,143 @@ if(this.qselected === false || this.yearSelected === false)
         this._spinner.hide();
       }
     );
+}
+
+createMergedList() {
+  this.mergedList = [];
+  this.iNPOIndicators.forEach(indicator => {
+    // Find the matching actualData for this indicator
+    const actualData = this.actuals.find(act => 
+      act.indicatorId === +indicator.id && 
+      act.financialYearId === this.selectedFinancialYear.id && 
+      act.qaurterId === this.quarterId &&
+      act.serviceDeliveryAreaId === this.serviceDeliveryAreaId 
+
+    );
+  
+    // Safely handle the case where actualData is undefined, fallback to empty actual
+    const actuals = actualData ? { ...actualData } : this.createEmptyActual(indicator);
+  
+    // Set targets based on frequency (ensure actuals object is populated)
+    this.setTargetsBasedOnFrequency(actuals, indicator);
+
+    // Push merged indicator and actuals into the mergedList if they are valid
+    if (indicator && actuals) {
+      // Merge indicator properties, and overwrite 'id' with actuals.id
+      const mergedObject = {
+        ...indicator,    // Spread the indicator object
+        ...actuals,      // Spread actuals, this will overwrite the 'id' property from indicator
+        id: actuals.id,
+        indicatorValue: indicator.indicatorId,
+        indicatorId:indicator.id   // Overwrite the id with the id from actuals
+      };
+  
+      // Push the merged object into the list
+      this.mergedList.push(mergedObject); 
+    
+    }
+  });
+
+  this.mergedList.forEach(row => {
+    row.isEditable = !(row.id > 0);
+  });
+
+  this.rightHeaderIndicatorChange.emit('Pending');
+  const allComplete = this.mergedList.length > 0 && this.mergedList.every(dip => dip?.actuals?.status?.id === 24);
+  const allSubmitted = this.mergedList.length > 0 && this.mergedList.every(dip => dip?.actuals?.status?.id === 19);
+
+  if (allComplete) {
+      this.rightHeaderIndicatorChange.emit('Completed');
+  }
+  if (allSubmitted) {
+      this.rightHeaderIndicatorChange.emit('Submitted');
   }
 
-  createMergedList() {
-    this.mergedList = this.iNPOIndicators.map(indicator => {
-        // Attempt to find the actual data based on criteria
-        const actualData = this.actuals.find(act => 
-            act.indicatorId === +indicator.id && 
-            act.financialYearId === this.selectedFinancialYear.id && 
-            act.qaurterId === this.quarterId
-        );
-
-        // Create an actual object if actualData is undefined
-        const actuals = actualData || this.createEmptyActual(indicator);
-
-        // Call setTargetsBasedOnFrequency with the actuals object
-        this.setTargetsBasedOnFrequency(actuals,indicator);
-
-        return {
-            ...indicator,
-            actuals // Return the actuals object (either found or newly created)
-        };
-    });
+  this.cdr.detectChanges(); // Trigger change detection
+  // this.performPostMergeOperations();
 }
+
+// Example of the method to handle operations after merging
+// performPostMergeOperations() {
+//   // Perform your additional code logic here
+//   this.mergedList.forEach(row => {
+//     row.isEditable = !(row.id > 0); // Set the editable state based on row.id
+//   });
+
+//   console.log('this.mergedList', this.mergedList); // Log the final merged list
+//   this.rightHeaderIndicatorChange.emit('Pending');
+
+//   const allComplete = this.mergedList.length > 0 && this.mergedList.every(dip => dip?.actuals?.status?.id === 24);
+//   const allSubmitted = this.mergedList.length > 0 && this.mergedList.every(dip => dip?.actuals?.status?.id === 19);
+
+//   console.log('this.allComplete', allComplete);
+//   if (allComplete) {
+//       this.rightHeaderIndicatorChange.emit('Completed');
+//   }
+//   if (allSubmitted) {
+//       this.rightHeaderIndicatorChange.emit('Submitted');
+//   }
+
+//   this.cdr.detectChanges(); // Trigger change detection
+// }
+
+// createMergedList() {
+//   this.mergedList = this.iNPOIndicators.map(indicator => {
+//       // Attempt to find the actual data based on criteria
+//       const actualData = this.actuals.find(act => 
+//           act.indicatorId === +indicator.id && 
+//           act.financialYearId === this.selectedFinancialYear.id && 
+//           act.qaurterId === this.quarterId
+//       );
+
+//       // Use found actualData if available, otherwise create a new object
+//       const actuals = actualData ? { ...actualData } : this.createEmptyActual(indicator);
+
+//       // Call setTargetsBasedOnFrequency with the actuals object
+//       this.setTargetsBasedOnFrequency(actuals, indicator);
+
+//       console.log('actuals', actuals); // Ensure the `actuals` object includes `status`
+
+//       return {
+//           ...indicator,
+//           actuals // Return the actuals object (either found or newly created)
+//       };
+//   });
+// }
+
+
+// createMergedList() {
+//     this.mergedList = this.iNPOIndicators.map(indicator => {
+//         // Attempt to find the actual data based on criteria
+
+//         const actualData = this.actuals.find(act => 
+//             act.indicatorId === +indicator.id && 
+//             act.financialYearId === this.selectedFinancialYear.id && 
+//             act.qaurterId === this.quarterId
+//         );
+
+//         const actualData1 = { ...this.actuals.find(act => 
+//           act.indicatorId === +indicator.id && 
+//             act.financialYearId === this.selectedFinancialYear.id && 
+//             act.qaurterId === this.quarterId
+//       )};
+
+//         // Create an actual object if actualData is undefined
+//         const actuals = actualData1 || this.createEmptyActual(indicator);
+
+//         console.log('actuals',actuals);
+
+//         // Call setTargetsBasedOnFrequency with the actuals object
+//         this.setTargetsBasedOnFrequency(actuals,indicator);
+//         return {
+//             ...indicator,
+//             actuals // Return the actuals object (either found or newly created)
+//         };
+//     });
+// }
  
 status(data: any) {
-  return data?.actuals?.status?.name || 'New';
+  return data?.status?.name || 'New';
 }
  
 setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
@@ -434,7 +545,6 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
         actual.targets = indicator.q4;
       }
     }
-   
 }
 
   createEmptyActual(indicator: INPOIndicator): IActuals {
@@ -442,7 +552,7 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
       id: 0,
       programmeId: 0,
       subProgrammeId: 0,
-      group: 0,
+      group: '',
       subProgrammeTypeId: 0,
       serviceDeliveryArea: '',
       outputTitle: '',
@@ -455,51 +565,22 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
       adjustedActual: 0,
       adjustedVariance: 0,
       applicationId: 0,
+      serviceDeliveryAreaId: 0,
       qaurterId: 0,
       actual: 0,
       documents: [],
       isActive: true,
       statusId: 0,
-      status: {} as IStatus
+      status: {} as IStatus,
+      comments: '',
+      indicatorReportAudits: {} as IActualsAudit[]
     };
   }
 
   updateButtonItems() {
-    // Show all buttons
     this.buttonItems[0].items.forEach(option => {
       option.visible = true;
     });
-
-    // switch (this.selectedIndicator.workplanActuals[0].statusId) {
-    //   case StatusEnum.New:
-    //   case StatusEnum.Saved:
-    //   case StatusEnum.AmendmentsRequired: {
-    //     this.buttonItems[0].items[2].visible = false;
-    //     this.buttonItems[0].items[3].visible = false;
-    //     this.buttonItems[0].items[4].visible = false;
-    //     break;
-    //   }
-    //   case StatusEnum.PendingReview: {
-    //     this.buttonItems[0].items[0].visible = false;
-    //     this.buttonItems[0].items[1].visible = false;
-    //     this.buttonItems[0].items[3].visible = false;
-    //     break;
-    //   }
-    //   case StatusEnum.PendingApproval: {
-    //     this.buttonItems[0].items[0].visible = false;
-    //     this.buttonItems[0].items[1].visible = false;
-    //     this.buttonItems[0].items[2].visible = false;
-    //     break;
-    //   }
-    //   case StatusEnum.Approved: {
-    //     this.buttonItems[0].items[0].visible = false;
-    //     this.buttonItems[0].items[1].visible = false;
-    //     this.buttonItems[0].items[2].visible = false;
-    //     this.buttonItems[0].items[3].visible = false;
-    //     this.buttonItems[0].items[4].visible = false;
-    //     break;
-    //   }
-    // }
   }
 
   private buildButtonItems() {
@@ -510,22 +591,12 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
         items: []
       }];
 
-      if (this.IsAuthorized(PermissionsEnum.CaptureWorkplanActual)) {
-        this.buttonItems[0].items.push({
-          label: 'Submit',
-          icon: 'fa fa-thumbs-o-up',
-          command: () => {
-            this.updateActualData(this.selectedActual, StatusEnum.PendingReview);
-          }
-        });
-      }
-
       if (this.IsAuthorized(PermissionsEnum.ReviewWorkplanActual)) {
         this.buttonItems[0].items.push({
           label: 'Edit',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.updateActualData(this.selectedActual, StatusEnum.PendingApproval);
+           this.enableEditing(this.merged);
           }
         });
       }
@@ -535,7 +606,7 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
           label: 'Comments',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.displayCommentDialog=true;
+           this.addComment(this.merged);
           }
         });
       }
@@ -545,19 +616,22 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
           label: 'View History',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.updateActualData(this.selectedActual, StatusEnum.Approved);
+           this.viewHistory(this.merged);
           }
         });
       }
     }
   }
 
+  private viewHistory(rowData: any) {
+    this.displayVieHistoryDialog = true;
+  }
+
  private updateActualData(rowData: any, status: number) {
-    rowData.actuals.statusId = status;
+    rowData.statusId = status;
     this.saveActual(rowData);
   }  
  
-
   // Method to save the actuals
   saveActualz(mergedItem: any) {
     // Add your save logic here
@@ -739,61 +813,48 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
   getQuarterValue(): string {
     return `Quarter ${this.quarterId}`; 
 }
+disableQuarters(): boolean {
+  // Logic to disable dropdown (return true to disable, false to enable)
+  return false;
+} 
 
+registerCustomFilters() {
+  this.filterService.register('custom', (value: string, filter: any[]) => {
+    // If no filter selected, allow all results (true)
+    if (!filter || filter.length === 0) {
+      return true;
+    }
+
+    // If the value being filtered is a string, it needs to be handled as such
+    if (!value || typeof value !== 'string') {
+      return false;
+    }
+
+    // Convert the value into an array of items (e.g., if values are comma-separated)
+    const rowItems = value.split(',').map((item: string) => item.trim());
+
+    // Compare the selected filter values (array) to the row items (array of strings)
+    return filter.some(selectedItem => rowItems.includes(selectedItem.name));
+  });
+}
+
+onCustomFilterChange(selectedItems: any[], field: string) {
+  const filterFields = [field];
+  this.filteredData = this.filterService.filter(this.activeActivities, filterFields, selectedItems || [], 'custom');
+
+  this.applyCustomFilters();
+}
   
-  disableQuarters(): boolean {
-    // Logic to disable dropdown (return true to disable, false to enable)
-    return false;
-  }
-  registerCustomFilters() {
-    this.filterService.register('custom', (value: string, filter: any[]) => {
-      // If no filter selected, allow all results (true)
-      if (!filter || filter.length === 0) {
-        return true;
-      }
-  
-      // If the value being filtered is a string, it needs to be handled as such
-      if (!value || typeof value !== 'string') {
-        return false;
-      }
-  
-      // Convert the value into an array of items (e.g., if values are comma-separated)
-      const rowItems = value.split(',').map((item: string) => item.trim());
-  
-      // Compare the selected filter values (array) to the row items (array of strings)
-      return filter.some(selectedItem => rowItems.includes(selectedItem.name));
-    });
-  }
+applyCustomFilters() {
+  this.activeActivities = this.filteredData;
+  this.updateRowGroupMetaData();  // Update metadata based on the filtered data
+}
 
-  onCustomFilterChange(selectedItems: any[], field: string) {
-    const filterFields = [field];
-    this.filteredData = this.filterService.filter(this.activeActivities, filterFields, selectedItems || [], 'custom');
+applyFilterGlobal($event: any, stringVal: any) {
+  this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
+}
 
-    this.applyCustomFilters();
-  }
-  
-  applyCustomFilters() {
-    this.activeActivities = this.filteredData;
-    this.updateRowGroupMetaData();  // Update metadata based on the filtered data
-  }
-
-  applyFilterGlobal($event: any, stringVal: any) {
-    this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
-  }
-
-  private loadDemographicDistricts() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicDistrict, false).subscribe(
-      (results) => {
-        this.allIDistrictDemographics = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadFrequencyPeriods() {
+private loadFrequencyPeriods() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.QuarterlyPeriod, false).subscribe(
       (results) => {
         results = results.sort((a, b) => a.id - b.id);
@@ -805,57 +866,57 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
         this._spinner.hide();
       }
     );
-  }
+}
 
-  private loadIndicators() {
+private loadIndicators() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.HighLevelNPO, false).subscribe(
       (results) => {
+        console.log('iNPOIndicators', this.npo?.cCode);
         this.iNPOIndicators = results.filter(indicator => indicator.ccode === this.npo?.cCode);
-        console.log('APP',this.iNPOIndicators);
+        this.GetIndicatorReportsByAppid();
       },
       (err) => {
         this._loggerService.logException(err);
         this._spinner.hide();
       }
     );
-  }
+}
 
-  private GetIndicatorReportsByAppid() {
-    this._spinner.show();
-    this._applicationRepo.GetIndicatorReportsByAppid(this.application).subscribe(
-      (results) => {
-       this.actuals = results;
-        this._spinner.hide();
-        this.createMergedList();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-  
+private GetIndicatorReportsByAppid() {
+  this._spinner.show();
+  this._applicationRepo.GetIndicatorReportsByAppid(this.application).subscribe(
+    (results) => {
+     this.actuals = results;
+      this._spinner.hide();
+      this.createMergedList();
+    },
+    (err) => {
+      this._loggerService.logException(err);
+      this._spinner.hide();
+    }
+  );
+}
 
-  public financialYearChange() {
+
+public financialYearChange() {
     this.yearSelected =  true;
-  }
+}
 
-  captureTargets(activity) {
+captureTargets(activity) {
     this._router.navigateByUrl('workplan-indicator/targets/' + activity.id + '/financial-year/' + this.selectedFinancialYear.id);
-  }
+}
 
-  getCellData(row: any, col: any): any {
+getCellData(row: any, col: any): any {
     const nestedProperties: string[] = col.field.split('.');
     let value: any = row;
 
     for (const prop of nestedProperties) {
       value = value[prop];
     }
-
     return value;
-  }
+}
 
-  private loadFinancialYears() {
+private loadFinancialYears() {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(
       (results) => {
@@ -871,7 +932,7 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
         this._spinner.hide();
       }
     );
-  }
+}
 
   departmentChange(department: IDepartment) {
     this.selectedProgramme = null;
@@ -966,6 +1027,11 @@ onDemographicDistrictChange() {
   }
 }
 
+saveComment(changesRequired: boolean, origin: string) {
+  this.seletedAactuals.comments = this.comment; 
+  this.onBlurAdjustedActual(this.seletedAactuals);
+  this.displayCommentDialog = false;
+}
 
 outputTitleChange(event: any) {
   this.selectedOutputTitle = event;
@@ -1017,6 +1083,7 @@ addOther() {
     adjustedActual: 0,
     adjustedVariance: 0,
     applicationId: 0,
+    serviceDeliveryAreaId: 0,
     subProgrammeId: 0,
     programmeId: 0,
     subProgrammeTypeId: 0,
@@ -1026,11 +1093,13 @@ addOther() {
     groupId: '',
     financialYearId: 0,
     serviceDeliveryArea: '',
-    group: 0,
+    group: '',
     indicatorValue: '',
     documents: [],
     statusId: 0,
     status: {} as IStatus,
+    comments: '',
+    indicatorReportAudits: [] as IActualsAudit[] 
   };
 
   // Add this new row to the actuals array
@@ -1045,23 +1114,38 @@ editActual(data: IActuals) {
 }
 
 outputTitle(rowData: any) {
-    return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.outputTitle;
+    return this.indicators.find(x => x.indicatorValue === rowData.indicatorValue)?.outputTitle;
 }
 
 IndicatorDescription(rowData: any) {
-     return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.indicatorDesc;    
+     return this.indicators.find(x => x.indicatorValue === rowData.indicatorValue)?.indicatorDesc;    
 }
 
 shortDefination(rowData: any) {
-     return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.shortDefinition;     
+     return this.indicators.find(x => x.indicatorValue === rowData.indicatorValue)?.shortDefinition;     
 }
 
  purpose(rowData: any) {
-  return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.purpose;     
+  return this.indicators.find(x => x.indicatorValue === rowData.indicatorValue)?.purpose;     
 }
 
-targets(rowData: any) {
+ttargets(rowData: any) {
   //return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.;     
+}
+
+toutputTitle(rowData: any) {
+  return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.outputTitle;
+}
+
+tshortDefination(rowData: any) {
+  return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.shortDefinition;     
+}
+tIndicatorDescription(rowData: any) {
+  return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.indicatorDesc;    
+}
+
+tpurpose(rowData: any) {
+  return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.purpose;     
 }
 
 private cloneActual(data: IActuals): IActuals {
@@ -1074,20 +1158,19 @@ private cloneActual(data: IActuals): IActuals {
 
 saveActual(rowData: any) {
   let actualobj = {} as IActuals;
-  
   // Assign necessary fields
-  actualobj.deviationReason = rowData.actuals.deviationReason
-  actualobj.id = rowData.actuals.id;
-  actualobj.statusId = rowData.actuals.statusId;
+  actualobj.deviationReason = rowData.deviationReason
+  actualobj.id = rowData.id;
+  actualobj.statusId = rowData.statusId;
   actualobj.outputTitle = rowData.outputTitle;
   // actualobj.financialYear = this.selectedFinancialYear.id;
-  actualobj.indicatorId = rowData.id;
+  actualobj.indicatorId = rowData.indicatorId;
   actualobj.indicatorValue = rowData.indicatorValue;
-  actualobj.variance = rowData.actuals.variance;
-  actualobj.actual = rowData.actuals.actual;
-  actualobj.adjustedActual = rowData.actuals.adjustedActual;
-  actualobj.adjustedVariance = rowData.actuals.adjustedVariance;
-  actualobj.targets = rowData.actuals.targets;
+  actualobj.variance = rowData.variance;
+  actualobj.actual = rowData.actual;
+  actualobj.adjustedActual = rowData.adjustedActual;
+  actualobj.adjustedVariance = rowData.adjustedVariance;
+  actualobj.targets = rowData.targets;
   actualobj.subProgrammeId = this.application.applicationPeriod.subProgrammeId;
   actualobj.programmeId = this.application.applicationPeriod.programmeId;
   actualobj.subProgrammeTypeId = this.application.applicationPeriod.subProgrammeTypeId;
@@ -1095,9 +1178,17 @@ saveActual(rowData: any) {
   actualobj.applicationId = this.application.id;
   actualobj.financialYearId = this.application.applicationPeriod.financialYear.id;
   actualobj.qaurterId = this.quarterId;
+  actualobj.serviceDeliveryAreaId = this.serviceDeliveryAreaId;
+  actualobj.comments = rowData.comments;
+  actualobj.group = rowData.group;
 
+if(rowData.group===null || rowData.group===undefined || rowData.group===''){
+  this._messageService.add({ severity: 'warning', summary: 'Warning', detail: 'Target Group Required' });
+  return
+  
+} 
   // Check if it's a new actual or an update
-  if (rowData.actuals.id === 0) {
+  if (rowData.id === 0) {
     // Create new actual
     this.createActual(actualobj);
   } else {
@@ -1117,6 +1208,7 @@ getFinancialYear(id: number): string | undefined {
 createActual(actual: IActuals) {
   this._applicationRepo.createActual(actual).subscribe(
     (resp) => {
+      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'successfully added.' });
       this.GetIndicatorReportsByAppid()
       //this.displayActualDialog = false;
     },
@@ -1131,7 +1223,8 @@ createActual(actual: IActuals) {
 updateActual(actual: IActuals) {
   this._applicationRepo.updateActual(actual).subscribe(
     (resp) => {
-      this.GetIndicatorReportsByAppid()
+      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'successfully updated.' });
+      //this.GetIndicatorReportsByAppid()
       //this.displayActualDialog = false;
     },
     (err) => {
@@ -1407,16 +1500,34 @@ updateActual(actual: IActuals) {
 
   objectiveChange(objective: IObjective) {
     this.subProgrammes = [];
-
     const subProgrammeIds = objective.objectiveProgrammes.map(({ subProgrammeId }) => subProgrammeId);
     this.subProgrammes = this.allSubProgrammes.filter(item => subProgrammeIds.includes(item.id));
 
     this.buildRecipientDropdown(objective, this.activity);
   }
 
-  addComment() {
-    this.comment = null;
+  addComment(merged: any) {
+    if(merged.id === 0 || merged.id === undefined || merged.id === null || merged.id < 0){
+      this._messageService.add({ severity: 'warn', summary: 'Warning', detail: 'Please actual data first.' });
+      return;
+    }
+
+    this.seletedAactuals = this.actuals.filter(x => x.id === merged.id)[0];
+    console.log('seletedAactuals', this.seletedAactuals);
+    if (this.seletedAactuals?.comments != null) {
+      this.comment = this.seletedAactuals.comments;
+    }
+    else{
+      this.comment= null;
+    }
+  
     this.displayCommentDialog = true;
+    this.canEdit = true;
+  }
+
+  enableEditing(rowData: any) {
+    this.mergedList.forEach(post => post.isEditable = false);
+    rowData.isEditable = true;
   }
 
   viewComments(data: IActivity, origin: string) {

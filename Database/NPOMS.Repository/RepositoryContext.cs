@@ -9,6 +9,7 @@ using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
 using NPOMS.Domain.Enumerations;
 using NPOMS.Domain.Evaluation;
+using NPOMS.Domain.FundingAssessment;
 using NPOMS.Domain.FundingManagement;
 using NPOMS.Domain.Indicator;
 using NPOMS.Domain.Lookup;
@@ -127,6 +128,8 @@ namespace NPOMS.Repository
         public DbSet<Activity> Activities { get; set; }
         public DbSet<AddressInformation> AddressInformation { get; set; }
         public DbSet<Application> Applications { get; set; }
+        public DbSet<Application> PostAudit { get; set; }
+        
         public DbSet<ApplicationApproval> ApplicationApprovals { get; set; }
         public DbSet<ApplicationAudit> ApplicationAudits { get; set; }
         public DbSet<ApplicationComment> ApplicationComments { get; set; }
@@ -172,10 +175,11 @@ namespace NPOMS.Repository
         public DbSet<AnyOtherInformationReport> AnyOtherInformationReports { get; set; }
         public DbSet<GovernanceReport> GovernanceReports { get; set; }
         public DbSet<SDIPReport> SDIPReports { get; set; }
-
-
-
-
+        public DbSet<SDIPReportAudit> SDIPReportAudits { get; set; }
+        public DbSet<IndicatorReportAudit> IndicatorReportAudits { get; set; }
+        public DbSet<AnyOtherReportAudit> AnyOtherReportAudits { get; set; }
+        public DbSet<IncomeReportAudit> IncomeReportAudit { get; set; }
+        public DbSet<GovernanceAudit> GovernanceAudits { get; set; }
 
         /* Lookup */
         public DbSet<FacilityList> ActivityList { get; set; }
@@ -249,6 +253,11 @@ namespace NPOMS.Repository
         public DbSet<Domain.FundingManagement.PaymentSchedule> FMPaymentSchedules { get; set; }
         public DbSet<PaymentScheduleItem> PaymentScheduleItems { get; set; }
         public DbSet<SDA> SDAs { get; set; }
+
+        //Funding Assessment
+        public DbSet<FundingAssessmentForm> FundingAssessmentForms { get; set; }
+        public DbSet<FundingAssessmentFormResponse> FundingAssessmentFormResponses { get; set; }
+        public DbSet<FundingAssessmentFormSDA> FundingAssessmentFormSDAs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

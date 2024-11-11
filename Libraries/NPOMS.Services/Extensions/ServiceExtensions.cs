@@ -132,6 +132,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IApplicationRepository, ApplicationRepository>();
             services.AddScoped<IIndicatorReportRepository, IndicatorReportRepository>();
             services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<IAuditPostRepository, AuditPostRepository>();
             services.AddScoped<IIncomeAndExpenditureRepository, IncomeAndExpenditureRepository>();
             services.AddScoped<IGovernanceRepository, GovernanceRepository>();
             services.AddScoped<IAnyOtherRepository, AnyOtherRepository>();
@@ -195,7 +196,12 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IFinancialMattersOthersRepository, FinancialMattersOthersRepository>();
 
             services.AddScoped<IMyContentLinkRepository, MyContentLinkRepository>();
-
+            services.AddScoped<IAuditGovernanceRepository, AuditGovernanceRepository>();
+            services.AddScoped<ISDIPAuditRepository, SDIPAuditRepository>();
+            services.AddScoped<IIncomeAuditRepository, IncomeAuditRepository>();
+            services.AddScoped<IAnyOtherAuditRepository, AnyOtherAuditRepository>();
+            services.AddScoped<IAuditIndicatorRepository, AuditIndicatorRepository>();
+            //IAnyOtherAuditRepository
 
             /* Lookup */
             services.AddScoped<IActivityListRepository, ActivityListRepository>();
@@ -302,6 +308,7 @@ namespace NPOMS.Services.Extensions
                     .AddScoped(typeof(PbiEmbedService));
             services.AddScoped<IEmbeddedReportService, EmbeddedReportService>();
 
+            services.AddScoped<IApplicationFundingAssessmentService, ApplicationFundingAssessmentService>();
             #endregion
 
             var engine = EngineContext.Create();

@@ -23,6 +23,7 @@ namespace NPOMS.Repository.Interfaces.Entities
         Task CreateEntity(SDIPReport model);
 
         Task UpdateEntity(SDIPReport model, int currentUserId);
-        Task UpdateSDIPStatus(int applicationId, int finYear, int quarterId, int id);
+        Task<IEnumerable<SDIPReport>> UpdateSDIPStatus(int applicationId, int finYear, int quarterId, int id);
+        Task<IEnumerable<SDIPReport>> CompleteSDIPReport(int applicationId, int financialId, int quarterId, int currentUserId);
     }
 }

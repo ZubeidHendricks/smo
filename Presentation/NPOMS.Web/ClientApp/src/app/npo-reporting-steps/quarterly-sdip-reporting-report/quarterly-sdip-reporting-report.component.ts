@@ -5,7 +5,7 @@ import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DropdownTypeEnum, FacilityTypeEnum, PermissionsEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISDIP, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IManicipalityDemographic, INpo, IObjective, IProgramme, IRecipientType, ISDIP, ISDIPAudits, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -24,12 +24,17 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 
 export class QuarterlySDIPReportingReportComponent implements OnInit {
   @Input() selectedQuarter!: number;
-
+  @Input() selectedsda!: number;
+  @Input() selectedGroup!: string;
   @Output() rightHeaderChange = new EventEmitter<string>();
 
   quarterId: number;
 
+  serviceDeliveryAreaId: number;
+  group:string;
+
   filteredsdips: ISDIP[];
+  displayVieHistoryDialog: boolean;
 
   ngOnChanges(changes: SimpleChanges) {
       if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
@@ -37,20 +42,24 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
           this.quarterId = quarter;
           this.filterDataByQuarter(quarter);
       }
+
+      if (changes['selectedsda'] && changes['selectedsda'].currentValue) {
+        const selectedsda = changes['selectedsda'].currentValue;
+        this.serviceDeliveryAreaId = selectedsda;
+    }
+
+    if (changes['selectedGroup'] && changes['selectedGroup'].currentValue) {
+      const selectedGroup = changes['selectedGroup'].currentValue;
+      this.group = selectedGroup;
+  }
   }
 
   filterDataByQuarter(quarter: number) {
-    this.filteredsdips = this.sdips.filter(x => x.qaurterId === quarter);
-    this.rightHeaderChange.emit('Pending');
-    const allComplete = this.filteredsdips.length > 0 && this.filteredsdips.every(dip => dip.statusId === 24);
-    if (allComplete) {
-      this.rightHeaderChange.emit('Completed');
-    }
-    this.cdr.detectChanges();
+    this.loadSDIPs();
   }
   
   applicationPeriod: IApplicationPeriod = {} as IApplicationPeriod;
-
+  auditCols: any[];
   menuActions: MenuItem[];
   profile: IUser;
   validationErrors: Message[];
@@ -277,6 +286,13 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
       { header: 'Created Date', width: '20%' }
     ];
 
+    this.auditCols = [
+      { header: '', width: '5%' },
+      { header: 'Status', width: '55%' },
+      { header: 'User', width: '20%' },
+      { header: 'Date', width: '20%' }
+    ];
+
     this.reviewerSatisfactionCols = [
       { header: '', width: '5%' },
       { header: 'Is Satisfied', width: '25%' },
@@ -289,12 +305,14 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
     this._spinner.show();
     this.baseCompleteViewModel.applicationId = this.application.id;
     this.baseCompleteViewModel.quarterId = this.quarterId;
+    this.baseCompleteViewModel.serviceDeliveryAreaId = this.serviceDeliveryAreaId;
     this.baseCompleteViewModel.finYear = this.application.applicationPeriod.financialYear.id;
 
     this._applicationRepo.completeSDIPAction(this.baseCompleteViewModel).subscribe(
       (resp) => {
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Action successfully completed.' });
         this.loadSDIPs();
+        this.filterDataByQuarter(this.quarterId)
       },
       (err) => {
         this._loggerService.logException(err);
@@ -311,22 +329,22 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
         items: []
       }];
 
-      if (this.IsAuthorized(PermissionsEnum.CaptureWorkplanActual)) {
-        this.buttonItems[0].items.push({
-          label: 'Submit',
-          icon: 'fa fa-thumbs-o-up',
-          command: () => {
-            this.updateSelectedsdipsData(this.selectedsdips, StatusEnum.PendingReview);
-          }
-        });
-      }
+      // if (this.IsAuthorized(PermissionsEnum.CaptureWorkplanActual)) {
+      //   this.buttonItems[0].items.push({
+      //     label: 'Submit',
+      //     icon: 'fa fa-thumbs-o-up',
+      //     command: () => {
+      //       this.updateSelectedsdipsData(this.selectedsdips, StatusEnum.PendingReview);
+      //     }
+      //   });
+      // }
 
       if (this.IsAuthorized(PermissionsEnum.ReviewWorkplanActual)) {
         this.buttonItems[0].items.push({
           label: 'Edit',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.updateSelectedsdipsData(this.selectedsdips, StatusEnum.PendingApproval);
+            this.enableEditing(this.selectedsdips);
           }
         });
       }
@@ -336,7 +354,7 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
           label: 'Comments',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.displayCommentDialog=true;
+            this.addComment()
           }
         });
       }
@@ -346,11 +364,20 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
           label: 'View History',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.updateSelectedsdipsData(this.selectedsdips, StatusEnum.Approved);
+           this.viewHistory(this.selectedsdips);
           }
         });
       }
     }
+  }
+
+  private viewHistory(rowData: ISDIP) {
+    this.displayVieHistoryDialog = true;
+  }
+
+  enableEditing(rowData: any) {
+    this.filteredsdips.forEach(sdip => sdip.isEditable = false);
+    rowData.isEditable = true;
   }
 
   private updateSelectedsdipsData(rowData: ISDIP, status: number) {
@@ -407,102 +434,11 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
     this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
   }
 
-  private loadDemographicDistricts() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicDistrict, false).subscribe(
-      (results) => {
-        this.allIDistrictDemographics = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadDemographicManicipalities() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicManicipality, false).subscribe(
-      (results) => {
-        this.allManicipalityDemographics = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-  
-  private loadDemographicSubStructures() {
-    this._dropdownRepo.getEntities(DropdownTypeEnum.DemographicSubStructure, false).subscribe(
-      (results) => {
-        this.allSubstructureDemographics = results;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
   private loadFinancialYears() {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.FinancialYears, false).subscribe(
       (results) => {
         this.financialYears = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadDepartments() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.Departments, false).subscribe(
-      (results) => {
-        this.departments = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadProgrammes() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, false).subscribe(
-      (results) => {
-        this.allProgrammes = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadSubProgrammes() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, false).subscribe(
-      (results) => {
-        this.allSubProgrammes = results;
-        this._spinner.hide();
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
-  }
-
-  private loadSubProgrammeTypes() {
-    this._spinner.show();
-    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
-      (results) => {
-        this.AllsubProgrammesTypes = results;
         this._spinner.hide();
       },
       (err) => {
@@ -531,6 +467,8 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
     sdipobj.applicationId = this.application.id;
     sdipobj.financialYearId = this.application.applicationPeriod.financialYear.id;
     sdipobj.qaurterId = this.quarterId;
+    sdipobj.serviceDeliveryAreaId = this.serviceDeliveryAreaId;
+    sdipobj.comments = rowData.comments;
 
     if (rowData.id === 0) {
       this.createSDIP(sdipobj);
@@ -542,7 +480,9 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
    updateSDIP(sdip: ISDIP) {
     this._applicationRepo.updateSDIP(sdip).subscribe(
       (resp) => {
-        this.loadSDIPs();
+       // this.loadSDIPs();
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully updated.' });
+   
       },
       (err) => {
         this._loggerService.logException(err);
@@ -558,6 +498,7 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
   createSDIP(sdip: ISDIP) {
     this._applicationRepo.createSDIPReport(sdip).subscribe(
       (resp) => {
+        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully updated.' });
         this.loadSDIPs();
       },
       (err) => {
@@ -571,10 +512,24 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
     this._spinner.show();
     this._applicationRepo.GetSDIPReportsByAppid(this.application).subscribe(
       (results) => {
-        this.sdips = results;   
+        this.sdips = results;  
         if(this.quarterId > 0)
           {
-            this.filteredsdips = this.sdips.filter(x => x.qaurterId === this.quarterId);
+            this.filteredsdips = this.sdips?.filter(x => x.qaurterId === this.quarterId && x.serviceDeliveryAreaId === this.serviceDeliveryAreaId ); ;
+            this.filteredsdips.forEach(row => {
+              row.isEditable = !(row.id > 0);
+            });
+            // this.filteredsdips = this.sdips.filter(x => x.qaurterId === quarter);
+            this.rightHeaderChange.emit('Pending');
+            const allComplete = this.filteredsdips.length > 0 && this.filteredsdips.every(dip => dip.statusId === 24);
+            const allSubmitted = this.filteredsdips.length > 0 && this.filteredsdips.every(dip => dip.statusId === 19);
+            if (allComplete) {
+              this.rightHeaderChange.emit('Completed');
+            }
+            else if (allSubmitted) {
+              this.rightHeaderChange.emit('Submitted');
+            }
+            this.cdr.detectChanges();
           }  
         });
         this._spinner.hide();
@@ -591,10 +546,14 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
       progress: '',
       isActive: true,
       applicationId:0,
+      serviceDeliveryAreaId: 0,
       statusId: 0,
       qaurterId: 0,
+      comments: '',
       financialYearId: 0,
-      status: {} as IStatus
+      status: {} as IStatus,
+      isEditable:true,
+      sdipReportAudits: {} as ISDIPAudits[]
     };
     
     this.filteredsdips.push(newRow);  
@@ -1352,8 +1311,15 @@ this._dropdownRepo.createActivityList({ name: this.activity.name, description: t
   }
 
   addComment() {
-    this.comment = null;
+    if (this.selectedsdips.comments != null) {
+      this.comment = this.selectedsdips.comments;
+    }
+    else{
+      this.comment= null;
+    }
+  
     this.displayCommentDialog = true;
+    this.canEdit = true;
   }
 
   viewComments(data: IActivity, origin: string) {
@@ -1387,30 +1353,9 @@ this._dropdownRepo.createActivityList({ name: this.activity.name, description: t
   }
 
   saveComment(changesRequired: boolean, origin: string) {
-    let model = {
-      applicationId: this.application.id,
-      serviceProvisionStepId: ServiceProvisionStepsEnum.Activities,
-      entityId: this.activity.id,
-      comment: this.comment
-    } as IApplicationComment;
-
-    this._applicationRepo.createApplicationComment(model, changesRequired).subscribe(
-      (resp) => {
-        this.loadActivities();
-
-        let entity = {
-          id: model.entityId
-        } as IActivity;
-        this.viewComments(entity, origin);
-
-        this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
-        this.displayCommentDialog = false;
-      },
-      (err) => {
-        this._loggerService.logException(err);
-        this._spinner.hide();
-      }
-    );
+    this.selectedsdips.comments = this.comment;
+  this.saveSDIP(this.selectedsdips);
+  this.displayCommentDialog = false;
   }
 
   search(event) {

@@ -1,5 +1,6 @@
 ﻿using NPOMS.Domain.Core;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NPOMS.Domain.Entities
@@ -38,7 +39,9 @@ namespace NPOMS.Domain.Entities
 
         public int AdjustedVariance { get; set; }
 
-        public int ApplicationId { get; set; }   
+        public int ApplicationId { get; set; }
+
+        public int ServiceDeliveryAreaId { get; set; }
 
         public int QaurterId { get; set; }
 
@@ -58,5 +61,7 @@ namespace NPOMS.Domain.Entities
 
         public int FinancialYearId { get; set; }
 
+        public string Comments { get; set; }
+        public ICollection<IndicatorReportAudit> IndicatorReportAudits { get; set; }
     }
 }

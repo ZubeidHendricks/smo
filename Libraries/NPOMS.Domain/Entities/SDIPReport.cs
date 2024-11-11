@@ -2,9 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NPOMS.Domain.Entities
 {
@@ -23,6 +20,8 @@ namespace NPOMS.Domain.Entities
         public string TargetDate { get; set; }
 
         public int ApplicationId { get; set; }
+
+        public int ServiceDeliveryAreaId { get; set; }
 
         public string Progress { get; set; }
 
@@ -43,6 +42,11 @@ namespace NPOMS.Domain.Entities
         public User CreatedUser { get; set; }
         public Status Status { get; set; }
 
+     
+
         public int FinancialYearId { get; set; }
+        public string Comments { get; set; }
+
+        public ICollection<SDIPReportAudit> SDIPReportAudits { get; set; }
     }
 }

@@ -390,7 +390,9 @@ export interface IServiceType {
 export interface IBaseCompleteViewModel {
     applicationId: number; // Corresponds to int ApplicationId
     quarterId: number;     // Corresponds to int QuarterId
-    finYear: number;       // Corresponds to int FinYear
+    finYear: number;  
+    serviceDeliveryAreaId:number; // Corresponds to int FinYear
+
 }
 
 export interface ISubProgramme {
@@ -550,11 +552,18 @@ export interface IIndicator {
     indicatorId: string;
   }
 
+  export interface IMergedActuals {
+    actuals: IActuals;
+    indicator: INPOIndicator;
+    isEditable: boolean;
+  }
+  
+
   export interface IActuals {
     id: number;
     programmeId: number;
     subProgrammeId: number;
-    group: number;
+    group: string;
     subProgrammeTypeId: number;
     serviceDeliveryArea : string;
     outputTitle : string;
@@ -567,13 +576,23 @@ export interface IIndicator {
     adjustedActual: number;
     adjustedVariance: number;
     applicationId: number;
+    serviceDeliveryAreaId: number;
     qaurterId: number;
     actual: number;
     documents: IDocumentStore[];
     isActive: boolean;
     statusId: number;
     status: IStatus;
+    comments: string;   
+    indicatorReportAudits: IActualsAudit[];
   }
+
+  export interface IActualsAudit {
+    id: number;
+    statusName: number;
+    createdUser: number;
+    createdDateTime: Date;
+}
 
  
   export interface IPosts {
@@ -587,13 +606,24 @@ export interface IIndicator {
     vacancyReasons: string;
     plans: string;
     applicationId: number;
+    serviceDeliveryAreaId: number;
     isActive: boolean;
     statusId: number;
     status: IStatus;
     staffCategoryId: number;
     qaurterId: number;
     financialYearId: number;
+    comments: string;
+    isEditable: boolean;
+    postAudits: IPostAudit[];
   }
+
+export interface IPostAudit {
+    id: number;
+    statusName: number;
+    createdUser: number;
+    createdDateTime: Date;
+}
     
   export interface IGovernance {
     id: number;
@@ -602,24 +632,48 @@ export interface IIndicator {
     lastSubmissionDateNat:string;
     comments: string;
     applicationId: number;
+    serviceDeliveryAreaId: number;
     isActive: boolean;
     statusId: number;
     status: IStatus;
     qaurterId: number;
     financialYearId: number;
+    reportComments:string,
+    isEditable: boolean;
+    governanceAudits: IGovernanceAudit[];
   }
+
+  export interface IGovernanceAudit {
+    id: number;
+    statusName: number;
+    createdUser: number;
+    createdDateTime: Date;
+}
+
 
   export interface IOtherInfor {
     id: number;
     highlights: string;
     challenges: string;
     applicationId: number;
+    serviceDeliveryAreaId: number;
     isActive: boolean;
     statusId: number;
     status: IStatus;
     qaurterId: number;
     financialYearId: number;
+    comments: string;
+    isEditable: boolean;
+    anyOtherReportAudits: IOtherInforAudit[];
   }
+
+  export interface IOtherInforAudit {
+    id: number;
+    statusName: number;
+    createdUser: number;
+    createdDateTime: Date;
+}
+
 
   export interface IExpenditure {
     id: number;
@@ -629,12 +683,24 @@ export interface IIndicator {
     surplus: number;
     total: number;
     applicationId: number;
+    serviceDeliveryAreaId: number;
     isActive: boolean;
     statusId: number;
     status: IStatus;
     qaurterId: number;
     financialYearId: number;
+    comments: string;
+    isEditable: boolean;
+    incomeReportAudits: IExpenditureAudit[];
   }
+
+  export interface IExpenditureAudit {
+    id: number;
+    statusName: number;
+    createdUser: number;
+    createdDateTime: Date;
+}
+
 
   export interface ISDIP {
     id: number;
@@ -644,13 +710,24 @@ export interface IIndicator {
     targetDate: string;
     meansOfVerification: string;
     applicationId: number;
+    serviceDeliveryAreaId: number;
     isActive: boolean;
     progress: string;
     statusId: number;
     status: IStatus;
     qaurterId: number;
     financialYearId: number;
+    comments: string;   
+    isEditable: boolean;
+    sdipReportAudits: ISDIPAudits[];
   }
+
+  export interface ISDIPAudits {
+    id: number;
+    statusName: number;
+    createdUser: number;
+    createdDateTime: Date;
+}
 
 export interface IActivity {
     id: number;

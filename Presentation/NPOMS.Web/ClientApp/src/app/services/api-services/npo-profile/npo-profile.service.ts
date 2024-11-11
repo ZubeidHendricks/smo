@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IAuditorOrAffiliation, IBankDetail, INpoProfile, INpoProfileFacilityList, IProgramBankDetails, IProgramContactInformation, IProgrammeServiceDelivery, IProjectImplementation, IServicesRendered, IStaffMemberProfile } from 'src/app/models/interfaces';
+import { IAuditorOrAffiliation, IBankDetail, INpoProfile, INpoProfileFacilityList, IProgramBankDetails, IProgramContactInformation, IProgrammeServiceDelivery, IProjectImplementation, ISDA, IServicesRendered, IStaffMemberProfile } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 import { IPreviousFinancialYear, ISourceOfInformation, IAffiliatedOrganisation } from 'src/app/models/FinancialMatters';
 import { IFinancialMattersExpenditure, IFinancialMattersIncome, IFinancialMattersOthers } from 'src/app/models/FinancialMatters';
@@ -31,7 +31,6 @@ export class NpoProfileService {
     return this._http.get<INpoProfile>(url, httpOptions);
   }
 
-
   public getProgrammeContactsById(programmeId: number,npoProfileId: number) {
     const url = `${this._envUrl.urlAddress}/api/programme/contact/programmeId/${programmeId}/npoProfileId/${npoProfileId}`;
     return this._http.get<IProgramContactInformation[]>(url, httpOptions);
@@ -47,10 +46,16 @@ export class NpoProfileService {
     return this._http.get<IProgramBankDetails[]>(url, httpOptions);
   }
 
+  public getProgrammeMasterDeliveryDetailsById(programmeId: number,npoId: number) {
+    const url = `${this._envUrl.urlAddress}/api/programme/masterdelivery/programmeId/${programmeId}/npoProfileId/${npoId}`;
+    return this._http.get<ISDA[]>(url, httpOptions);
+  }
+
   public getProgrammeDeliveryDetailsById(programmeId: number,npoProfileId: number) {
     const url = `${this._envUrl.urlAddress}/api/programme/delivery/programmeId/${programmeId}/npoProfileId/${npoProfileId}`;
     return this._http.get<IProgrammeServiceDelivery[]>(url, httpOptions);
   }
+
 
   public getProgrammeDeliveryDetails(selectedApplicationId: number) {
     const url = `${this._envUrl.urlAddress}/api/programme/delivery/selectedApplicationId/${selectedApplicationId}`;

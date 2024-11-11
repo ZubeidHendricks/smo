@@ -9,7 +9,7 @@ namespace NPOMS.Repository.Implementation.Entities
         public PostRepository(RepositoryContext repositoryContext) : base(repositoryContext)
         {
         }
-        public async Task CompletePost(int applicationId, int financialId, int quarterId, int currentUserId)
+        public async Task<IEnumerable<PostReport>> CompletePost(int applicationId, int financialId, int quarterId, int currentUserId)
         {
             // Retrieve the records to be updated
             var postReports = await FindByCondition(x => x.FinancialYearId == financialId && x.ApplicationId == applicationId && x.QaurterId == quarterId)
@@ -27,8 +27,8 @@ namespace NPOMS.Repository.Implementation.Entities
             {
                 await UpdateAsync(null, report, false, currentUserId);
             }
-            // Save all changes in one transaction
-            //await this.RepositoryContext.SaveChangesAsync();
+
+            return postReports;
         }
 
         public async Task CreateEntity(PostReport model)
@@ -56,6 +56,7 @@ namespace NPOMS.Repository.Implementation.Entities
         public async Task<IEnumerable<PostReport>> GetByPeriodId(int applicationPeriodId)
         {
             return await FindByCondition(x => x.ApplicationId == applicationPeriodId && x.IsActive).Include(x => x.Status)
+                         .Include(x => x.PostAudits)
                          .AsNoTracking()
                          .ToListAsync();
         }
@@ -70,7 +71,9 @@ namespace NPOMS.Repository.Implementation.Entities
         }
 
         public async Task UpdateEntity(PostReport model, int currentUserId)
-        {
+        {  
+            model.UpdatedDateTime = DateTime.Now;
+            model.UpdatedUserId = currentUserId;
             await UpdateAsync(null, model, false, currentUserId);
         }
 

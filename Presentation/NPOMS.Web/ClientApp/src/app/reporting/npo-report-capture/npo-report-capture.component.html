@@ -13,45 +13,71 @@
         *ngIf="IsAuthorized(PermissionsEnum.ShowApplicationActions)"></p-menubar>
         <div style="height: 20px;"></div>
     <p-accordion  *ngIf="isApplicationAvailable">
-        <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-            <button pButton 
-            [label]="'Financial year: ' + getFinancialYear(application?.applicationPeriod?.financialYearId)" 
-            class="grey-button" 
-            >
-    </button>
+                <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                    <button pButton 
+                    [label]="'Financial year: ' + getFinancialYear(application?.applicationPeriod?.financialYearId)" 
+                    class="grey-button" 
+                    >
+            </button>
+            <!-- <input 
+            type="text" 
+            placeholder="Enter Target Group" 
+            [(ngModel)]="customText"
+            (keyup)="onKeyUp($event)"
+            style="width: 200px; padding: 5px;"> -->
+            <p-dropdown
+                [(ngModel)]="selectedOption"
+                [options]="sdas"
+                placeholder="{{ isLoading ? 'Loading...' : 'Select service delivery area' }}"
+                optionLabel="name"
+                (onChange)="onDropdownChange($event)">
+          </p-dropdown>
+          
             <button pButton 
                     label="Quarter 1" 
+                    [disabled]="!btnEnabled"
                     [ngClass]="{'p-button-primary': activeButton === 1, 'p-button-secondary': activeButton !== 1}"
                     (click)="toggleButton(1)">
             </button>
             
             <button pButton 
                     label="Quarter 2" 
+                    [disabled]="!btnEnabled"
                     [ngClass]="{'p-button-primary': activeButton === 2, 'p-button-secondary': activeButton !== 2}"
                     (click)="toggleButton(2)">
             </button>
             
             <button pButton 
                     label="Quarter 3" 
+                    [disabled]="!btnEnabled"
                     [ngClass]="{'p-button-primary': activeButton === 3, 'p-button-secondary': activeButton !== 3}"
                     (click)="toggleButton(3)">
             </button>
             
             <button pButton 
                     label="Quarter 4" 
+                    [disabled]="!btnEnabled"
                     [ngClass]="{'p-button-primary': activeButton === 4, 'p-button-secondary': activeButton !== 4}"
                     (click)="toggleButton(4)">
             </button>
+
+            <button pButton 
+            label="Download" 
+            icon="pi pi-download" 
+            [disabled]="!downloadEnabled"
+            class="p-button-success"
+            (click)="onDownload()">
+    </button>
         </div>
 
         <p-accordionTab>
             <ng-template pTemplate="header">
                 <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
                     <span style="flex: 1;">Section 1: Indicator Report</span>
-                    <!-- <span style="margin-left: auto;">Your Right Header</span> -->
+                    <span style="margin-left: auto;">{{ indicatordynamicHeaderText }}</span>
                 </div>
             </ng-template>
-            <app-indicator-report [application]="application" [selectedQuarter]="activeButton"></app-indicator-report>
+            <app-indicator-report [application]="application" [selectedGroup]="targetGroup" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (rightHeaderIndicatorChange)="onRightHeaderChange($event,'indicator')"></app-indicator-report>
         </p-accordionTab>
 
         <p-accordionTab>
@@ -61,7 +87,7 @@
                     <span style="margin-left: auto;">{{ postdynamicHeaderText }}</span>
                 </div>
             </ng-template>
-            <app-post-report [application]="application" [selectedQuarter]="activeButton" (rightHeaderChangepost)="postdynamicHeaderText = $event"></app-post-report>
+            <app-post-report [application]="application" [selectedGroup]="targetGroup" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (rightHeaderChangepost)="onRightHeaderChange($event,'post')"></app-post-report>
         </p-accordionTab>
         
         <p-accordionTab>
@@ -71,7 +97,7 @@
                     <span style="margin-left: auto;">{{ incomedynamicHeaderText }}</span>
                 </div>
             </ng-template>
-            <app-details-of-income-and-and-expenditure-report [application]="application" [selectedQuarter]="activeButton" (incomerightHeaderChange)="incomedynamicHeaderText = $event"></app-details-of-income-and-and-expenditure-report>
+            <app-details-of-income-and-and-expenditure-report [selectedsda]="selectedOptionId" [selectedGroup]="targetGroup" [application]="application" [selectedQuarter]="activeButton" (incomerightHeaderChange)="onRightHeaderChange($event,'income')"></app-details-of-income-and-and-expenditure-report>
         </p-accordionTab>
         
         <p-accordionTab>
@@ -81,7 +107,7 @@
                     <span style="margin-left: auto;">{{ govnencedynamicHeaderText }}</span>
                 </div>
             </ng-template>
-            <app-governance-report [application]="application" [selectedQuarter]="activeButton" (govnencerightHeaderChange)="govnencedynamicHeaderText = $event"></app-governance-report>
+            <app-governance-report [application]="application" [selectedGroup]="targetGroup" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (govnencerightHeaderChange)="onRightHeaderChange($event,'govnence')"></app-governance-report>
         </p-accordionTab>
 
         <p-accordionTab>
@@ -91,13 +117,8 @@
                     <span style="margin-left: auto;">{{ otherdynamicHeaderText }}</span>
                 </div>
             </ng-template>
-            <app-any-other-information-report [application]="application" [selectedQuarter]="activeButton" (otherrightHeaderChange)="otherdynamicHeaderText = $event"></app-any-other-information-report>
+            <app-any-other-information-report [application]="application" [selectedGroup]="targetGroup" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (otherrightHeaderChange)="onRightHeaderChange($event,'other')"></app-any-other-information-report>
         </p-accordionTab>
-        
-    
-        <!-- <p-accordionTab header="Section 6: SDIP">
-            <app-quarterly-sdip-reporting-report [application]="application" [selectedQuarter]="activeButton"></app-quarterly-sdip-reporting-report>
-        </p-accordionTab> -->
 
         <p-accordionTab>
             <ng-template pTemplate="header">
@@ -106,7 +127,7 @@
                     <span style="margin-left: auto;">{{ dynamicHeaderText }}</span>
                 </div>
             </ng-template>
-            <app-quarterly-sdip-reporting-report [application]="application" [selectedQuarter]="activeButton"  (rightHeaderChange)="dynamicHeaderText = $event"></app-quarterly-sdip-reporting-report>
+            <app-quarterly-sdip-reporting-report [application]="application" [selectedGroup]="targetGroup" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (rightHeaderChange)="onRightHeaderChange($event,'sdip')"></app-quarterly-sdip-reporting-report>
         </p-accordionTab>
         
     </p-accordion>
