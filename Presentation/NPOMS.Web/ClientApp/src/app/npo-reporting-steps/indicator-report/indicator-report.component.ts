@@ -429,8 +429,8 @@ createMergedList() {
   });
 
   this.rightHeaderIndicatorChange.emit('Pending');
-  const allComplete = this.mergedList.length > 0 && this.mergedList.every(dip => dip?.actuals?.status?.id === 24);
-  const allSubmitted = this.mergedList.length > 0 && this.mergedList.every(dip => dip?.actuals?.status?.id === 19);
+  const allComplete = this.mergedList.length > 0 && this.mergedList.every(dip => dip?.status?.id === 24);
+  const allSubmitted = this.mergedList.length > 0 && this.mergedList.every(dip => dip?.status?.id === 19);
 
   if (allComplete) {
       this.rightHeaderIndicatorChange.emit('Completed');
