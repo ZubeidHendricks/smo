@@ -2,6 +2,7 @@
 
 using NPOMS.Domain.Entities;
 using NPOMS.Domain.FundingAssessment;
+using System.Linq;
 
 namespace NPOMS.Services.DTOs.FundingAssessments
 {
@@ -13,6 +14,9 @@ namespace NPOMS.Services.DTOs.FundingAssessments
         public string OrganisationName { get; private set; }
         public string CCode { get; private set; }
         public string FinancialYearName { get; private set; }
+        public string ProgrammeName { get; }
+        public string SubProgrammeName { get; }
+        public string SubProgrammeTypeName { get; }
 
         public string FundingAssessmentStatusName { get; private set; }
         public bool IsCompliant { get; private set; }
@@ -29,6 +33,12 @@ namespace NPOMS.Services.DTOs.FundingAssessments
             this.CCode = application.Npo.CCode;
             this.FinancialYearName = application.ApplicationPeriod.FinancialYear.Name;
             this.FundingAssessmentStatusName = "";//"Pending DOI Capturer"; "Pending Assessment Capturer" "Pending Assessment Approver " "Assessment Completed"
+            this.ProgrammeName = application.ApplicationPeriod?.Programme?.Name;
+            this.SubProgrammeName = application.ApplicationPeriod?.SubProgramme?.Name;
+            this.SubProgrammeTypeName = application.ApplicationPeriod?.SubProgrammeType?.Name;
+            this.SelectedAreaCount = fundingAssessmentForm?.FundingAssessmentFormSDAs?.Where(x=>x.IsSelected)?.Count() ?? 0;
+            this.IsCompliant = (fundingAssessmentForm?.DOICapturerId ?? 0) > 0;
+            this.PreSelected = (fundingAssessmentForm?.DOIApproverId ?? 0) > 0;
 
             if (fundingAssessmentForm == null)
             {

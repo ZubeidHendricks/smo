@@ -11,7 +11,9 @@
                 <th style="width: 100px;">#</th>
                 <th>NPO Name</th>
                 <th>CCID</th>
-                <th>Subsidy Type</th>
+                <th>Programme</th>
+                <th>Sub Programme</th>
+                <th>Sub Programme Type</th>
                 <th>Financial Year</th>
                 <th>Is Compliant</th>
                 <th>Preselected</th>
@@ -28,6 +30,8 @@
                 <th></th>
                 <th></th>
                 <th></th>
+                <th></th>
+                <th></th>
                 <th><p-columnFilter type="text" field="fundingAssessmentStatusName" matchMode="contains"></p-columnFilter></th>
                 <th></th>
             </tr>
@@ -37,7 +41,9 @@
                 <td>{{rowIndex + 1}}</td>
                 <td>{{ fundingAssessment.organisationName }}</td>
                 <td>{{ fundingAssessment.cCode }}</td>
-                <td></td>
+                <td>{{fundingAssessment.programmeName}}</td>
+                <td>{{fundingAssessment.subProgrammeName}}</td>
+                <td>{{fundingAssessment.subProgrammeTypeName}}</td>
                 <td>{{ fundingAssessment.financialYearName }}</td>
                 <td>{{fundingAssessment.isCompliant}}</td>
                 <td>{{fundingAssessment.preSelected}}</td>
