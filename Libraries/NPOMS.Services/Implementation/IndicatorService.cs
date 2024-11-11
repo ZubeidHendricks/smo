@@ -233,11 +233,11 @@ namespace NPOMS.Services.Implementation
             return await _workplanTargetRepository.GetTargetsByActivityIds(activityIds);
         }
 
-        public async Task UpdateIndicatorReportStatus(BaseCompleteViewModel model, string currentUserId)
+        public async Task<IEnumerable<IndicatorReport>> UpdateIndicatorReportStatus(BaseCompleteViewModel model, string currentUserId)
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(currentUserId);
 
-            await _indicatorReportRepository.UpdateIndicatorReportStatus(model.ApplicationId, model.FinYear, model.QuarterId, loggedInUser.Id);
+             return await _indicatorReportRepository.UpdateIndicatorReportStatus(model.ApplicationId, model.FinYear, model.QuarterId, loggedInUser.Id);
         }
 
         public async Task CreateAudit(IndicatorReportAudit model, string userIdentifier)

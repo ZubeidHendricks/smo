@@ -64,7 +64,7 @@ namespace NPOMS.Services.Interfaces
         Task loadindicatorsAsync(List<Indicators> data);
 
         Task loadNPOindicatorsAsync(List<NPOIndicators> data);
-        Task UpdateIndicatorReportStatus(BaseCompleteViewModel model, string userIdentifier);
+        Task<IEnumerable<IndicatorReport>> UpdateIndicatorReportStatus(BaseCompleteViewModel model, string userIdentifier);
         Task CreateAudit(IndicatorReportAudit applicationAudit, string userIdentifier);
     }
 }

@@ -23,6 +23,6 @@ namespace NPOMS.Repository.Interfaces.Entities
 
         Task UpdateEntity(IndicatorReport model, int currentUserId);
         Task UpdateEntityQC(IndicatorReport model, int currentUserId);
-        Task UpdateIndicatorReportStatus(int applicationId, int finYear, int quarterId, int id);
+        Task<IEnumerable<IndicatorReport>> UpdateIndicatorReportStatus(int applicationId, int finYear, int quarterId, int id);
     }
 }
