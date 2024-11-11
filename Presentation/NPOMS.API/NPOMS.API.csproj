@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <ItemGroup>
     <ProjectReference Include="..\..\Database\NPOMS.Repository\NPOMS.Repository.csproj" />
@@ -29,11 +29,11 @@
     <PackageReference Include="System.DirectoryServices.AccountManagement" Version="6.0.0" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <UserSecretsId>6a03d321-59ce-418b-b92a-df517a54cd48</UserSecretsId>
-    <ApplicationInsightsResourceId>/subscriptions/c1a0ef4a-95ea-4c95-9ec1-6eeb59f974c4/resourceGroups/RG-PROD-MTP-APPSVC-LNX-STD-ZAN/providers/microsoft.insights/components/wa-wcg-npoms-prod-zan</ApplicationInsightsResourceId>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<UserSecretsId>6a03d321-59ce-418b-b92a-df517a54cd48</UserSecretsId>
+		<ApplicationInsightsResourceId>/subscriptions/c1a0ef4a-95ea-4c95-9ec1-6eeb59f974c4/resourceGroups/RG-PROD-MTP-APPSVC-LNX-STD-ZAN/providers/microsoft.insights/components/wa-wcg-npoms-prod-zan</ApplicationInsightsResourceId>
+	</PropertyGroup>
 
 
 </Project>
