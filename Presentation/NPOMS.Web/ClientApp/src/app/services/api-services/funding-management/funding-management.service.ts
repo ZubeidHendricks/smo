@@ -61,6 +61,11 @@ export class FundingManagementService {
     return this._http.put<IPaymentScheduleViewModel>(url, paymentSchedule, httpOptions);
   }
 
+  public updateCompliance(scheduleId: number, compliant: boolean) {
+    const url = `${this.fundingManagementUrl}/update-compliance/${scheduleId}/${compliant}`;
+    return this._http.get<IPaymentScheduleViewModel>(url, httpOptions);
+  }
+
   public updateBankDetails(bankDetail: IBankDetailViewModel) {
     const url = `${this.fundingManagementUrl}/bank-detail`;
     return this._http.put<IBankDetailViewModel>(url, bankDetail, httpOptions);

@@ -11,6 +11,9 @@
         public double? AllocatedAmount { get; set; }
         public double? ApprovedAmount { get; set; }
         public double? PaidAmount { get; set; }
+
+        public bool IsCompliant { get; set; }
+
         public bool IsActive { get; set; }
     }
 }

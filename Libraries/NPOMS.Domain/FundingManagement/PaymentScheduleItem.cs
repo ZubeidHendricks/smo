@@ -24,6 +24,8 @@ namespace NPOMS.Domain.FundingManagement
         
         public double? PaidAmount { get; set; }
 
+        public bool IsCompliant { get; set; }
+
         public bool IsActive { get; set; }
 
         public int CreatedUserId { get; set; }
