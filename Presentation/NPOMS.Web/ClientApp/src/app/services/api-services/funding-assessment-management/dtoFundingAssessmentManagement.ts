@@ -9,6 +9,9 @@ export interface dtoFundingAssessmentApplicationGet{
     isCompliant: boolean;
     preSelected: boolean;
     selectedAreaCount: number;
+    programmeName: string,
+    subProgrammeName: string,
+    subProgrammeTypeName: string
 }
 
 export interface dtoFundingAssessmentApplicationFormGet{
@@ -32,7 +35,9 @@ export interface dtoFundingAssessmentApplicationFormGet{
     finalApprovalItem: dtoFundingAssessmentApplicationFormFinalApproverItemGet,
     serviceDeliveries: dtoFundingAssessmentApplicationFormSDAGet[],
 
-    legislativeComplianceFinalCommentRequired: boolean
+    legislativeComplianceFinalCommentRequired: boolean,
+
+
 }
 
 export interface dtoFundingAssessmentApplicationFormSummaryItemGet

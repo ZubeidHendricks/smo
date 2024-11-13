@@ -34,9 +34,12 @@ namespace NPOMS.Services.Implementation
             var applications = await this._repositoryContext.Applications
                                                                     .Include(x=>x.Npo).ThenInclude(x=>x.OrganisationType)
                                                                     .Include(x => x.ApplicationPeriod).ThenInclude(x=>x.FinancialYear)
+                                                                    .Include(x => x.ApplicationPeriod).ThenInclude(x=>x.Programme)
+                                                                    .Include(x => x.ApplicationPeriod).ThenInclude(x => x.SubProgramme)
+                                                                    .Include(x => x.ApplicationPeriod).ThenInclude(x=>x.SubProgrammeType)
                                                                     .Where(x => x.StatusId == (int)StatusEnum.Approved ).ToListAsync();
 
-            var fundingAssessmentForms = await this._repositoryContext.FundingAssessmentForms.ToListAsync();
+            var fundingAssessmentForms = await this._repositoryContext.FundingAssessmentForms.Include(x=>x.FundingAssessmentFormSDAs).ToListAsync();
  
 
             applications.ForEach(application =>

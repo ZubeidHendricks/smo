@@ -5,7 +5,7 @@
         <tr>
           <th style="width: 50%;">Questions</th>
           <th>Select Options</th>
-          <th></th>
+          <th> {{HeaderName === 'Analysis Of Performance' ? 'Financial Year (ccyy/yy)' : ''}}</th>
           <th>Rating</th>
         </tr>
       </ng-template>
@@ -26,7 +26,7 @@
           </td>
           <td>
             <div *ngIf="question.hasComment">
-              <input pInputText id="npoName" [(ngModel)]="question.comment" (ngModelChange)="onQuestionChange(question)" [disabled]="fundingAssessmentForm.disableCapturerControls"/>
+              <input pInputText id="npoName" [(ngModel)]="question.comment" (blur)="onQuestionChange(question)" [disabled]="fundingAssessmentForm.disableCapturerControls"/>
             </div>
           </td>
           <td>

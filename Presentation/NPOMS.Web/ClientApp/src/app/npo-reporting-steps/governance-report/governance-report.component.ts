@@ -307,41 +307,16 @@ export class GovernanceReportComponent implements OnInit {
   }
 
   updateButtonItems() {
-    // Show all buttons
     this.buttonItems[0].items.forEach(option => {
       option.visible = true;
     });
 
-    // switch (this.selectedIndicator.workplanActuals[0].statusId) {
-    //   case StatusEnum.New:
-    //   case StatusEnum.Saved:
-    //   case StatusEnum.AmendmentsRequired: {
-    //     this.buttonItems[0].items[2].visible = false;
-    //     this.buttonItems[0].items[3].visible = false;
-    //     this.buttonItems[0].items[4].visible = false;
-    //     break;
-    //   }
-    //   case StatusEnum.PendingReview: {
-    //     this.buttonItems[0].items[0].visible = false;
-    //     this.buttonItems[0].items[1].visible = false;
-    //     this.buttonItems[0].items[3].visible = false;
-    //     break;
-    //   }
-    //   case StatusEnum.PendingApproval: {
-    //     this.buttonItems[0].items[0].visible = false;
-    //     this.buttonItems[0].items[1].visible = false;
-    //     this.buttonItems[0].items[2].visible = false;
-    //     break;
-    //   }
-    //   case StatusEnum.Approved: {
-    //     this.buttonItems[0].items[0].visible = false;
-    //     this.buttonItems[0].items[1].visible = false;
-    //     this.buttonItems[0].items[2].visible = false;
-    //     this.buttonItems[0].items[3].visible = false;
-    //     this.buttonItems[0].items[4].visible = false;
-    //     break;
-    //   }
-    // }
+    switch (this.selectedGovernance.statusId) {
+      case StatusEnum.Submitted: {
+        this.buttonItems[0].items[0].visible = false;
+        break;
+      }
+    }
   }
 
   private buildButtonItems() {
@@ -638,6 +613,9 @@ preventChange(event: any): void {
   
 
   createGovernance(governance: IGovernance) {
+    if(governance.lastMeetingDate === ''|| governance.lastSubmissionDateNat === '' || governance.lastSubmissionDateWC === '' || governance.comments === '') { 
+      return;
+    }
     this._applicationRepo.createGovernanceReport(governance).subscribe(
       (resp) => {
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Successfully added.' });

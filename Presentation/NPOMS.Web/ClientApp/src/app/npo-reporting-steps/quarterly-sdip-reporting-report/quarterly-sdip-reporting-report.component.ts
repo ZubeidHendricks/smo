@@ -385,12 +385,18 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
    this.onBlurAdjustedSDIP(rowData);
   }  
 
+
   updateButtonItems() {
-    // Show all buttons
     this.buttonItems[0].items.forEach(option => {
       option.visible = true;
     });
 
+    switch (this.selectedsdips.statusId) {
+      case StatusEnum.Submitted: {
+        this.buttonItems[0].items[0].visible = false;
+        break;
+      }
+    }
   }
   
   disableQuarters(): boolean {
@@ -496,6 +502,9 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
 }
 
   createSDIP(sdip: ISDIP) {
+    if(sdip.standardPerformanceArea === '' || sdip.correctiveAction === '' || sdip.responsibility === '' || sdip.targetDate === '' || sdip.meansOfVerification === '' || sdip.progress === ''){
+      return
+    }
     this._applicationRepo.createSDIPReport(sdip).subscribe(
       (resp) => {
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully updated.' });
