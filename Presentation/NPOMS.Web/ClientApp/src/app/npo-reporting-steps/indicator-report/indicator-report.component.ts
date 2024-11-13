@@ -581,7 +581,15 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
     this.buttonItems[0].items.forEach(option => {
       option.visible = true;
     });
+
+    switch (this.merged.statusId) {
+      case StatusEnum.Submitted: {
+        this.buttonItems[0].items[0].visible = false;
+        break;
+      }
+    }
   }
+
 
   private buildButtonItems() {
     this.buttonItems = [];

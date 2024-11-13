@@ -349,41 +349,16 @@ displayVieHistoryDialog: any;
     rowData.isEditable = true;
   }
   updateButtonItems() {
-    // Show all buttons
     this.buttonItems[0].items.forEach(option => {
       option.visible = true;
     });
 
-    // switch (this.selectedIndicator.workplanActuals[0].statusId) {
-    //   case StatusEnum.New:
-    //   case StatusEnum.Saved:
-    //   case StatusEnum.AmendmentsRequired: {
-    //     this.buttonItems[0].items[2].visible = false;
-    //     this.buttonItems[0].items[3].visible = false;
-    //     this.buttonItems[0].items[4].visible = false;
-    //     break;
-    //   }
-    //   case StatusEnum.PendingReview: {
-    //     this.buttonItems[0].items[0].visible = false;
-    //     this.buttonItems[0].items[1].visible = false;
-    //     this.buttonItems[0].items[3].visible = false;
-    //     break;
-    //   }
-    //   case StatusEnum.PendingApproval: {
-    //     this.buttonItems[0].items[0].visible = false;
-    //     this.buttonItems[0].items[1].visible = false;
-    //     this.buttonItems[0].items[2].visible = false;
-    //     break;
-    //   }
-    //   case StatusEnum.Approved: {
-    //     this.buttonItems[0].items[0].visible = false;
-    //     this.buttonItems[0].items[1].visible = false;
-    //     this.buttonItems[0].items[2].visible = false;
-    //     this.buttonItems[0].items[3].visible = false;
-    //     this.buttonItems[0].items[4].visible = false;
-    //     break;
-    //   }
-    // }
+    switch (this.selectedExpenditure.statusId) {
+      case StatusEnum.Submitted: {
+        this.buttonItems[0].items[0].visible = false;
+        break;
+      }
+    }
   }
   private updateExpenditureData(rowData: IExpenditure, status: number) {
   rowData.statusId = status;
@@ -839,6 +814,8 @@ saveExpenditure(rowData: any) {
 
 // Method to create a new expenditure report
 createExpenditure(expenditure: IExpenditure) {
+  if(expenditure.costDrivers === '' || expenditure.expenditure === 0 || expenditure.income === 0 ) {
+    return;}
   this._applicationRepo.createExpenditureReport(expenditure).subscribe(
     (resp) => {
       this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Successfully added.' });
