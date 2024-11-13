@@ -163,7 +163,7 @@
               <p-cellEditor>
                 <ng-template pTemplate="input">
                   <input pInputText [(ngModel)]="rowData.numberOfPosts" type="number" 
-                         (blur)="onBlurAdjustedPost(rowData)"  [disabled]="!rowData.isEditable" />
+                         (blur)="onBlurAdjustedPost(rowData)"   (keyup)="onKeyUp(rowData)" [disabled]="!rowData.isEditable" />
                 </ng-template>
                 <ng-template pTemplate="output">
                   {{ rowData.numberOfPosts }}
@@ -176,7 +176,7 @@
               <p-cellEditor>
                 <ng-template pTemplate="input">
                   <input pInputText [(ngModel)]="rowData.numberFilled" type="number" 
-                         (blur)="onBlurAdjustedPost(rowData)" [disabled]="!rowData.isEditable" />
+                         (blur)="onBlurAdjustedPost(rowData)"   (keyup)="onKeyUp(rowData)" [disabled]="!rowData.isEditable" />
                 </ng-template>
                 <ng-template pTemplate="output">
                   {{ rowData.numberFilled }}
@@ -202,7 +202,7 @@
               <p-cellEditor>
                 <ng-template pTemplate="input">
                   <input pInputText [(ngModel)]="rowData.vacant" type="text" 
-                         (blur)="onBlurAdjustedPost(rowData)"  [disabled]="!rowData.isEditable" />
+                         (blur)="onBlurAdjustedPost(rowData)"  [disabled]="!rowData.isEditable" disabled />
                 </ng-template>
                 <ng-template pTemplate="output">
                   {{ rowData.vacant }}
@@ -457,7 +457,7 @@
     </p-table>
 </p-dialog>
 
-<p-dialog header="Reviewer Satisfaction" 
+<!-- <p-dialog header="Reviewer Satisfaction" 
           [(visible)]="displayReviewerSatisfactionDialog" 
           [style]="{width: '50vw'}" 
           [focusOnShow]="false"
@@ -499,7 +499,7 @@
             </div>
         </ng-template>
     </p-table>
-</p-dialog>
+</p-dialog> -->
 
 <p-dialog header="Deleted Activities" 
           [(visible)]="displayDeletedActivityDialog" 

@@ -37,7 +37,7 @@
                     </div>
                 </div>
 
-                <div class="p-grid">
+                <!-- <div class="p-grid">
                     <div class="p-col-fixed form-label">
                         <div class="box">
                             <span class="non-mandatory-content">Sub-Programme Type</span>
@@ -46,10 +46,20 @@
                     <div class="p-col">
                         <input type="text" class="form-text" pInputText [value]="getSubProgramTypeValue()" [disabled]="true" [ngModelOptions]="{standalone: true}">
                     </div>
-                </div>
+                </div> -->
             </div>
             <div class="p-col-6">
                 <div class="p-fluid">
+                    <div class="p-grid">
+                        <div class="p-col-fixed form-label">
+                            <div class="box">
+                                <span class="non-mandatory-content">Sub-Programme Type</span>
+                            </div>
+                        </div>
+                        <div class="p-col">
+                            <input type="text" class="form-text" pInputText [value]="getSubProgramTypeValue()" [disabled]="true" [ngModelOptions]="{standalone: true}">
+                        </div>
+                    </div>
                     <div class="p-grid">
                         <div class="p-col-fixed form-label">
                             <div class="box">
@@ -61,17 +71,17 @@
                             <input type="text" class="form-text" pInputText [value]="getcCodeValue()" [disabled]="true" [ngModelOptions]="{standalone: true}">
                         </div>
                     </div>
-                    <div class="p-grid">
+                    <!-- <div class="p-grid">
                         <div class="p-col-fixed form-label">
                             <div class="box">
-                                <span class="non-mandatory-content"> Target Group</span>
+                                <span class="mandatory-content"> Target Group</span>
                             </div>
                         </div>
                         <div class="p-col">
-                            <input type="text" class="form-text" pInputText  [disabled]="false" [ngModelOptions]="{standalone: true}">
+                            <input type="text" class="form-text" pInputText  [disabled]="false" [(ngModel)]="targetGroup" [ngModelOptions]="{standalone: true}">
                         </div>
-                    </div>
-                    <div class="p-grid">
+                    </div> -->
+                    <!-- <div class="p-grid">
                         <div class="p-col-fixed form-label">
                             <div class="box">
                                 <span class="non-mandatory-content">Service Delivery Area</span>
@@ -80,7 +90,7 @@
                         <div class="p-col">
                             <input type="text" class="form-text" pInputText [value]="getSDAValue()" [disabled]="true" [ngModelOptions]="{standalone: true}">
                         </div>
-                    </div>
+                    </div> -->
                     <div class="p-grid">
                         <div class="p-col-fixed form-label">
                             <div class="box">
@@ -185,11 +195,11 @@
                         <td>
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
-                                    <input pInputText [(ngModel)]="rowData.actuals.targets" 
+                                    <input pInputText [(ngModel)]="rowData.targets" 
                                            [disabled]="!rowData.isEditable && !rowData.inEditMode" />
                                 </ng-template>
                                 <ng-template pTemplate="output">
-                                    {{ rowData.actuals.targets }}
+                                    {{ rowData.targets }}
                                 </ng-template>
                             </p-cellEditor>
                         </td>
@@ -198,29 +208,29 @@
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
                                     <input pInputText
-                                           [(ngModel)]="rowData.actuals.actual"
+                                           [(ngModel)]="rowData.actual"
                                            (blur)="onBlurAdjustedActual(rowData)"
                                            (keyup)="onKeyUp(rowData, $event)"
                                            [disabled]="!rowData.isEditable && !rowData.inEditMode" />
                                 </ng-template>
                                 <ng-template pTemplate="output">
-                                    {{ rowData.actuals.actual }}
+                                    {{ rowData.actual }}
                                 </ng-template>
                             </p-cellEditor>
                         </td>
                         
-                        <td>{{ rowData.actuals.variance }}</td>
+                        <td>{{ rowData.variance }}</td>
                         
                         <td pEditableColumn>
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
                                     <input pInputText 
-                                           [(ngModel)]="rowData.actuals.deviationReason" 
+                                           [(ngModel)]="rowData.deviationReason" 
                                            (blur)="onBlurAdjustedActual(rowData)" 
                                            [disabled]="!rowData.isEditable && !rowData.inEditMode" />
                                 </ng-template>
                                 <ng-template pTemplate="output">
-                                    {{ rowData.actuals.deviationReason }}
+                                    {{ rowData.deviationReason }}
                                 </ng-template>
                             </p-cellEditor>
                         </td>
@@ -229,18 +239,18 @@
                             <p-cellEditor>
                                 <ng-template pTemplate="input">
                                     <input pInputText 
-                                           [(ngModel)]="rowData.actuals.adjustedActual" 
+                                           [(ngModel)]="rowData.adjustedActual" 
                                            (blur)="onBlurAdjustedActual(rowData)"
                                            (keyup)="onKeyUpAdjustedActual($event, rowData)" 
                                            [disabled]="!rowData.isEditable && !rowData.inEditMode" />
                                 </ng-template>
                                 <ng-template pTemplate="output">
-                                    {{ rowData.actuals.adjustedActual }}
+                                    {{ rowData.adjustedActual }}
                                 </ng-template>
                             </p-cellEditor>
                         </td>
       
-                        <td>{{rowData.actuals.adjustedVariance}}</td>
+                        <td>{{rowData.adjustedVariance}}</td>
 
                         <td style="text-align: center;">
                             <button pButton pRipple type="button" class="p-button-text p-button-success action-button" icon="fa fa-files-o" pTooltip="Uploaded Files" tooltipPosition="top" (click)="uploadedFiles(rowData)"></button>
