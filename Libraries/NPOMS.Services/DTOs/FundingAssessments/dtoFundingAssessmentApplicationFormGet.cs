@@ -55,16 +55,14 @@ namespace NPOMS.Services.DTOs.FundingAssessments
         private List<ResponseOption> _orginalResponseOptions { get; } //only used internally
         private List<Question> _originalQuestions { get; }
         private FundingAssessmentForm _fundingAssessmentForm { get; }
-        private List<ServicesRendered> _servicesRendered { get; }
         private List<ProgrammeServiceDelivery> _programServiceDeliveries { get; }
         
-        public dtoFundingAssessmentApplicationFormGet(Application application, List<Question> questions, List<ResponseOption> responseOptions, FundingAssessmentForm fundingAssessmentForm, NpoProfile npoProfile, List<ServicesRendered> servicesRendered, List<ProgrammeServiceDelivery> programServiceDeliveries)
+        public dtoFundingAssessmentApplicationFormGet(Application application, List<Question> questions, List<ResponseOption> responseOptions, FundingAssessmentForm fundingAssessmentForm, NpoProfile npoProfile, List<ProgrammeServiceDelivery> programServiceDeliveries)
         {
             this._orginalResponseOptions = responseOptions;
             this._originalQuestions = questions;
             this._fundingAssessmentForm = fundingAssessmentForm;
-            this._servicesRendered = servicesRendered;
-            this._programServiceDeliveries = programServiceDeliveries;
+              this._programServiceDeliveries = programServiceDeliveries;
 
             this.Id = fundingAssessmentForm?.Id;
             this.ApplicationId = application.Id;
