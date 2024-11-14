@@ -640,6 +640,7 @@ export class ApplicationListComponent implements OnInit {
       this.optionItemExists('Conclude Scorecard');  
       this.optionItemExists('Summary');  
       this.optionItemExists('Quartery Perfomance Capture'); 
+      this.optionItemExists('Program Report Summary');
     }   
     if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP)
     {
@@ -648,6 +649,7 @@ export class ApplicationListComponent implements OnInit {
         this.optionItemExists('Adjudicate Funded Npo');  
         this.optionItemExists('Review Adjudicated Funded Npo');
         this.optionItemExists('Quartery Perfomance Capture'); 
+        this.optionItemExists('Program Report Summary');
     }
 
     if (this.selectedApplication.statusId === StatusEnum.Approved && this.selectedApplication.applicationPeriod.departmentId === 7)
@@ -1095,6 +1097,16 @@ export class ApplicationListComponent implements OnInit {
           icon: 'fa fa-file-text-o',
           command: () => {
             this._router.navigateByUrl('reports/' + this.selectedApplication.id);
+          }
+        });
+      }
+
+      if (true) {
+        this.optionItems[0].items.push({
+          label: 'Program Report Summary',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            this._router.navigateByUrl('programsummary');
           }
         });
       }

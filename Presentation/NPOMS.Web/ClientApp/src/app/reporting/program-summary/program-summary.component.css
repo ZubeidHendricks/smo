@@ -1,0 +1,19 @@
+.form-label {
+    width: 25%;
+    text-align: right;
+    align-self: center;
+}
+
+.mandatory-content::after {
+    content: "*";
+    color: rgb(195, 17, 47);
+}
+
+.mandatory-content, .non-mandatory-content {
+    font-size: 12px;
+}
+
+.default-font {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 11px !important;
+}
