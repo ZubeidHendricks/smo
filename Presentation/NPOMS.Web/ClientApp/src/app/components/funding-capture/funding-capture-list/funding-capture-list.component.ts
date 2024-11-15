@@ -138,6 +138,8 @@ export class FundingCaptureListComponent implements OnInit {
         }
       ];
 
+      console.log('this.npos',this.npos);
+
       if (this.IsAuthorized(PermissionsEnum.EditFundingCapture)) {
         this.buttonItems[0].items.push({
           label: 'Edit Funding',
@@ -164,6 +166,16 @@ export class FundingCaptureListComponent implements OnInit {
           icon: 'fa fa-file-text-o',
           command: () => {
             this._router.navigateByUrl(`funding-capture/view/${this.selectedFundingCapture.id}`);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ViewFundingCapture)) {
+        this.buttonItems[0].items.push({
+          label: 'Compliance',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            this._router.navigateByUrl(`funding-capture/compliance/${this.selectedFundingCapture.id}`);
           }
         });
       }
