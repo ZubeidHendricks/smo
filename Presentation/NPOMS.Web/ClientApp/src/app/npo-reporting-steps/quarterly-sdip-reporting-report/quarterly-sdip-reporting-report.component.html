@@ -119,7 +119,7 @@
 
       </p-table>
       <div class="button-container">
-        <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus"  *ngIf="quarterId > 0"  (click)="addNewRow()"></button>
+        <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus"  *ngIf="quarterId > 0 && addOther"  (click)="addNewRow()"></button>
         <button pButton pRipple type="button" label="Complete" class="p-button-text" icon="fa fa-check" (click)="completeAction()" style="margin-left: auto;"></button>
       </div>
     <div style="height: 10px;"></div>
@@ -281,7 +281,7 @@
     </p-table>
 </p-dialog>
 
-<p-dialog header="Reviewer Satisfaction" 
+<!-- <p-dialog header="Reviewer Satisfaction" 
           [(visible)]="displayReviewerSatisfactionDialog" 
           [style]="{width: '50vw'}" 
           [focusOnShow]="false"
@@ -324,7 +324,7 @@
         </ng-template>
     </p-table>
 </p-dialog>
-
+ -->
 
 <p-dialog header="Audit History" 
           [(visible)]="displayVieHistoryDialog" 

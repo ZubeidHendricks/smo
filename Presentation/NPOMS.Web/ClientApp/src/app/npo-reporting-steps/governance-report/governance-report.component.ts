@@ -30,7 +30,7 @@ export class GovernanceReportComponent implements OnInit {
   @Input() selectedsda!: number;
   @Input() selectedGroup!: string;
   @Output() govnencerightHeaderChange = new EventEmitter<string>();
-
+  addOtherfield: boolean = true;
   quarterId: number;
   serviceDeliveryAreaId: number;
   group:string;
@@ -651,13 +651,17 @@ preventChange(event: any): void {
             this.filteredgov= this.governances.filter(x => x.qaurterId === this.quarterId && x.serviceDeliveryAreaId === this.serviceDeliveryAreaId );  
 
             this.govnencerightHeaderChange.emit('Pending');
+            this.addOtherfield =true;
             this.filteredgov = this.governances.filter(x => x.qaurterId === this.quarterId);
             const allComplete = this.filteredgov.length > 0 && this.filteredgov.every(dip => dip.statusId === 24);
             const allSubmitted = this.filteredgov.length > 0 && this.filteredgov.every(dip => dip.statusId === 19);
             if (allComplete) {
               this.govnencerightHeaderChange.emit('Completed');
+              this.addOtherfield = true;
             }else if (allSubmitted) {
-              this.govnencerightHeaderChange.emit('Submitted');}
+              this.govnencerightHeaderChange.emit('Submitted');
+              this.addOtherfield =false;
+            }
           }
         });
         this._spinner.hide();

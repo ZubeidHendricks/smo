@@ -520,16 +520,16 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
-      if (this.IsAuthorized(PermissionsEnum.ViewOption)) {
-        this.buttonItems[0].items.push({
-          label: 'Review Report',
-          target: 'Funded Npo',
-          icon: 'fa fa-file-text-o',
-          command: () => {
-            this._router.navigateByUrl('reviewReports/' + this.selectedApplication.id);
-          }
-        });
-      }
+      // if (this.IsAuthorized(PermissionsEnum.ViewOption)) {
+      //   this.buttonItems[0].items.push({
+      //     label: 'Review Report',
+      //     target: 'Funded Npo',
+      //     icon: 'fa fa-file-text-o',
+      //     command: () => {
+      //       this._router.navigateByUrl('reviewReports/' + this.selectedApplication.id);
+      //     }
+      //   });
+      // }
 
       if (this.IsAuthorized(PermissionsEnum.EditApplication)) {
         this.buttonItems[0].items.push({
