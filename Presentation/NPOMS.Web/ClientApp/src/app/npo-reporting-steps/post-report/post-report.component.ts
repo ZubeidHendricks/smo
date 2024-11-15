@@ -33,6 +33,8 @@ export class PostReportComponent implements OnInit {
   
   @Output() rightHeaderChangepost = new EventEmitter<string>();
   displayVieHistoryDialog: boolean;
+  addOther: boolean = true;
+   isLoading: boolean = false;
 
   ngOnChanges(changes: SimpleChanges) {
       if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
@@ -341,11 +343,17 @@ export class PostReportComponent implements OnInit {
   }
 
   updateButtonItems() {
-    // Show all buttons
-    this.buttonItems[0]?.items.forEach(option => {
+    this.buttonItems[0].items.forEach(option => {
       option.visible = true;
-    });}
+    });
 
+    switch (this.selectedPost.statusId) {
+      case StatusEnum.Submitted: {
+        this.buttonItems[0].items[0].visible = false;
+        break;
+      }
+    }
+  }
     private updatePostData(rowData: IPosts, status: number) {
       rowData.statusId = status;
       this.savePost(rowData);
@@ -554,7 +562,7 @@ onDemographicSubStructuresChange() {
   postobj.numberOfPosts = rowData.numberOfPosts;
   postobj.monthsFilled = rowData.monthsFilled;
   postobj.numberFilled = rowData.numberFilled;
-  postobj.vacant = rowData.vacant;
+  postobj.vacant = rowData.vacant.toString();
   postobj.statusId = rowData.statusId;
   postobj.plans = rowData.plans;
   postobj.comments = rowData.comments;
@@ -586,7 +594,10 @@ onDemographicSubStructuresChange() {
 }
 
 createPost(post: IPosts) {
-  console.log('sda',post);
+  if(post.numberOfPosts === 0 || post.staffCategoryId === 0 || post.monthsFilled === '' || post.dateofVacancies === '' || post.vacancyReasons === '' || post.plans === '')  
+  {
+    return;
+  }
     this._spinner.show();
     this._applicationRepo.createPost(post).subscribe(
       (resp) => {
@@ -625,13 +636,16 @@ private loadPosts() {
             row.isEditable = !(row.id > 0);
           });
           this.rightHeaderChangepost.emit('Pending');
+          this.addOther = true;
           const allComplete = this.filteredposts.length > 0 && this.filteredposts.every(dip => dip.statusId === 24);
           const allSubmitted = this.filteredposts.length > 0 && this.filteredposts.every(dip => dip.statusId === 19);
           if (allComplete) {
             this.rightHeaderChangepost.emit('Completed');
+            this.addOther = true;
           }
           if (allSubmitted) {
             this.rightHeaderChangepost.emit('Submitted');
+            this.addOther = false;
           }
         
           this.cdr.detectChanges();
@@ -639,6 +653,10 @@ private loadPosts() {
         });
 
         this._spinner.hide();
+}
+
+onKeyUp(row: any) {
+  row.vacant = row.numberOfPosts - row.numberFilled;
 }
 
 onDistrictChange() {

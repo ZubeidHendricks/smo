@@ -651,7 +651,12 @@ namespace NPOMS.API.Controllers
         {
             try
             {
-                await _indicatorService.UpdateIndicatorReportStatus(model, base.GetUserIdentifier());
+                var results = await _indicatorService.UpdateIndicatorReportStatus(model, base.GetUserIdentifier());
+                foreach (var result in results)
+                {
+                    await CreateIndicatorReportAudit(result);
+                }
+
                 return Ok(model);
             }
             catch (Exception ex)
@@ -659,6 +664,7 @@ namespace NPOMS.API.Controllers
                 _logger.LogError($"Something went wrong inside UpdateReportStatus action: {ex.Message} Inner Exception: {ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
+
         }
 
         [HttpGet("getanyotherbyappid/appid/{appid}", Name = "GetAnyOtherByAppid")]
