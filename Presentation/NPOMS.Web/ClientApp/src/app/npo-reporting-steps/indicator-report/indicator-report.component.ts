@@ -33,6 +33,7 @@ export class IndicatorReportComponent implements OnInit {
   
   displayVieHistoryDialog: boolean;
   @Output() rightHeaderIndicatorChange = new EventEmitter<string>();
+  addOtherfield: boolean = true;
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
@@ -429,14 +430,17 @@ createMergedList() {
   });
 
   this.rightHeaderIndicatorChange.emit('Pending');
-  const allComplete = this.mergedList.length > 0 && this.mergedList.every(dip => dip?.actuals?.status?.id === 24);
-  const allSubmitted = this.mergedList.length > 0 && this.mergedList.every(dip => dip?.actuals?.status?.id === 19);
+  this.addOtherfield = true;
+  const allComplete = this.mergedList.length > 0 && this.mergedList.every(dip => dip?.status?.id === 24);
+  const allSubmitted = this.mergedList.length > 0 && this.mergedList.every(dip => dip?.status?.id === 19);
 
   if (allComplete) {
       this.rightHeaderIndicatorChange.emit('Completed');
+      this.addOtherfield = false;
   }
   if (allSubmitted) {
       this.rightHeaderIndicatorChange.emit('Submitted');
+      this.addOtherfield = false;
   }
 
   this.cdr.detectChanges(); // Trigger change detection
@@ -581,7 +585,15 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
     this.buttonItems[0].items.forEach(option => {
       option.visible = true;
     });
+
+    switch (this.merged.statusId) {
+      case StatusEnum.Submitted: {
+        this.buttonItems[0].items[0].visible = false;
+        break;
+      }
+    }
   }
+
 
   private buildButtonItems() {
     this.buttonItems = [];

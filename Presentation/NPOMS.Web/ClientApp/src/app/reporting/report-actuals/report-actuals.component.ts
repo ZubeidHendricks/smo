@@ -1,4 +1,3 @@
-
 import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
@@ -29,6 +28,9 @@ import { finalize, tap } from 'rxjs/operators';
 
 export class ReportActualsComponent implements OnInit {
   @Input() selectedQuarter!: number;
+  @Input() selectedsda!: number;
+ @Input() selectedGroup!: string;
+  
   displayVieHistoryDialog: boolean;
   @Output() rightHeaderIndicatorChange = new EventEmitter<string>();
 
@@ -38,6 +40,16 @@ export class ReportActualsComponent implements OnInit {
         this.quarterId = quarter;
         this.filterDataByQuarter(quarter);
     }
+
+    if (changes['selectedsda'] && changes['selectedsda'].currentValue) {
+      const selectedsda = changes['selectedsda'].currentValue;
+      this.serviceDeliveryAreaId = selectedsda;
+  }
+  
+  if (changes['selectedGroup'] && changes['selectedGroup'].currentValue) {
+    const selectedGroup = changes['selectedGroup'].currentValue;
+    this.group = selectedGroup;    
+  }
 }
 
 filterDataByQuarter(quarter: number) {
@@ -95,8 +107,13 @@ filterDataByQuarter(quarter: number) {
   qselected: boolean = false;
   selectedSubStructures: any[] = [];
   mergedList: any[] = [];
+  merged: any = null;
   npoName: string;
   quarterId: number;
+  sdaId: number;
+  targetGroup:string
+  serviceDeliveryAreaId: number;
+  group: string;
   public get RoleEnum(): typeof RoleEnum {
     return RoleEnum;
   }
@@ -181,8 +198,7 @@ filterDataByQuarter(quarter: number) {
   selectedOutputTitle:any={};
   workplanIndicators: IWorkplanIndicator[];
   buttonItems: MenuItem[];
-  selectedActual: IActuals;
-  merged: any;
+  selectedActual: IActuals = {} as IActuals;
   documentTypes: IDocumentType[] = [];
   quartelyPeriods: IQuarterlyPeriod[];
   private financialYearsSubject = new BehaviorSubject<IFinancialYear[]>([]);
@@ -258,6 +274,8 @@ filterDataByQuarter(quarter: number) {
       }
     });
 
+  
+
     this.npoName = this.npo?.name;
    // this.GetIndicatorReportsByAppid();
     this.indicatorCols = [
@@ -283,10 +301,17 @@ filterDataByQuarter(quarter: number) {
       { header: 'Deviation Reason', width: '10%' },
       { header: 'Adjusted Actual ', width: '10%' },
       { header: 'Adjusted Variance ', width: '10%' },
+      { header: 'Target Group ', width: '10%' },
       { header: 'Evidence', width: '10%' },
       { header: 'Status', width: '10%' },
     ];
-
+    this.auditCols = [
+      { header: '', width: '5%' },
+      { header: 'Status', width: '55%' },
+      { header: 'User', width: '20%' },
+      { header: 'Date', width: '20%' }
+    ];
+    
     this.commentCols = [
       { header: '', width: '5%' },
       { header: 'Comment', width: '55%' },
@@ -318,25 +343,25 @@ filterDataByQuarter(quarter: number) {
 
 onKeyUp(rowData: any, event: any) {
 const inputValue = event.target.value;
-rowData.actuals.actual = Number(inputValue); // Ensure it's a number
+rowData.actual = Number(inputValue); // Ensure it's a number
 
 // Calculate the variance
-if (rowData.actuals.targets !== undefined && !isNaN(rowData.actuals.actual)) {
-    rowData.actuals.variance = rowData.actuals.targets - rowData.actuals.actual;
+if (rowData.targets !== undefined && !isNaN(rowData.actual)) {
+    rowData.variance = rowData.targets - rowData.actual;
 } else {
-    rowData.actuals.variance = 0; // Set to zero or handle it as per your requirement
+    rowData.variance = 0; // Set to zero or handle it as per your requirement
 }
 }
 
 onKeyUpAdjustedActual(event: any, rowData: any) {
 const inputValue = Number(event.target.value); // Convert the input to a number
-rowData.actuals.adjustedActual = inputValue;
+rowData.adjustedActual = inputValue;
 
 // Calculate adjusted variance if targets is defined
-if (rowData.actuals.targets !== undefined) {
-  rowData.actuals.adjustedVariance = rowData.actuals.targets - rowData.actuals.adjustedActual;
+if (rowData.targets !== undefined) {
+  rowData.adjustedVariance = rowData.targets - rowData.adjustedActual;
 } else {
-  rowData.actuals.adjustedVariance = 0; // Or handle this case as needed
+  rowData.adjustedVariance = 0; // Or handle this case as needed
 }
 }
 
@@ -367,36 +392,46 @@ private loadSubIndicators() {
 createMergedList() {
   this.mergedList = [];
   this.iNPOIndicators.forEach(indicator => {
-        const actualData = this.actuals.find(act => 
-          act.indicatorId === +indicator.id && 
-          act.financialYearId === this.selectedFinancialYear.id && 
-          act.qaurterId === this.quarterId
-      );
-      // Use found actualData if available, otherwise create a new object
-      const actuals = actualData ? { ...actualData } : this.createEmptyActual(indicator);
+    // Find the matching actualData for this indicator
+    const actualData = this.actuals.find(act => 
+      act.indicatorId === +indicator.id && 
+      act.financialYearId === this.selectedFinancialYear.id && 
+      act.qaurterId === this.quarterId &&
+      act.serviceDeliveryAreaId === this.serviceDeliveryAreaId 
 
-      // Call setTargetsBasedOnFrequency with the actuals object
-      this.setTargetsBasedOnFrequency(actuals, indicator);
+    );
+  
+    // Safely handle the case where actualData is undefined, fallback to empty actual
+    const actuals = actualData ? { ...actualData } : this.createEmptyActual(indicator);
+  
+    // Set targets based on frequency (ensure actuals object is populated)
+    this.setTargetsBasedOnFrequency(actuals, indicator);
 
-      console.log('actuals', actuals); // Ensure the `actuals` object includes `status`
-
-      this.mergedList.push({
-          ...indicator,
-          actuals
-      });
+    // Push merged indicator and actuals into the mergedList if they are valid
+    if (indicator && actuals) {
+      // Merge indicator properties, and overwrite 'id' with actuals.id
+      const mergedObject = {
+        ...indicator,    // Spread the indicator object
+        ...actuals,      // Spread actuals, this will overwrite the 'id' property from indicator
+        id: actuals.id,
+        indicatorValue: indicator.indicatorId,
+        indicatorId:indicator.id   // Overwrite the id with the id from actuals
+      };
+  
+      // Push the merged object into the list
+      this.mergedList.push(mergedObject); 
+    
+    }
   });
 
   this.mergedList.forEach(row => {
-    row.isEditable = !(row.id > 0); // Set the editable state based on row.id
+    row.isEditable = !(row.id > 0);
   });
 
-  console.log('this.mergedList', this.mergedList); // Log the final merged list
-  //this.rightHeaderIndicatorChange.emit('Pending');
+  this.rightHeaderIndicatorChange.emit('Pending');
+  const allComplete = this.mergedList.length > 0 && this.mergedList.every(dip => dip?.status?.id === 24);
+  const allSubmitted = this.mergedList.length > 0 && this.mergedList.every(dip => dip?.status?.id === 19);
 
-  const allComplete = this.mergedList.length > 0 && this.mergedList.every(dip => dip?.actuals?.status?.id === 24);
-  const allSubmitted = this.mergedList.length > 0 && this.mergedList.every(dip => dip?.actuals?.status?.id === 19);
-
-  console.log('this.allComplete', allComplete);
   if (allComplete) {
       this.rightHeaderIndicatorChange.emit('Completed');
   }
@@ -431,7 +466,6 @@ createMergedList() {
 
 //   this.cdr.detectChanges(); // Trigger change detection
 // }
-
 
 // createMergedList() {
 //   this.mergedList = this.iNPOIndicators.map(indicator => {
@@ -489,7 +523,7 @@ createMergedList() {
 // }
  
 status(data: any) {
-  return data?.actuals?.status?.name || 'New';
+  return data?.status?.name || 'New';
 }
  
 setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
@@ -521,7 +555,6 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
       group: '',
       subProgrammeTypeId: 0,
       serviceDeliveryArea: '',
-      serviceDeliveryAreaId: 0,
       outputTitle: '',
       targets: 0,
       financialYearId: new Date().getFullYear(),
@@ -532,6 +565,7 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
       adjustedActual: 0,
       adjustedVariance: 0,
       applicationId: 0,
+      serviceDeliveryAreaId: 0,
       qaurterId: 0,
       actual: 0,
       documents: [],
@@ -562,7 +596,7 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
           label: 'Edit',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-            this.enableEditing(this.merged);
+           this.enableEditing(this.merged);
           }
         });
       }
@@ -572,7 +606,7 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
           label: 'Comments',
           icon: 'fa fa-thumbs-o-up',
           command: () => {
-           this.addComment();
+           this.addComment(this.merged);
           }
         });
       }
@@ -594,7 +628,7 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
   }
 
  private updateActualData(rowData: any, status: number) {
-    rowData.actuals.statusId = status;
+    rowData.statusId = status;
     this.saveActual(rowData);
   }  
  
@@ -993,10 +1027,9 @@ onDemographicDistrictChange() {
   }
 }
 
-
 saveComment(changesRequired: boolean, origin: string) {
-  this.selectedActual.comments = this.comment; 
-  this.onBlurAdjustedActual(this.selectedActual);
+  this.seletedAactuals.comments = this.comment; 
+  this.onBlurAdjustedActual(this.seletedAactuals);
   this.displayCommentDialog = false;
 }
 
@@ -1050,6 +1083,7 @@ addOther() {
     adjustedActual: 0,
     adjustedVariance: 0,
     applicationId: 0,
+    serviceDeliveryAreaId: 0,
     subProgrammeId: 0,
     programmeId: 0,
     subProgrammeTypeId: 0,
@@ -1059,7 +1093,6 @@ addOther() {
     groupId: '',
     financialYearId: 0,
     serviceDeliveryArea: '',
-    serviceDeliveryAreaId: 0,
     group: '',
     indicatorValue: '',
     documents: [],
@@ -1081,23 +1114,38 @@ editActual(data: IActuals) {
 }
 
 outputTitle(rowData: any) {
-    return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.outputTitle;
+    return this.indicators.find(x => x.indicatorValue === rowData.indicatorValue)?.outputTitle;
 }
 
 IndicatorDescription(rowData: any) {
-     return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.indicatorDesc;    
+     return this.indicators.find(x => x.indicatorValue === rowData.indicatorValue)?.indicatorDesc;    
 }
 
 shortDefination(rowData: any) {
-     return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.shortDefinition;     
+     return this.indicators.find(x => x.indicatorValue === rowData.indicatorValue)?.shortDefinition;     
 }
 
  purpose(rowData: any) {
-  return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.purpose;     
+  return this.indicators.find(x => x.indicatorValue === rowData.indicatorValue)?.purpose;     
 }
 
-targets(rowData: any) {
+ttargets(rowData: any) {
   //return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.;     
+}
+
+toutputTitle(rowData: any) {
+  return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.outputTitle;
+}
+
+tshortDefination(rowData: any) {
+  return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.shortDefinition;     
+}
+tIndicatorDescription(rowData: any) {
+  return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.indicatorDesc;    
+}
+
+tpurpose(rowData: any) {
+  return this.indicators.find(x => x.indicatorValue === rowData.indicatorId)?.purpose;     
 }
 
 private cloneActual(data: IActuals): IActuals {
@@ -1110,20 +1158,19 @@ private cloneActual(data: IActuals): IActuals {
 
 saveActual(rowData: any) {
   let actualobj = {} as IActuals;
-  
   // Assign necessary fields
-  actualobj.deviationReason = rowData.actuals.deviationReason
-  actualobj.id = rowData.actuals.id;
-  actualobj.statusId = rowData.actuals.statusId;
+  actualobj.deviationReason = rowData.deviationReason
+  actualobj.id = rowData.id;
+  actualobj.statusId = rowData.statusId;
   actualobj.outputTitle = rowData.outputTitle;
   // actualobj.financialYear = this.selectedFinancialYear.id;
-  actualobj.indicatorId = rowData.id;
+  actualobj.indicatorId = rowData.indicatorId;
   actualobj.indicatorValue = rowData.indicatorValue;
-  actualobj.variance = rowData.actuals.variance;
-  actualobj.actual = rowData.actuals.actual;
-  actualobj.adjustedActual = rowData.actuals.adjustedActual;
-  actualobj.adjustedVariance = rowData.actuals.adjustedVariance;
-  actualobj.targets = rowData.actuals.targets;
+  actualobj.variance = rowData.variance;
+  actualobj.actual = rowData.actual;
+  actualobj.adjustedActual = rowData.adjustedActual;
+  actualobj.adjustedVariance = rowData.adjustedVariance;
+  actualobj.targets = rowData.targets;
   actualobj.subProgrammeId = this.application.applicationPeriod.subProgrammeId;
   actualobj.programmeId = this.application.applicationPeriod.programmeId;
   actualobj.subProgrammeTypeId = this.application.applicationPeriod.subProgrammeTypeId;
@@ -1131,10 +1178,17 @@ saveActual(rowData: any) {
   actualobj.applicationId = this.application.id;
   actualobj.financialYearId = this.application.applicationPeriod.financialYear.id;
   actualobj.qaurterId = this.quarterId;
+  actualobj.serviceDeliveryAreaId = this.serviceDeliveryAreaId;
   actualobj.comments = rowData.comments;
+  actualobj.group = rowData.group;
 
+if(rowData.group===null || rowData.group===undefined || rowData.group===''){
+  this._messageService.add({ severity: 'warning', summary: 'Warning', detail: 'Target Group Required' });
+  return
+  
+} 
   // Check if it's a new actual or an update
-  if (rowData.actuals.id === 0) {
+  if (rowData.id === 0) {
     // Create new actual
     this.createActual(actualobj);
   } else {
@@ -1154,7 +1208,7 @@ getFinancialYear(id: number): string | undefined {
 createActual(actual: IActuals) {
   this._applicationRepo.createActual(actual).subscribe(
     (resp) => {
-      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
+      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'successfully added.' });
       this.GetIndicatorReportsByAppid()
       //this.displayActualDialog = false;
     },
@@ -1169,7 +1223,7 @@ createActual(actual: IActuals) {
 updateActual(actual: IActuals) {
   this._applicationRepo.updateActual(actual).subscribe(
     (resp) => {
-      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully added.' });
+      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'successfully updated.' });
       //this.GetIndicatorReportsByAppid()
       //this.displayActualDialog = false;
     },
@@ -1452,10 +1506,16 @@ updateActual(actual: IActuals) {
     this.buildRecipientDropdown(objective, this.activity);
   }
 
-  addComment() {
-      if (this.seletedAactuals?.comments != null) {
+  addComment(merged: any) {
+    if(merged.id === 0 || merged.id === undefined || merged.id === null || merged.id < 0){
+      this._messageService.add({ severity: 'warn', summary: 'Warning', detail: 'Please actual data first.' });
+      return;
+    }
+
+    this.seletedAactuals = this.actuals.filter(x => x.id === merged.id)[0];
+    console.log('seletedAactuals', this.seletedAactuals);
+    if (this.seletedAactuals?.comments != null) {
       this.comment = this.seletedAactuals.comments;
-     
     }
     else{
       this.comment= null;

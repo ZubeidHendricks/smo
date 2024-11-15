@@ -27,7 +27,7 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
   @Input() selectedsda!: number;
   @Input() selectedGroup!: string;
   @Output() rightHeaderChange = new EventEmitter<string>();
-
+  addOther: boolean = true;
   quarterId: number;
 
   serviceDeliveryAreaId: number;
@@ -385,12 +385,18 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
    this.onBlurAdjustedSDIP(rowData);
   }  
 
+
   updateButtonItems() {
-    // Show all buttons
     this.buttonItems[0].items.forEach(option => {
       option.visible = true;
     });
 
+    switch (this.selectedsdips.statusId) {
+      case StatusEnum.Submitted: {
+        this.buttonItems[0].items[0].visible = false;
+        break;
+      }
+    }
   }
   
   disableQuarters(): boolean {
@@ -496,6 +502,9 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
 }
 
   createSDIP(sdip: ISDIP) {
+    if(sdip.standardPerformanceArea === '' || sdip.correctiveAction === '' || sdip.responsibility === '' || sdip.targetDate === '' || sdip.meansOfVerification === '' || sdip.progress === ''){
+      return
+    }
     this._applicationRepo.createSDIPReport(sdip).subscribe(
       (resp) => {
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'Comment successfully updated.' });
@@ -521,13 +530,16 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
             });
             // this.filteredsdips = this.sdips.filter(x => x.qaurterId === quarter);
             this.rightHeaderChange.emit('Pending');
+            this.addOther = true;
             const allComplete = this.filteredsdips.length > 0 && this.filteredsdips.every(dip => dip.statusId === 24);
             const allSubmitted = this.filteredsdips.length > 0 && this.filteredsdips.every(dip => dip.statusId === 19);
             if (allComplete) {
               this.rightHeaderChange.emit('Completed');
+              this.addOther = true;
             }
             else if (allSubmitted) {
               this.rightHeaderChange.emit('Submitted');
+              this.addOther = false;
             }
             this.cdr.detectChanges();
           }  

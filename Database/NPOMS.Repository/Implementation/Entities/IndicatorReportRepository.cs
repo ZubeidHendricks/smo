@@ -56,7 +56,7 @@ namespace NPOMS.Repository.Implementation.Entities
             await UpdateAsync(null, model, false, currentUserId);
         }
 
-        public async Task UpdateIndicatorReportStatus(int applicationId, int financialId, int quarterId, int currentUserId)
+        public async Task<IEnumerable<IndicatorReport>> UpdateIndicatorReportStatus(int applicationId, int financialId, int quarterId, int currentUserId)
         {
             // Retrieve the records to be updated
             var indicatorReports = await FindByCondition(x => x.FinancialYearId == financialId && x.ApplicationId == applicationId && x.QaurterId == quarterId)
@@ -74,6 +74,8 @@ namespace NPOMS.Repository.Implementation.Entities
             {
                 await UpdateAsync(null, report, false, currentUserId);
             }
+
+            return indicatorReports;    
 
             // Save all changes in one transaction
             //await this.RepositoryContext.SaveChangesAsync();

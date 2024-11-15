@@ -520,16 +520,16 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
-      if (this.IsAuthorized(PermissionsEnum.ViewOption)) {
-        this.buttonItems[0].items.push({
-          label: 'Review Report',
-          target: 'Funded Npo',
-          icon: 'fa fa-file-text-o',
-          command: () => {
-            this._router.navigateByUrl('reviewReports/' + this.selectedApplication.id);
-          }
-        });
-      }
+      // if (this.IsAuthorized(PermissionsEnum.ViewOption)) {
+      //   this.buttonItems[0].items.push({
+      //     label: 'Review Report',
+      //     target: 'Funded Npo',
+      //     icon: 'fa fa-file-text-o',
+      //     command: () => {
+      //       this._router.navigateByUrl('reviewReports/' + this.selectedApplication.id);
+      //     }
+      //   });
+      // }
 
       if (this.IsAuthorized(PermissionsEnum.EditApplication)) {
         this.buttonItems[0].items.push({
@@ -639,6 +639,7 @@ export class ApplicationListComponent implements OnInit {
       this.optionItemExists('Initiate Score Card');  
       this.optionItemExists('Conclude Scorecard');  
       this.optionItemExists('Summary');  
+      this.optionItemExists('Quartery Perfomance Capture'); 
     }   
     if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP)
     {
@@ -646,6 +647,7 @@ export class ApplicationListComponent implements OnInit {
         this.optionItemExists('BusinessPlan Summary');  
         this.optionItemExists('Adjudicate Funded Npo');  
         this.optionItemExists('Review Adjudicated Funded Npo');
+        this.optionItemExists('Quartery Perfomance Capture'); 
     }
 
     if (this.selectedApplication.statusId === StatusEnum.Approved && this.selectedApplication.applicationPeriod.departmentId === 7)

@@ -34,6 +34,7 @@ export class AnyOtherInformationReportComponent implements OnInit {
   group: string;
   filteredotherInfors: IOtherInfor[];
   displayVieHistoryDialog: boolean;
+  addOtherfield: boolean = true;
 
   ngOnChanges(changes: SimpleChanges) {
       if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
@@ -263,7 +264,6 @@ export class AnyOtherInformationReportComponent implements OnInit {
       }
     });
 
-
     this.anyOtherCols = [
       { header: 'Highlights', width: '50%' },
       { header: 'Challenges', width: '50%' },
@@ -277,7 +277,6 @@ export class AnyOtherInformationReportComponent implements OnInit {
       { header: 'Date', width: '20%' }
     ];
     
-
     this.commentCols = [
       { header: '', width: '5%' },
       { header: 'Comment', width: '55%' },
@@ -348,41 +347,17 @@ export class AnyOtherInformationReportComponent implements OnInit {
   }
 
   updateButtonItems() {
-    // Show all buttons
     this.buttonItems[0].items.forEach(option => {
       option.visible = true;
     });
 
-    // switch (this.selectedIndicator.workplanActuals[0].statusId) {
-    //   case StatusEnum.New:
-    //   case StatusEnum.Saved:
-    //   case StatusEnum.AmendmentsRequired: {
-    //     this.buttonItems[0].items[2].visible = false;
-    //     this.buttonItems[0].items[3].visible = false;
-    //     this.buttonItems[0].items[4].visible = false;
-    //     break;
-    //   }
-    //   case StatusEnum.PendingReview: {
-    //     this.buttonItems[0].items[0].visible = false;
-    //     this.buttonItems[0].items[1].visible = false;
-    //     this.buttonItems[0].items[3].visible = false;
-    //     break;
-    //   }
-    //   case StatusEnum.PendingApproval: {
-    //     this.buttonItems[0].items[0].visible = false;
-    //     this.buttonItems[0].items[1].visible = false;
-    //     this.buttonItems[0].items[2].visible = false;
-    //     break;
-    //   }
-    //   case StatusEnum.Approved: {
-    //     this.buttonItems[0].items[0].visible = false;
-    //     this.buttonItems[0].items[1].visible = false;
-    //     this.buttonItems[0].items[2].visible = false;
-    //     this.buttonItems[0].items[3].visible = false;
-    //     this.buttonItems[0].items[4].visible = false;
-    //     break;
-    //   }
-    // }
+    switch (this.selectedotherInfor.statusId) {
+
+      case StatusEnum.Submitted: {
+        this.buttonItems[0].items[0].visible = false;
+        break;
+      }
+    }
   }
 
   private updateselectedotherInforData(rowData: IOtherInfor, status: number) {
@@ -509,6 +484,9 @@ preventChange(event: any): void {
   }
 
   createOtherInfor(otherInfor: IOtherInfor) {
+    if(otherInfor.highlights === '' || otherInfor.challenges === '') {
+      return;
+    }
     this._applicationRepo.createOtherInforReport(otherInfor).subscribe(
       (resp) => {
         this._messageService.add({ severity: 'success', summary: 'Successful', detail: ' successfully added.' });
@@ -556,11 +534,14 @@ addNewRow() {
 
             // this.filteredotherInfors = this.otherInfors.filter(x => x.qaurterId === quarter);
             this.otherrightHeaderChange.emit('Pending');
+            this.addOtherfield = true;
             const allComplete = this.filteredotherInfors.length > 0 && this.filteredotherInfors.every(dip => dip.statusId === 24);
             const allSubmitted = this.filteredotherInfors.length > 0 && this.filteredotherInfors.every(dip => dip.statusId === 19);
             if (allComplete) {
               this.otherrightHeaderChange.emit('Completed');
+              this.addOtherfield = true;
             } else if (allSubmitted) {
+               this.addOtherfield = false;
                this.otherrightHeaderChange.emit('Submitted');
              }
             this.cdr.detectChanges();

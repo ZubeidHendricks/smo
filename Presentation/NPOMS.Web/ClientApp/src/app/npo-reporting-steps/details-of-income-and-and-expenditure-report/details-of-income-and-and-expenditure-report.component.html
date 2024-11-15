@@ -120,7 +120,7 @@
       </p-table>
       
       <div class="button-container">
-        <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" *ngIf="quarterId > 0" (click)="addNewRow()"></button>
+        <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" *ngIf="quarterId > 0 && addOtherfield" (click)="addNewRow()"></button>
         <button pButton pRipple type="button" label="Complete" class="p-button-text" icon="fa fa-check" (click)="completeAction()" style="margin-left: auto;"></button>
     </div>
 
@@ -247,50 +247,6 @@
         <ng-template pTemplate="summary" let-rowData *ngIf="canEdit">
             <div style="text-align:right">
                 <button pButton pRipple type="button" label="Add Comment" class="p-button-text" icon="fa fa-comment-o" (click)="addComment()"></button>
-            </div>
-        </ng-template>
-    </p-table>
-</p-dialog>
-
-<p-dialog header="Reviewer Satisfaction" 
-          [(visible)]="displayReviewerSatisfactionDialog" 
-          [style]="{width: '50vw'}" 
-          [focusOnShow]="false"
-          showEffect="fade"
-          [transitionOptions]="'0ms'"
-          [modal]="true">
-    <p-table [rowHover]="true" [style]="{'border':'none'}" [columns]="reviewerSatisfactionCols" [paginator]="true" [rows]="10" [value]="applicationReviewerSatisfaction" styleClass="p-datatable-sm" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
-        <ng-template pTemplate="header" let-columns>
-            <tr>
-                <th *ngFor="let col of columns" [ngStyle]="{'width': col.width}">
-                    {{col.header}}
-                </th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
-            <tr class="default-font">
-                <td style="text-align: center;">{{rowIndex + 1}}</td>
-                <td style="text-align: center;" [ngClass]="rowData.isSatisfied === true ? 'green' : 'default' && rowData.isSatisfied === false ? 'red' : 'default'">
-                    <span>{{rowData.isSatisfied ? 'Yes' : 'No'}}</span>
-                </td>
-                <td>{{rowData.createdUser.fullName}}</td>
-                <td>{{rowData.createdDateTime | date: 'yyyy-MM-dd'}}</td>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-            <tr class="default-font">
-                <td colspan="4" style="text-align: center;">No results found</td>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="summary" let-rowData>
-            <div class="p-grid p-nogutter p-justify-between">
-                <span class="mandatory-content">Are you satisfied with the details contained in this Activity?</span>
-
-                <div>
-                    <p-button label="Yes" icon="fa fa-thumbs-o-up" styleClass="p-button-success" (onClick)="createReviewerSatisfaction(true)"></p-button>
-                    &nbsp; &nbsp;
-                    <p-button label="No" icon="fa fa-thumbs-o-down" styleClass="p-button-danger" (onClick)="createReviewerSatisfaction(false)"></p-button>
-                </div>
             </div>
         </ng-template>
     </p-table>
