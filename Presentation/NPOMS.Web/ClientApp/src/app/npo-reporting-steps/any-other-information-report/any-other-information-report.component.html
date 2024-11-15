@@ -61,7 +61,7 @@
     
         <ng-template pTemplate="summary" let-rowData>
             <div class="button-container">
-                <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" *ngIf="quarterId > 0"  (click)="addNewRow()"></button>
+                <button pButton pRipple type="button" label="Add Other" class="p-button-text" icon="fa fa-plus" *ngIf="quarterId > 0 && addOtherfield"  (click)="addNewRow()"></button>
                 <button pButton pRipple type="button" label="Complete" class="p-button-text" icon="fa fa-check" (click)="completeAction()" style="margin-left: auto;"></button>
               </div>
         </ng-template>

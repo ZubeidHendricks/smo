@@ -39,13 +39,26 @@ namespace NPOMS.Services.Implementation
                                                                     .Include(x => x.ApplicationPeriod).ThenInclude(x=>x.SubProgrammeType)
                                                                     .Where(x => x.StatusId == (int)StatusEnum.Approved ).ToListAsync();
 
-            var fundingAssessmentForms = await this._repositoryContext.FundingAssessmentForms.Include(x=>x.FundingAssessmentFormSDAs).ToListAsync();
- 
+            var fundingAssessmentForms = await this._repositoryContext.FundingAssessmentForms.Include(x=>x.FundingAssessmentFormSDAs).Include(x=>x.FundingAssessmentFormResponses).ToListAsync();
+
+            var questions = await this._repositoryContext.Questions
+                                            .Include(x => x.QuestionProperty)
+                                            .Include(x => x.QuestionSection).ThenInclude(x => x.QuestionCategory)
+                                            .Include(x => x.ResponseType)
+                                            .Where(x => x.QuestionSection.QuestionCategory.Name.Equals("Assessment & Evaluation")).
+                                            ToListAsync();
+
+            var responseTypeIds = questions.Select(x => x.ResponseTypeId).ToList();
+
+            var responseOptions = await this._repositoryContext.ResponseOptions.Include(x => x.ResponseType).Where(x => responseTypeIds.Contains(x.ResponseTypeId)).ToListAsync();
 
             applications.ForEach(application =>
             {
+
                 var fundingAssessmentForm = fundingAssessmentForms.FirstOrDefault(x=>x.ApplicationId == application.Id);
-                result.Add(new(application, fundingAssessmentForm));
+                var dto = new dtoFundingAssessmentApplicationGet(application, fundingAssessmentForm, responseOptions);
+
+                result.Add(dto);
             });
 
             return result;
@@ -78,9 +91,6 @@ namespace NPOMS.Services.Implementation
                                                                     .Include(x => x.Npo).ThenInclude(x => x.OrganisationType)
                                                                     .FirstOrDefaultAsync(x => x.NpoId == application.NpoId);
 
-            var servicesRendered = await this._repositoryContext.ServicesRendered
-                                                                    .Where(x => x.NpoProfileId == npoProfile.Id)
-                                                                    .ToListAsync();
 
             var programServiceDeliveries = await this._repositoryContext.ProgrammeServiceDelivery
                             .Include(x => x.DistrictCouncil)
@@ -99,7 +109,7 @@ namespace NPOMS.Services.Implementation
                                 psd.Regions = psd.Regions.Where(region => region.IsActive).ToList();
                             });
 
-            dtoFundingAssessmentApplicationFormGet form = new(application, questions, responseOptions, fundingAssessmentForm, npoProfile, servicesRendered, programServiceDeliveries);
+            dtoFundingAssessmentApplicationFormGet form = new(application, questions, responseOptions, fundingAssessmentForm, npoProfile, programServiceDeliveries);
 
             return form;
         }
