@@ -2230,6 +2230,7 @@ export interface IFundingCaptureViewModel {
 export interface IFundingDetailViewModel {
     id: number;
     fundingCaptureId: number;
+    isAddendum: boolean;
     financialYearId: number;
     financialYearName: string;
     financialYearStartDate: Date;

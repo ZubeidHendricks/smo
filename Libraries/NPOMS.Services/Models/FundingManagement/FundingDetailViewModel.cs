@@ -6,6 +6,7 @@ namespace NPOMS.Services.Models.FundingManagement
     {
         public int Id { get; set; }
         public int FundingCaptureId { get; set; }
+        public bool IsAddendum { get; set; }
         public int FinancialYearId { get; set; }
         public string FinancialYearName { get; set; }
         public DateTime? FinancialYearStartDate { get; set; }

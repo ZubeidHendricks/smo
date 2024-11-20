@@ -160,6 +160,17 @@ export class FundingCaptureListComponent implements OnInit {
         });
       }
 
+      if (this.IsAuthorized(PermissionsEnum.ApproveFundingCapture)) {
+        this.buttonItems[0].items.push({
+          label: 'Add Addendum',
+          icon: 'fa fa-pencil-square-o',
+          command: () => {
+            this.saveAddendum();
+            this._router.navigateByUrl(`funding-capture/addendum/${this.selectedFundingCapture.id}`);
+          }
+        });
+      }
+
       if (this.IsAuthorized(PermissionsEnum.ViewFundingCapture)) {
         this.buttonItems[0].items.push({
           label: 'View Funding',
@@ -266,6 +277,26 @@ export class FundingCaptureListComponent implements OnInit {
         this.selectedProgramme = null;
         this.selectedSubProgramme = null;
         this.selectedSubProgrammeType = null;
+
+        this.loadServicesRendered();
+      },
+      reject: () => {
+      }
+    });
+  }
+
+  addendum(npo: INpoViewModel) {
+    this._confirmationService.confirm({
+      message: `Are you sure that you want to add addendum funding for ${npo.name} (${npo.refNo})?`,
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      accept: () => {
+        this.selectedNpo = npo;
+
+        // this.selectedFinancialYear = null;
+        // this.selectedProgramme = null;
+        // this.selectedSubProgramme = null;
+        // this.selectedSubProgrammeType = null;
 
         this.loadServicesRendered();
       },
@@ -425,6 +456,30 @@ export class FundingCaptureListComponent implements OnInit {
     return false;
   }
 
+  saveAddendum(){
+    this._spinner.show();
+    var fundingCapture = {
+      npoId: this.selectedNpo.id,
+      financialYearId: this.selectedFinancialYear.id,
+      statusId: StatusEnum.Saved,
+      isActive: true,
+      fundingDetailViewModel: {
+        financialYearId: this.selectedFinancialYear.id,
+        fundingTypeId: FundingTypeEnum.Annual,
+        programmeId: this.selectedProgramme.id,
+        subProgrammeId: this.selectedSubProgramme.id,
+        subProgrammeTypeId: this.selectedSubProgrammeType.id,
+        calculationTypeId: CalculationTypeEnum.Summary,
+        allowClaims: false,
+        allowVariableFunding: false,
+        isActive: true,
+        isAddendum: true
+      } as IFundingDetailViewModel
+    } as IFundingCaptureViewModel;
+
+    this.createFundingCapture(fundingCapture);
+  }
+
   save() {
     this._spinner.show();
     var fundingCapture = {
@@ -441,7 +496,8 @@ export class FundingCaptureListComponent implements OnInit {
         calculationTypeId: CalculationTypeEnum.Summary,
         allowClaims: false,
         allowVariableFunding: false,
-        isActive: true
+        isActive: true,
+        isAddendum: false
       } as IFundingDetailViewModel
     } as IFundingCaptureViewModel;
 
@@ -449,6 +505,8 @@ export class FundingCaptureListComponent implements OnInit {
   }
 
   private createFundingCapture(fundingCapture: IFundingCaptureViewModel) {
+    console.log('createFundingCapture, funding capture', fundingCapture);
+    
     this._fundingManagementRepo.createFundingCapture(fundingCapture).subscribe(
       (results) => {
         this._router.navigateByUrl(`funding-capture/edit/${results.id}`);
@@ -472,14 +530,25 @@ export class FundingCaptureListComponent implements OnInit {
       case StatusEnum.Saved:
         this.buttonItemExists('Approve Funding');
         this.buttonItemExists('Download Funding');
+        this.buttonItemExists('Compliance');
+        this.buttonItemExists('Add Addendum');
         break;
       case StatusEnum.PendingApproval:
         this.buttonItemExists('Edit Funding');
+        this.buttonItemExists('Compliance');
+        this.buttonItemExists('Add Addendum');
         break;
       case StatusEnum.Approved:
+        this.buttonItemExists('Delete Funding');
+        this.buttonItemExists('Edit Funding');
+        this.buttonItemExists('Approve Funding');
+
+        break;
       case StatusEnum.Declined:
         this.buttonItemExists('Edit Funding');
         this.buttonItemExists('Approve Funding');
+        this.buttonItemExists('Compliance');
+        this.buttonItemExists('Add Addendum');
         break;
     }
   }

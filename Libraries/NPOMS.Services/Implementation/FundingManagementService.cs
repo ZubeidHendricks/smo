@@ -189,6 +189,7 @@ namespace NPOMS.Services.Implementation
                 SubProgrammeId = model.FundingDetailViewModel.SubProgrammeId,
                 SubProgrammeTypeId = model.FundingDetailViewModel.SubProgrammeTypeId,
                 CalculationTypeId = model.FundingDetailViewModel.CalculationTypeId,
+                IsAddendum = model.FundingDetailViewModel.IsAddendum,
                 IsActive = model.FundingDetailViewModel.IsActive,
                 CreatedUserId = loggedInUser.Id,
                 CreatedDateTime = DateTime.Now
@@ -275,6 +276,7 @@ namespace NPOMS.Services.Implementation
                     AmountAwarded = fundingDetail.AmountAwarded ?? 0,
                     CalculationTypeId = fundingDetail.CalculationTypeId,
                     CalculationTypeName = fundingDetail.CalculationType.Name,
+                    IsAddendum = fundingDetail.IsAddendum,
                     IsActive = fundingDetail.IsActive,
                     ProgrammeBudget = programmeBudget != null ? programmeBudget.OriginalBudgetAmount : Convert.ToDecimal(0)
                 },
