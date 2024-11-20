@@ -110,6 +110,7 @@ export class FundingCaptureListComponent implements OnInit {
       { field: 'fundingDetailViewModel.frequencyName', header: 'Payment Frequency', width: '10%' },
       { header: 'Amount Awarded', width: '10%' },
       { header: 'Amount Paid', width: '10%' },
+      { header: 'Is Addendum', width: '10%' },
       { field: 'statusName', header: 'Status', width: '10%' }
     ];
   }
