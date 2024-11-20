@@ -165,6 +165,7 @@ export class FundingCaptureListComponent implements OnInit {
           label: 'Add Addendum',
           icon: 'fa fa-pencil-square-o',
           command: () => {
+            console.log('this.selectedFundingCapture', this.selectedFundingCapture);
             this.saveAddendum();
             this._router.navigateByUrl(`funding-capture/addendum/${this.selectedFundingCapture.id}`);
           }
@@ -277,26 +278,6 @@ export class FundingCaptureListComponent implements OnInit {
         this.selectedProgramme = null;
         this.selectedSubProgramme = null;
         this.selectedSubProgrammeType = null;
-
-        this.loadServicesRendered();
-      },
-      reject: () => {
-      }
-    });
-  }
-
-  addendum(npo: INpoViewModel) {
-    this._confirmationService.confirm({
-      message: `Are you sure that you want to add addendum funding for ${npo.name} (${npo.refNo})?`,
-      header: 'Confirmation',
-      icon: 'pi pi-info-circle',
-      accept: () => {
-        this.selectedNpo = npo;
-
-        // this.selectedFinancialYear = null;
-        // this.selectedProgramme = null;
-        // this.selectedSubProgramme = null;
-        // this.selectedSubProgrammeType = null;
 
         this.loadServicesRendered();
       },
@@ -457,18 +438,33 @@ export class FundingCaptureListComponent implements OnInit {
   }
 
   saveAddendum(){
-    this._spinner.show();
+
+    var vSubProgramId = 0;
+    console.log('this.selectedFundingCapture.id', this.selectedFundingCapture.id);
+    this._fundingManagementRepo.getFundingById(this.selectedFundingCapture.id).subscribe(
+      (results) => {
+        console.log('results', results);
+        console.log('results.fundingCaptureViewModels[0].fundingDetailViewModel', results.fundingCaptureViewModels[0].fundingDetailViewModel);
+        console.log('results.fundingCaptureViewModels[0].fundingDetailViewModel.subProgrammeId', results.fundingCaptureViewModels[0].fundingDetailViewModel.subProgrammeId);
+
+        vSubProgramId = results.fundingCaptureViewModels[0].fundingDetailViewModel.subProgrammeId;
+
+    console.log('vSubProgramId',vSubProgramId);
+    console.log('saveAddendum', this.selectedFundingCapture);
+    console.log('this.selectedNpo', this.selectedNpo);
+    console.log('this.selectedSubProgramme', this.selectedSubProgramme);
+
     var fundingCapture = {
-      npoId: this.selectedNpo.id,
-      financialYearId: this.selectedFinancialYear.id,
+      npoId: this.selectedFundingCapture.id,
+      financialYearId: this.selectedFundingCapture.financialYearId,
       statusId: StatusEnum.Saved,
       isActive: true,
       fundingDetailViewModel: {
-        financialYearId: this.selectedFinancialYear.id,
+        financialYearId: this.selectedFundingCapture.financialYearId,
         fundingTypeId: FundingTypeEnum.Annual,
-        programmeId: this.selectedProgramme.id,
-        subProgrammeId: this.selectedSubProgramme.id,
-        subProgrammeTypeId: this.selectedSubProgrammeType.id,
+        programmeId: this.selectedFundingCapture.fundingDetailViewModel.programmeId,
+        subProgrammeId: results.fundingCaptureViewModels[0].fundingDetailViewModel.subProgrammeId,     
+        subProgrammeTypeId: this.selectedFundingCapture.fundingDetailViewModel.subProgrammeTypeId,
         calculationTypeId: CalculationTypeEnum.Summary,
         allowClaims: false,
         allowVariableFunding: false,
@@ -476,8 +472,12 @@ export class FundingCaptureListComponent implements OnInit {
         isAddendum: true
       } as IFundingDetailViewModel
     } as IFundingCaptureViewModel;
-
+    console.log('saveAddendum', fundingCapture);
     this.createFundingCapture(fundingCapture);
+
+  },
+);
+
   }
 
   save() {
@@ -506,7 +506,7 @@ export class FundingCaptureListComponent implements OnInit {
 
   private createFundingCapture(fundingCapture: IFundingCaptureViewModel) {
     console.log('createFundingCapture, funding capture', fundingCapture);
-    
+
     this._fundingManagementRepo.createFundingCapture(fundingCapture).subscribe(
       (results) => {
         this._router.navigateByUrl(`funding-capture/edit/${results.id}`);

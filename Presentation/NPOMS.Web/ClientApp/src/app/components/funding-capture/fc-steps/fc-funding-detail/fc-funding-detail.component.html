@@ -2,6 +2,12 @@
     <p-panel [style]="{'font-size':'12px'}" header="Funding Details">
         <div class="p-fluid p-formgrid p-grid">
             <div class="p-field p-col-12 p-md-6">
+                <label>Is Addendum?</label>
+                <p-checkbox disabled="true" name="addendum" [binary]="true" [(ngModel)]="fundingDetail.isAddendum"></p-checkbox>
+            </div>
+            <div class="p-field p-col-12 p-md-6">
+            </div>
+            <div class="p-field p-col-12 p-md-6">
                 <label class="mandatory-content">Organisation</label>
                 <input type="text" class="form-text" pInputText [(ngModel)]="npo.name" [ngModelOptions]="{standalone: true}" [disabled]="true">
             </div>

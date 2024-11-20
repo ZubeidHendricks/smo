@@ -44,6 +44,8 @@ export class FCFundingDetailComponent implements OnInit {
   paymentFrequencies: IFrequency[];
   selectedPaymentFrequency: IFrequency;
 
+  addendumText: string = 'Funding Capture';
+
   amount: string = "0.00";
 
   constructor(
@@ -59,6 +61,8 @@ export class FCFundingDetailComponent implements OnInit {
   ngOnInit(): void {
     this.loadFrequencies();
     this.updateDateField(this.fundingDetail.financialYearStartDate, this.fundingDetail.financialYearEndDate);
+    console.log('this.fundingDetail', this.fundingDetail);
+    this.addendumText = this.fundingDetail.isAddendum ? 'Addendum Funding Capture' : 'Funding Capture';
 
     this.stateOptions = [
       { label: 'Yes', value: true },
@@ -68,13 +72,10 @@ export class FCFundingDetailComponent implements OnInit {
 
 
   editAwardAmount(){
-    console.log('this.isEdit', this.isEdit);
-    console.log('this.fundingDetail.programmeBudget', this.fundingDetail.programmeBudget);
     if (!this.isEdit)
       return false;
 
     if (this.fundingDetail.programmeBudget === 0){
-      console.log('funding true');    
       return true;
     }
 
