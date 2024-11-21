@@ -161,7 +161,13 @@ export class ApplicationService {
   }
 
   public GetIndicatorReportsByAppid(application: IApplication) {
-    const url = `${this._envUrl.urlAddress}/api/applications/getindicatorreportsbyappid/appid/${application.id}`;
+    const url = `${this._envUrl.urlAddress}/api/applications/getindicatorreportsbyappid/appid/${application?.id}`;
+    return this._http.get<IActuals[]>(url, httpOptions);
+
+  }
+
+  public getAllIndicatorReports() {
+    const url = `${this._envUrl.urlAddress}/api/applications/getallindicatorreports`;
     return this._http.get<IActuals[]>(url, httpOptions);
   }
 

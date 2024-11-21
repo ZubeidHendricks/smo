@@ -229,6 +229,7 @@ import { IndicatorImportComponent } from './reporting/indicator-import/indicator
 import { ReportDownloadComponent } from './reporting/report-download/report-download.component';
 import { ReportActualsComponent } from './reporting/report-actuals/report-actuals.component';
 import { ProgramSummaryComponent } from './reporting/program-summary/program-summary.component';
+import { SubprogrammetypeSummaryComponent } from './reporting/subprogrammetype-summary/subprogrammetype-summary.component';
 const isIE = window.navigator.userAgent.indexOf("MSIE ") > -1 || window.navigator.userAgent.indexOf("Trident/") > -1;
 
 export function loggerCallback(logLevel: LogLevel, message: string) {
@@ -451,7 +452,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
     FundingAssessmentListComponent,
     FundingAssessmentFormComponent,
     FundingAssessmentFormQuestionSectionComponent,
-    ProgramSummaryComponent
+    ProgramSummaryComponent,
+    SubprogrammetypeSummaryComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

@@ -6,7 +6,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MegaMenuItem, MessageService } from 'primeng/api';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, FrequencyEnum, FrequencyPeriodEnum, PermissionsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActuals, IActualsAudit, IApplication, IFinancialYear, INPOIndicator, IProgramme, ISDA, IStatus, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { IActivity, IActuals, IActualsAudit, IApplication, IFinancialYear, IIndicator, INPOIndicator, IProgramme, ISDA, IStatus, ISubProgramme, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { IndicatorService } from 'src/app/services/api-services/indicator/indicator.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
@@ -17,17 +17,20 @@ import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo-profile.service';
 
 @Component({
-  selector: 'app-program-summary',
-  templateUrl: './program-summary.component.html',
-  styleUrls: ['./program-summary.component.css']
+  selector: 'app-subprogrammetype-summary',
+  templateUrl: './subprogrammetype-summary.component.html',
+  styleUrls: ['./subprogrammetype-summary.component.css']
 })
-export class ProgramSummaryComponent implements OnInit {
+export class SubprogrammetypeSummaryComponent implements OnInit {
   @Input() application: IApplication;
 
   @Output() rightHeaderIndicatorChange = new EventEmitter<string>();
   programme: string;
   programid: string;
   iNPOIndicatorsdata: INPOIndicator[];
+  subprogramme: string;
+  indicators: IIndicator[];
+  allSubProgrammes: ISubProgramme[]; 
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -227,6 +230,50 @@ export class ProgramSummaryComponent implements OnInit {
       }
     );
   }
+
+  private loadIndicator() {
+    this._dropdownRepo.getEntities(DropdownTypeEnum.Indicator, false).subscribe(
+      (results) => {
+        this.indicators = results;
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  // private loadProgrammes() {
+  //   this._spinner.show();
+  //   this._dropdownRepo.getEntities(DropdownTypeEnum.Programmes, false).subscribe(
+  //     (results) => {
+  //       this.allProgrammes = results;
+  //       this._spinner.hide();
+  //      this.programme = this.allProgrammes.find(x => x.id == Number(this.programid)).name;    
+  //     },
+  //     (err) => {
+  //       this._loggerService.logException(err);
+  //       this._spinner.hide();
+  //     }
+  //   );
+  // }
+
+   
+  private loadSubProgrammeTypes() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
+      (results) => {
+        this.allSubProgrammes = results;
+        this._spinner.hide();
+        this.subprogramme = this.allSubProgrammes.find(x => x.id == this.application.applicationPeriod.subProgrammeTypeId).name;  
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
 
   private MasterServiceDelivery() {
     this._spinner.show();

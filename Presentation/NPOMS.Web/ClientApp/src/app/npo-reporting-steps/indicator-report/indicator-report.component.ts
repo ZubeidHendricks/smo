@@ -879,7 +879,6 @@ private loadFrequencyPeriods() {
 private loadIndicators() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.HighLevelNPO, false).subscribe(
       (results) => {
-        console.log('iNPOIndicators', this.npo?.cCode);
         this.iNPOIndicators = results.filter(indicator => indicator.ccode === this.npo?.cCode);
         this.GetIndicatorReportsByAppid();
       },

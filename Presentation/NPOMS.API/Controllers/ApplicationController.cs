@@ -743,6 +743,23 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpGet("getallindicatorreports", Name = "GetAllIndicatorReports")]
+        public async Task<IActionResult> GetAllIndicatorReports()
+        {
+            try
+            {
+                var results = await _indicatorService.GetIndicatorReports();
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetAllIndicatorReports action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+
         [HttpGet("getindicatorreportsbyappid/appid/{appid}", Name = "GetIndicatorReportsByAppid")]
         public async Task<IActionResult> GeIndicatorReportByAppid(int appid)
         {
