@@ -284,6 +284,44 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpPost("createCfp", Name = "CreateCfpApplication")]
+        public async Task<IActionResult> CreateCfpApplication(dtoCfpApplication model)
+        {
+            Application application;
+            try
+            {
+                var applicationPeriod = await _applicationService.GetApplicationPeriodById(model.applicationPeriodId);
+
+                // var application = 
+
+                //   var application = await _applicationService.GetApplicationByNpoIdAndPeriodIdAndYear(model.npoId, model.applicationPeriodId, applicationPeriod.FinancialYear.Name);
+
+                //if (application == null)
+                //{
+                //    await _applicationService.CreateApplication(model, base.GetUserIdentifier());
+                //    await CreateApplicationAudit(model);
+
+                //    var modelToReturn = application == null ? model : application;
+                //    return Ok(modelToReturn);
+
+                //}
+
+
+                await _applicationService.CreateCfpApplication(model, base.GetUserIdentifier());
+                //  await CreateApplicationAudit(application);
+
+                // var modelToReturn = application == null ? application : application;
+                return Redirect("https://wcgnpoms-training.westerncape.gov.za/#/applications");
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateApplication action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
         [HttpPut("updatePostReportStatus", Name = "UpdatePostReportStatus")]
         public async Task<IActionResult> UpdatePostReportStatus(BaseCompleteViewModel model)
         {
