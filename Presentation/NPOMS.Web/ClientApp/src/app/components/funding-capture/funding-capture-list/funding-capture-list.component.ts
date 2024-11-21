@@ -444,15 +444,17 @@ export class FundingCaptureListComponent implements OnInit {
     var vSubProgramId = 0;
     this._fundingManagementRepo.getFundingById(this.selectedFundingCapture.id).subscribe(
       (results) => {
+        console.log('getFundingById - results', this.selectedFundingCapture.id, results);
         vSubProgramId = results.fundingCaptureViewModels[0].fundingDetailViewModel.subProgrammeId;
 
-        var cloneFundingCapture = results.fundingCaptureViewModels[0];
+        var cloneFundingCapture = results.fundingCaptureViewModels;
+        console.log('cloneFundingCapture',cloneFundingCapture);
 
-        //cloneFundingCapture.npoId= this.selectedNpo.id;
-        cloneFundingCapture.financialYearId= this.selectedFundingCapture.financialYearId;
+        cloneFundingCapture.npoId = 473; //this.selectedFundingCapture.npoId;
+
+        // cloneFundingCapture.financialYearId= this.selectedFundingCapture.financialYearId;
         cloneFundingCapture.statusId= StatusEnum.Saved;
-        cloneFundingCapture.isActive= true;
-        cloneFundingCapture.statusId = StatusEnum.Saved;
+        // cloneFundingCapture.isActive= true;
         cloneFundingCapture.paymentScheduleViewModel = null;
         cloneFundingCapture.documentViewModel = null;
         cloneFundingCapture.approverComment = null;
@@ -461,6 +463,7 @@ export class FundingCaptureListComponent implements OnInit {
         cloneFundingCapture.approvedDateTime = null;
         cloneFundingCapture.approvedDate = null;
         cloneFundingCapture.fundingDetailViewModel.amountAwarded = 0;
+
         cloneFundingCapture.fundingDetailViewModel.isAddendum = true;
 
         // var fundingCapture = {
