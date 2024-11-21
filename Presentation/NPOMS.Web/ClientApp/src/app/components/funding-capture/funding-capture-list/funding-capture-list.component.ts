@@ -118,6 +118,7 @@ export class FundingCaptureListComponent implements OnInit {
   private loadNpos() {
     this._fundingManagementRepo.getNposForFunding().subscribe(
       (results) => {
+        console.log('getNposForFunding',results);
         this.npos = results;
         this._spinner.hide();
       },
@@ -168,7 +169,7 @@ export class FundingCaptureListComponent implements OnInit {
           command: () => {
             console.log('this.selectedFundingCapture', this.selectedFundingCapture);
             this.saveAddendum();
-            this._router.navigateByUrl(`funding-capture/addendum/${this.selectedFundingCapture.id}`);
+            //this._router.navigateByUrl(`funding-capture/addendum/${this.selectedFundingCapture.id}`);
           }
         });
       }
@@ -441,41 +442,48 @@ export class FundingCaptureListComponent implements OnInit {
   saveAddendum(){
 
     var vSubProgramId = 0;
-    console.log('this.selectedFundingCapture.id', this.selectedFundingCapture.id);
     this._fundingManagementRepo.getFundingById(this.selectedFundingCapture.id).subscribe(
       (results) => {
-        console.log('results', results);
-        console.log('results.fundingCaptureViewModels[0].fundingDetailViewModel', results.fundingCaptureViewModels[0].fundingDetailViewModel);
-        console.log('results.fundingCaptureViewModels[0].fundingDetailViewModel.subProgrammeId', results.fundingCaptureViewModels[0].fundingDetailViewModel.subProgrammeId);
-
         vSubProgramId = results.fundingCaptureViewModels[0].fundingDetailViewModel.subProgrammeId;
 
-    console.log('vSubProgramId',vSubProgramId);
-    console.log('saveAddendum', this.selectedFundingCapture);
-    console.log('this.selectedNpo', this.selectedNpo);
-    console.log('this.selectedSubProgramme', this.selectedSubProgramme);
+        var cloneFundingCapture = results.fundingCaptureViewModels[0];
 
-    var fundingCapture = {
-      npoId: this.selectedFundingCapture.id,
-      financialYearId: this.selectedFundingCapture.financialYearId,
-      statusId: StatusEnum.Saved,
-      isActive: true,
-      fundingDetailViewModel: {
-        financialYearId: this.selectedFundingCapture.financialYearId,
-        fundingTypeId: FundingTypeEnum.Annual,
-        programmeId: this.selectedFundingCapture.fundingDetailViewModel.programmeId,
-        subProgrammeId: results.fundingCaptureViewModels[0].fundingDetailViewModel.subProgrammeId,     
-        subProgrammeTypeId: this.selectedFundingCapture.fundingDetailViewModel.subProgrammeTypeId,
-        calculationTypeId: CalculationTypeEnum.Summary,
-        allowClaims: false,
-        allowVariableFunding: false,
-        isActive: true,
-        isAddendum: true
-      } as IFundingDetailViewModel
-    } as IFundingCaptureViewModel;
-    console.log('saveAddendum', fundingCapture);
-    this.createFundingCapture(fundingCapture);
+        //cloneFundingCapture.npoId= this.selectedNpo.id;
+        cloneFundingCapture.financialYearId= this.selectedFundingCapture.financialYearId;
+        cloneFundingCapture.statusId= StatusEnum.Saved;
+        cloneFundingCapture.isActive= true;
+        cloneFundingCapture.statusId = StatusEnum.Saved;
+        cloneFundingCapture.paymentScheduleViewModel = null;
+        cloneFundingCapture.documentViewModel = null;
+        cloneFundingCapture.approverComment = null;
+        cloneFundingCapture.approverUserId = null;
+        cloneFundingCapture.approverUserName = null;
+        cloneFundingCapture.approvedDateTime = null;
+        cloneFundingCapture.approvedDate = null;
+        cloneFundingCapture.fundingDetailViewModel.amountAwarded = 0;
+        cloneFundingCapture.fundingDetailViewModel.isAddendum = true;
 
+        // var fundingCapture = {
+        //   npoId: this.selectedFundingCapture.id,
+        //   financialYearId: this.selectedFundingCapture.financialYearId,
+        //   statusId: StatusEnum.Saved,
+        //   isActive: true,
+        //   fundingDetailViewModel: {
+        //     financialYearId: this.selectedFundingCapture.financialYearId,
+        //     fundingTypeId: FundingTypeEnum.Annual,
+        //     programmeId: this.selectedFundingCapture.fundingDetailViewModel.programmeId,
+        //     subProgrammeId: results.fundingCaptureViewModels[0].fundingDetailViewModel.subProgrammeId,     
+        //     subProgrammeTypeId: this.selectedFundingCapture.fundingDetailViewModel.subProgrammeTypeId,
+        //     calculationTypeId: CalculationTypeEnum.Summary,
+        //     allowClaims: false,
+        //     allowVariableFunding: false,
+        //     isActive: true,
+        //     isAddendum: true
+        //   } as IFundingDetailViewModel
+        // } as IFundingCaptureViewModel;
+
+        console.log('cloneFundingCapture', cloneFundingCapture);
+        this.createFundingCapture(cloneFundingCapture);
   },
 );
 

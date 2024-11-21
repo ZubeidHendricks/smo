@@ -1,4 +1,5 @@
-﻿using NPOMS.Domain.Enumerations;
+﻿using NPOMS.Domain.Entities;
+using NPOMS.Domain.Enumerations;
 using NPOMS.Domain.FundingManagement;
 using NPOMS.Repository.Extensions;
 using NPOMS.Repository.Interfaces.Budget;
@@ -139,7 +140,8 @@ namespace NPOMS.Services.Implementation
                                         FrequencyId = detail.FrequencyId ?? null,
                                         FrequencyName = detail.Frequency != null ? detail.Frequency.Name : string.Empty,
                                         AmountAwarded = detail.AmountAwarded ?? 0,
-                                        ProgrammeBudget = programmeBudget != null ? programmeBudget.OriginalBudgetAmount : Convert.ToDecimal(0)
+                                        ProgrammeBudget = programmeBudget != null ? programmeBudget.OriginalBudgetAmount : Convert.ToDecimal(0),
+                                        IsAddendum = detail.IsAddendum
                                     },
                                     SDAViewModel = new()
                                     {
@@ -166,9 +168,17 @@ namespace NPOMS.Services.Implementation
         {
             var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
+            bool isAddendum = false;
+            string fundingType = "FUND";
+            if (model.FundingDetailViewModel.IsAddendum)
+            {
+                isAddendum = true;
+                fundingType = "ADDM";
+            }
+
             var fundingCapture = new FundingCapture
             {
-                RefNo = StringExtensions.GenerateNewCode("FUND"),
+                RefNo = StringExtensions.GenerateNewCode(fundingType),
                 NpoId = model.NpoId,
                 FinancialYearId = model.FinancialYearId,
                 StatusId = model.StatusId,
@@ -196,9 +206,36 @@ namespace NPOMS.Services.Implementation
             };
             await _fundingDetailRepository.CreateAsync(fundingDetail);
 
-            await _sdaRepository.CreateAsync(new() { FundingCaptureId = fundingCapture.Id, IsActive = true, CreatedUserId = loggedInUser.Id, CreatedDateTime = DateTime.Now });
+            if (isAddendum)
+            {
+
+                await _sdaRepository.CreateAsync(new() { 
+                                        FundingCaptureId = fundingCapture.Id, 
+                                        ServiceDeliveryAreaId = model.SDAViewModel.ServiceDeliveryAreaId,
+                                        PlaceId = model.SDAViewModel.PlaceId,
+                                        IsActive = true, 
+                                        CreatedUserId = loggedInUser.Id, 
+                                        CreatedDateTime = DateTime.Now 
+                });
+
+                await _bankDetailRepository.CreateAsync(new() { 
+                    FundingCaptureId = fundingCapture.Id,
+                    ProgramBankDetailsId = model.BankDetailViewModel.ProgramBankDetailsId,
+
+                    IsActive = true, 
+                    CreatedUserId = loggedInUser.Id, 
+                    CreatedDateTime = DateTime.Now 
+                });
+
+
+            }
+            else
+            {
+                await _sdaRepository.CreateAsync(new() { FundingCaptureId = fundingCapture.Id, IsActive = true, CreatedUserId = loggedInUser.Id, CreatedDateTime = DateTime.Now });
+                await _bankDetailRepository.CreateAsync(new() { FundingCaptureId = fundingCapture.Id, IsActive = true, CreatedUserId = loggedInUser.Id, CreatedDateTime = DateTime.Now });
+            }
+
             await _fundingPaymentScheduleRepository.CreateAsync(new() { FundingCaptureId = fundingCapture.Id, IsActive = true, CreatedUserId = loggedInUser.Id, CreatedDateTime = DateTime.Now });
-            await _bankDetailRepository.CreateAsync(new() { FundingCaptureId = fundingCapture.Id, IsActive = true, CreatedUserId = loggedInUser.Id, CreatedDateTime = DateTime.Now });
             await _documentRepository.CreateAsync(new() { FundingCaptureId = fundingCapture.Id, IsActive = true, CreatedUserId = loggedInUser.Id, CreatedDateTime = DateTime.Now });
 
             model.Id = fundingCapture.Id;
@@ -246,6 +283,7 @@ namespace NPOMS.Services.Implementation
             {
                 Id = id,
                 StatusId = fundingCapture.StatusId,
+                NpoId = fundingCapture.NpoId,
                 StatusName = status.Name,
                 IsActive = fundingCapture.IsActive,
                 FinancialYearId = fundingCapture.FinancialYearId,
