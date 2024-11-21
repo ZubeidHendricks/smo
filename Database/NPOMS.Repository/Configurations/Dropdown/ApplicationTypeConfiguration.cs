@@ -36,6 +36,12 @@ namespace NPOMS.Repository.Configurations.Dropdown
                     Id = 4,
                     Name = "Business Plan",
                     SystemName = "BP"
+                }, 
+				new ApplicationType
+                {
+                    Id = 5,
+                    Name = "Call For Proposal",
+                    SystemName = "CFP"
                 }
             );
 		}
