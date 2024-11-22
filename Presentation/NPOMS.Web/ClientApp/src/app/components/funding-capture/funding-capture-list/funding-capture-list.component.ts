@@ -445,12 +445,12 @@ export class FundingCaptureListComponent implements OnInit {
     this._fundingManagementRepo.getFundingById(this.selectedFundingCapture.id).subscribe(
       (results) => {
         console.log('getFundingById - results', this.selectedFundingCapture.id, results);
-        vSubProgramId = results.fundingCaptureViewModels[0].fundingDetailViewModel.subProgrammeId;
+        //vSubProgramId = results.fundingCaptureViewModels[0].fundingDetailViewModel.subProgrammeId;
 
-        var cloneFundingCapture = results.fundingCaptureViewModels;
+        var cloneFundingCapture = results.fundingCaptureViewModels[0];
         console.log('cloneFundingCapture',cloneFundingCapture);
 
-        cloneFundingCapture.npoId = 473; //this.selectedFundingCapture.npoId;
+        //cloneFundingCapture.npoId = 473; //this.selectedFundingCapture.npoId;
 
         // cloneFundingCapture.financialYearId= this.selectedFundingCapture.financialYearId;
         cloneFundingCapture.statusId= StatusEnum.Saved;

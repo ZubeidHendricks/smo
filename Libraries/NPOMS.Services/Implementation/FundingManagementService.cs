@@ -128,6 +128,7 @@ namespace NPOMS.Services.Implementation
                                     FinancialYearName = funding.FinancialYear.Name,
                                     StatusId = funding.StatusId,
                                     StatusName = funding.Status.Name,
+                                    HasAddendum = funding.HasAddendum,
                                     IsActive = funding.IsActive,
                                     FundingDetailViewModel = new()
                                     {
@@ -374,6 +375,7 @@ namespace NPOMS.Services.Implementation
                     ApprovedAmount = paymentScheduleItem.ApprovedAmount ?? 0,
                     PaidAmount = paymentScheduleItem.PaidAmount ?? 0,
                     IsCompliant = paymentScheduleItem.IsCompliant,
+                    IsAddendum = paymentScheduleItem.IsAddendum,
                     IsActive = paymentScheduleItem.IsActive
                 });
             }

@@ -38,5 +38,8 @@ namespace NPOMS.Domain.FundingManagement
         public FinancialYear FinancialYear { get; set; }
 
         public Status Status { get; set; }
+
+        public bool HasAddendum { get; set; }
+
     }
 }

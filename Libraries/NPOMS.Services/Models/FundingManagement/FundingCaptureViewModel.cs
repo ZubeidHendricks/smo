@@ -11,6 +11,8 @@
         public string StatusName { get; set; }
         public bool IsActive { get; set; }
 
+        public bool HasAddendum { get; set; }
+
         public string? ApproverUserName { get; set; }
         public string? ApprovedDate { get; set; }
         public string? ApproverComment { get; set; }
