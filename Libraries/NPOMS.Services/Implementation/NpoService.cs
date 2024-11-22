@@ -75,7 +75,37 @@ namespace NPOMS.Services.Implementation
 			}
 		}
 
-		public async Task<IEnumerable<Npo>> GetQuickCaptures(string userIdentifier, AccessStatusEnum accessStatus)
+        public async Task<IEnumerable<Npo>> Get(string email)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(email);
+            var mappings = await _userNpoRepository.GetApprovedEntities(loggedInUser.Id);
+            var NpoIds = mappings.Select(x => x.NpoId);
+            var npos = await _npoRepository.GetPublicEntities();
+            var results = npos.Where(x => NpoIds.Contains(x.Id));
+            return results;
+            //if (Enum.IsDefined(typeof(AccessStatusEnum), accessStatus))
+            //{
+            //    int accessStatusId = (int)accessStatus;
+
+            //    if (accessStatusId != 0)
+            //        npos = npos.Where(x => x.ApprovalStatusId == accessStatusId);
+            //}
+
+            //if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.ProgrammeApprover) || x.RoleId.Equals((int)RoleEnum.ProgrammeViewOnly) || x.RoleId.Equals((int)RoleEnum.ProgrammeCapturer) || x.RoleId.Equals((int)RoleEnum.SystemAdmin) || x.RoleId.Equals((int)RoleEnum.Admin) || x.RoleId.Equals((int)RoleEnum.ViewOnly))))
+            //{
+            //    return npos;
+            //}
+            //else
+            //{
+            //    var mappings = await _userNpoRepository.GetApprovedEntities(loggedInUser.Id);
+            //    var NpoIds = mappings.Select(x => x.NpoId);
+            //    var results = npos.Where(x => NpoIds.Contains(x.Id));
+
+            //    return results;
+            //}
+        }
+
+        public async Task<IEnumerable<Npo>> GetQuickCaptures(string userIdentifier, AccessStatusEnum accessStatus)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 			var npos = await _npoRepository.GetQuickCapturers();
