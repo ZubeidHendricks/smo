@@ -2220,6 +2220,8 @@ export interface IFundingCaptureViewModel {
     approvedDateTime: Date;
     approvedDate: string;
 
+    hasAddendum: boolean;
+
     fundingDetailViewModel: IFundingDetailViewModel;
     sdaViewModel: ISDAViewModel;
     paymentScheduleViewModel: IPaymentScheduleViewModel;

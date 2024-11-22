@@ -168,7 +168,7 @@ export class FundingCaptureListComponent implements OnInit {
           icon: 'fa fa-pencil-square-o',
           command: () => {
             console.log('this.selectedFundingCapture', this.selectedFundingCapture);
-            this.saveAddendum();
+            this.saveAddendum(this.selectedFundingCapture.fundingDetailViewModel.id);
             //this._router.navigateByUrl(`funding-capture/addendum/${this.selectedFundingCapture.id}`);
           }
         });
@@ -439,7 +439,7 @@ export class FundingCaptureListComponent implements OnInit {
     return false;
   }
 
-  saveAddendum(){
+  saveAddendum(fundingDetailId){
 
     var vSubProgramId = 0;
     this._fundingManagementRepo.getFundingById(this.selectedFundingCapture.id).subscribe(
@@ -447,7 +447,7 @@ export class FundingCaptureListComponent implements OnInit {
         console.log('getFundingById - results', this.selectedFundingCapture.id, results);
         //vSubProgramId = results.fundingCaptureViewModels[0].fundingDetailViewModel.subProgrammeId;
 
-        var cloneFundingCapture = results.fundingCaptureViewModels[0];
+        var cloneFundingCapture = results.fundingCaptureViewModels.find(x => x.fundingDetailViewModel.id == fundingDetailId);
         console.log('cloneFundingCapture',cloneFundingCapture);
 
         //cloneFundingCapture.npoId = 473; //this.selectedFundingCapture.npoId;
@@ -486,7 +486,7 @@ export class FundingCaptureListComponent implements OnInit {
         // } as IFundingCaptureViewModel;
 
         console.log('cloneFundingCapture', cloneFundingCapture);
-        this.createFundingCapture(cloneFundingCapture);
+        //this.createFundingCapture(cloneFundingCapture);
   },
 );
 
