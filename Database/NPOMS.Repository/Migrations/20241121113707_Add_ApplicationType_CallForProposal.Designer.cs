@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NPOMS.Repository;
 
@@ -11,9 +12,11 @@ using NPOMS.Repository;
 namespace NPOMS.Repository.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20241121113707_Add_ApplicationType_CallForProposal")]
+    partial class Add_ApplicationType_CallForProposal
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -18639,42 +18642,6 @@ namespace NPOMS.Repository.Migrations
                             IsActive = false,
                             Name = "Completed",
                             SystemName = "Completed"
-                        },
-                        new
-                        {
-                            Id = 25,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Addendum Saved",
-                            SystemName = "AddendumSaved"
-                        },
-                        new
-                        {
-                            Id = 26,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Addendum Pending Approval",
-                            SystemName = "AddendumPendingApproval"
-                        },
-                        new
-                        {
-                            Id = 27,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Addendum Approved",
-                            SystemName = "AddendumApproved"
-                        },
-                        new
-                        {
-                            Id = 28,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = false,
-                            Name = "Addendum Rejected",
-                            SystemName = "AddendumRejected"
                         });
                 });
 
@@ -21547,9 +21514,6 @@ namespace NPOMS.Repository.Migrations
                     b.Property<int?>("FinancialYearId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("HasAddendum")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -21618,9 +21582,6 @@ namespace NPOMS.Repository.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsAddendum")
                         .HasColumnType("bit");
 
                     b.Property<int>("ProgrammeId")
@@ -21694,9 +21655,6 @@ namespace NPOMS.Repository.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsAddendum")
-                        .HasColumnType("bit");
-
                     b.Property<double?>("PaidAmountBalance")
                         .HasColumnType("float");
 
@@ -21741,9 +21699,6 @@ namespace NPOMS.Repository.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsAddendum")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsCompliant")

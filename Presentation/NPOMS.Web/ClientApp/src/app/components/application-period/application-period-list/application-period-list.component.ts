@@ -129,7 +129,10 @@ export class ApplicationPeriodListComponent implements OnInit {
       }
     );
   }
-
+  apply()
+  {
+    window.location.href = 'https://wcgfunding-training.westerncape.gov.za/createcallforproposal/';
+  }
   private loadApplicationPeriods() {
     this._spinner.show();
     this._applicationPeriodRepo.getAllApplicationPeriods().subscribe(

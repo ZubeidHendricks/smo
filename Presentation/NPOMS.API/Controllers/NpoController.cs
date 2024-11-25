@@ -76,7 +76,22 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpGet("NpoId/{NpoId}", Name = "GetNpoById")]
+        [HttpGet("email/{email}", Name = "GetAllNposPublic")]
+        public async Task<IActionResult> GetAllNposPublic(string email)
+        {
+            try
+            {
+                var results = await _npoService.Get(email);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetAllNpos action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("NpoId/{NpoId}", Name = "GetNpoById")]
 		public async Task<IActionResult> GetNpoById(int NpoId)
 		{
 			try

@@ -3,6 +3,9 @@
         <div class="p-col-fixed">
             <button pButton pRipple type="button" label="Add Programme" class="p-button-text" icon="fa fa-plus" (click)="add()" *ngIf="IsAuthorized(PermissionsEnum.AddApplicationPeriod)"></button>
         </div>
+        <div class="p-col-fixed">
+            <button pButton pRipple type="button" label="Click here to apply Call for proposal" class="p-button-text" icon="fa fa-plus" (click)="apply()" *ngIf="IsAuthorized(PermissionsEnum.AddApplicationPeriod)"></button>
+        </div>
         <div class="p-col">
           <div class="p-d-flex">
             <span class="p-input-icon-left p-ml-auto">
