@@ -486,7 +486,7 @@ export class FundingCaptureListComponent implements OnInit {
         // } as IFundingCaptureViewModel;
 
         console.log('cloneFundingCapture', cloneFundingCapture);
-        //this.createFundingCapture(cloneFundingCapture);
+        this.createFundingCapture(cloneFundingCapture);
   },
 );
 

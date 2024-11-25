@@ -117,7 +117,8 @@ namespace NPOMS.Services.Implementation
                         var serviceDeliveryArea = await _serviceDeliveryAreaRepository.GetEntities(true);
                         if (detail != null)
                         {
-                            if(sda != null) {
+                            if (sda != null)
+                            {
                                 var programmeBudget = await _programmeBudgetRepository.GetByIds(detail.Programme.DepartmentId, $"{funding.FinancialYear.Year}/{funding.FinancialYear.Year + 1}", detail.ProgrammeId, detail.SubProgrammeId, detail.SubProgrammeTypeId);
                                 var fundingCaptureViewModel = new FundingCaptureViewModel
                                 {
@@ -153,8 +154,14 @@ namespace NPOMS.Services.Implementation
 
                                 npoViewModel.FundingCaptureViewModels.Add(fundingCaptureViewModel);
                             }
+
                         }
-                        
+
+/*
+                        if (detail != null)
+                        {
+                        }
+*/                        
                        
                     }
                 }
@@ -441,6 +448,80 @@ namespace NPOMS.Services.Implementation
             {
                 var frequency = await _frequencyRepository.GetById(frequencyId);
                 var intervals = 12 / Convert.ToInt32(frequency.FrequencyNumber);
+
+                var paymentScheduleItems = new List<PaymentScheduleItemViewModel>();
+
+                var compliantCycleRules = await _compliantCycleRuleRepository.GetEntities(false);
+                var compliantCycles = await _compliantCycleRepository.GetCompliantCyclesByIds(fundingDetail.Programme.DepartmentId, Convert.ToInt32(fundingCapture.FinancialYearId));
+                var departmentPaymentSchedules = await _paymentScheduleRepository.GetPaymentSchedulesByIds(fundingDetail.Programme.DepartmentId, Convert.ToInt32(fundingCapture.FinancialYearId));
+                //var paymentSchedules = departmentPaymentSchedules.OrderBy(x => x.StartDate).Where(x => x.StartDate > Convert.ToDateTime(startDate) && x.StartDate.Date >= DateTime.Now.Date);
+                var paymentSchedules = departmentPaymentSchedules.OrderBy(x => x.StartDate).Where(x => x.StartDate >= Convert.ToDateTime(startDate)); //Allow back dated payment schedules
+
+                // Get months between funding detail start date and financial year end date
+                var financialYearMonths = MonthsBetween(Convert.ToDateTime(startDate), fundingDetail.FinancialYear.EndDate).ToArray();
+
+                var monthStartDates = new List<DateTime>();
+                for (int i = 0; i < financialYearMonths.Count(); i += intervals)
+                {
+                    monthStartDates.Add(financialYearMonths[i]);
+                }
+
+                var applicableSchedules = new List<Domain.Entities.PaymentSchedule>();
+                foreach (var monthStartDate in monthStartDates)
+                {
+                    var applicableSchedule = paymentSchedules.FirstOrDefault(x => x.StartDate >= monthStartDate);
+
+                    if (applicableSchedule != null)
+                    {
+                        if (!applicableSchedules.Contains(applicableSchedule))
+                            applicableSchedules.Add(applicableSchedule);
+                        else
+                            applicableSchedules.Add(paymentSchedules.ToList()[1]);
+
+                        applicableSchedule = applicableSchedules.Last();
+
+                        var amount = monthStartDate == monthStartDates.Last() ? amountAwarded - paymentScheduleItems.Sum(item => item.AllocatedAmount) : Convert.ToDouble(Math.Floor((decimal)amountAwarded / monthStartDates.Count()));
+                        var compliantCycle = compliantCycles.FirstOrDefault(x => x.Id.Equals(applicableSchedule.CompliantCycleId));
+
+                        var paymentScheduleItem = new PaymentScheduleItemViewModel()
+                        {
+                            PaymentScheduleId = paymentSchedule.Id,
+                            CompliantCycleId = compliantCycle.Id,
+                            CycleNumber = compliantCycleRules.FirstOrDefault(x => x.Id.Equals(compliantCycle.CompliantCycleRuleId)).CycleNumber,
+                            PaymentDate = applicableSchedule.PaymentDate.ToString("yyyy-MM-dd"),
+                            PaymentStatus = string.Empty,
+                            AllocatedAmount = amount,
+                            ApprovedAmount = applicableSchedule.PaymentDate < DateTime.Now.Date ? amount : 0,
+                            PaidAmount = applicableSchedule.PaymentDate < DateTime.Now.Date ? amount : 0,
+                            IsActive = true
+                        };
+                        paymentScheduleItems.Add(paymentScheduleItem);
+                    }
+                }
+
+                var model = new PaymentScheduleViewModel()
+                {
+                    Id = paymentSchedule.Id,
+                    FundingCaptureId = fundingCaptureId,
+                    AllocatedAmountTotal = paymentScheduleItems.Sum(item => item.AllocatedAmount),
+                    ApprovedAmountTotal = paymentScheduleItems.Sum(item => item.ApprovedAmount),
+                    PaidAmountTotal = paymentScheduleItems.Sum(item => item.PaidAmount),
+                    AllocatedAmountBalance = amountAwarded - paymentScheduleItems.Sum(item => item.AllocatedAmount),
+                    ApprovedAmountBalance = amountAwarded - paymentScheduleItems.Sum(item => item.ApprovedAmount),
+                    PaidAmountBalance = amountAwarded - paymentScheduleItems.Sum(item => item.PaidAmount),
+                    IsActive = true,
+                    PaymentScheduleItemViewModels = paymentScheduleItems
+                };
+
+                return model;
+            }
+
+
+            if ((FrequencyEnum)frequencyId == FrequencyEnum.Adhoc)
+            {
+                var frequency = await _frequencyRepository.GetById(frequencyId);
+                //var intervals = 12 / Convert.ToInt32(frequency.FrequencyNumber);
+                var intervals = 12;
 
                 var paymentScheduleItems = new List<PaymentScheduleItemViewModel>();
 

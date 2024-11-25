@@ -1,4 +1,7 @@
-﻿namespace NPOMS.Services.Models.FundingManagement
+﻿using Microsoft.Graph;
+using System.Collections.Generic;
+
+namespace NPOMS.Services.Models.FundingManagement
 {
     public class FundingCaptureViewModel
     {
@@ -22,5 +25,7 @@
         public PaymentScheduleViewModel PaymentScheduleViewModel { get; set; }
         public BankDetailViewModel BankDetailViewModel { get; set; }
         public DocumentViewModel DocumentViewModel { get; set; }
+
+        //List<FundingDetailViewModel> FundingDetailViewModels { get; set; }
     }
 }
