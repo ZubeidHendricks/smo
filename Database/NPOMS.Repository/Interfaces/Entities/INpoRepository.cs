@@ -10,6 +10,8 @@ namespace NPOMS.Repository.Interfaces.Entities
 
         //Task<Npo> GetQuickCapturersByQCId(int id);
 
+        Task<IEnumerable<Npo>> GetPublicEntities();
+
         Task<Npo> GetById(int id);
 
 		Task<IEnumerable<Npo>> SearchByName(string name);

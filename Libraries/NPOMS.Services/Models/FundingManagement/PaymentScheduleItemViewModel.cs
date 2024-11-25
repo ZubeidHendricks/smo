@@ -14,6 +14,8 @@
 
         public bool IsCompliant { get; set; }
 
+        public bool IsAddendum { get; set; }
+
         public bool IsActive { get; set; }
     }
 }

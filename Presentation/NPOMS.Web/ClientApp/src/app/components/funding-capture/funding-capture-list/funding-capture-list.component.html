@@ -88,6 +88,7 @@
                                     </th>
                                     <th></th>
                                     <th></th>
+                                    <th></th>
                                     <th>
                                         <p-columnFilter field="statusName" matchMode="in" [showMenu]="false">
                                             <ng-template pTemplate="filter" let-value let-filter="filterCallback">
@@ -112,6 +113,7 @@
                                     <td>{{funding.fundingDetailViewModel.frequencyName}}</td>
                                     <td>{{funding.fundingDetailViewModel.amountAwarded | currency: 'R'}}</td>
                                     <td>{{0.00 | currency: 'R'}}</td>
+                                    <td style="text-align: center;" ><p-checkbox [(ngModel)]="funding.fundingDetailViewModel.isAddendum" [disabled]="true" [binary]="true"></p-checkbox></td>
                                     <td>{{funding.statusName}}</td>
                                     <td style="text-align: center;">
                                         <button pButton pRipple type="button" class="p-button-text action-button" icon="fa fa-bars" (click)="selectedFundingCapture=funding; menu.toggle($event); updateButtonItems();" pTooltip="Actions" tooltipPosition="left"></button>

@@ -110,6 +110,7 @@ export class FundingCaptureListComponent implements OnInit {
       { field: 'fundingDetailViewModel.frequencyName', header: 'Payment Frequency', width: '10%' },
       { header: 'Amount Awarded', width: '10%' },
       { header: 'Amount Paid', width: '10%' },
+      { header: 'Is Addendum', width: '10%' },
       { field: 'statusName', header: 'Status', width: '10%' }
     ];
   }
@@ -117,6 +118,7 @@ export class FundingCaptureListComponent implements OnInit {
   private loadNpos() {
     this._fundingManagementRepo.getNposForFunding().subscribe(
       (results) => {
+        console.log('getNposForFunding',results);
         this.npos = results;
         this._spinner.hide();
       },
@@ -156,6 +158,18 @@ export class FundingCaptureListComponent implements OnInit {
           icon: 'fa fa-pencil-square-o',
           command: () => {
             this._router.navigateByUrl(`funding-capture/approve/${this.selectedFundingCapture.id}`);
+          }
+        });
+      }
+
+      if (this.IsAuthorized(PermissionsEnum.ApproveFundingCapture)) {
+        this.buttonItems[0].items.push({
+          label: 'Add Addendum',
+          icon: 'fa fa-pencil-square-o',
+          command: () => {
+            console.log('this.selectedFundingCapture', this.selectedFundingCapture);
+            this.saveAddendum(this.selectedFundingCapture.fundingDetailViewModel.id);
+            //this._router.navigateByUrl(`funding-capture/addendum/${this.selectedFundingCapture.id}`);
           }
         });
       }
@@ -425,6 +439,59 @@ export class FundingCaptureListComponent implements OnInit {
     return false;
   }
 
+  saveAddendum(fundingDetailId){
+
+    var vSubProgramId = 0;
+    this._fundingManagementRepo.getFundingById(this.selectedFundingCapture.id).subscribe(
+      (results) => {
+        console.log('getFundingById - results', this.selectedFundingCapture.id, results);
+        //vSubProgramId = results.fundingCaptureViewModels[0].fundingDetailViewModel.subProgrammeId;
+
+        var cloneFundingCapture = results.fundingCaptureViewModels.find(x => x.fundingDetailViewModel.id == fundingDetailId);
+        console.log('cloneFundingCapture',cloneFundingCapture);
+
+        //cloneFundingCapture.npoId = 473; //this.selectedFundingCapture.npoId;
+
+        // cloneFundingCapture.financialYearId= this.selectedFundingCapture.financialYearId;
+        cloneFundingCapture.statusId= StatusEnum.Saved;
+        // cloneFundingCapture.isActive= true;
+        cloneFundingCapture.paymentScheduleViewModel = null;
+        cloneFundingCapture.documentViewModel = null;
+        cloneFundingCapture.approverComment = null;
+        cloneFundingCapture.approverUserId = null;
+        cloneFundingCapture.approverUserName = null;
+        cloneFundingCapture.approvedDateTime = null;
+        cloneFundingCapture.approvedDate = null;
+        cloneFundingCapture.fundingDetailViewModel.amountAwarded = 0;
+
+        cloneFundingCapture.fundingDetailViewModel.isAddendum = true;
+
+        // var fundingCapture = {
+        //   npoId: this.selectedFundingCapture.id,
+        //   financialYearId: this.selectedFundingCapture.financialYearId,
+        //   statusId: StatusEnum.Saved,
+        //   isActive: true,
+        //   fundingDetailViewModel: {
+        //     financialYearId: this.selectedFundingCapture.financialYearId,
+        //     fundingTypeId: FundingTypeEnum.Annual,
+        //     programmeId: this.selectedFundingCapture.fundingDetailViewModel.programmeId,
+        //     subProgrammeId: results.fundingCaptureViewModels[0].fundingDetailViewModel.subProgrammeId,     
+        //     subProgrammeTypeId: this.selectedFundingCapture.fundingDetailViewModel.subProgrammeTypeId,
+        //     calculationTypeId: CalculationTypeEnum.Summary,
+        //     allowClaims: false,
+        //     allowVariableFunding: false,
+        //     isActive: true,
+        //     isAddendum: true
+        //   } as IFundingDetailViewModel
+        // } as IFundingCaptureViewModel;
+
+        console.log('cloneFundingCapture', cloneFundingCapture);
+        this.createFundingCapture(cloneFundingCapture);
+  },
+);
+
+  }
+
   save() {
     this._spinner.show();
     var fundingCapture = {
@@ -441,7 +508,8 @@ export class FundingCaptureListComponent implements OnInit {
         calculationTypeId: CalculationTypeEnum.Summary,
         allowClaims: false,
         allowVariableFunding: false,
-        isActive: true
+        isActive: true,
+        isAddendum: false
       } as IFundingDetailViewModel
     } as IFundingCaptureViewModel;
 
@@ -449,6 +517,8 @@ export class FundingCaptureListComponent implements OnInit {
   }
 
   private createFundingCapture(fundingCapture: IFundingCaptureViewModel) {
+    console.log('createFundingCapture, funding capture', fundingCapture);
+
     this._fundingManagementRepo.createFundingCapture(fundingCapture).subscribe(
       (results) => {
         this._router.navigateByUrl(`funding-capture/edit/${results.id}`);
@@ -472,14 +542,25 @@ export class FundingCaptureListComponent implements OnInit {
       case StatusEnum.Saved:
         this.buttonItemExists('Approve Funding');
         this.buttonItemExists('Download Funding');
+        this.buttonItemExists('Compliance');
+        this.buttonItemExists('Add Addendum');
         break;
       case StatusEnum.PendingApproval:
         this.buttonItemExists('Edit Funding');
+        this.buttonItemExists('Compliance');
+        this.buttonItemExists('Add Addendum');
         break;
       case StatusEnum.Approved:
+        this.buttonItemExists('Delete Funding');
+        this.buttonItemExists('Edit Funding');
+        this.buttonItemExists('Approve Funding');
+
+        break;
       case StatusEnum.Declined:
         this.buttonItemExists('Edit Funding');
         this.buttonItemExists('Approve Funding');
+        this.buttonItemExists('Compliance');
+        this.buttonItemExists('Add Addendum');
         break;
     }
   }

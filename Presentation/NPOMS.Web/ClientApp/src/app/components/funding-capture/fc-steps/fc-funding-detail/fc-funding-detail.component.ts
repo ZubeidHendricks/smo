@@ -7,6 +7,8 @@ import { IFrequency, IFundingDetailViewModel, INpoViewModel } from 'src/app/mode
 import { FundingManagementService } from 'src/app/services/api-services/funding-management/funding-management.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+import { ActivatedRoute, Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-fc-funding-detail',
@@ -35,10 +37,14 @@ export class FCFundingDetailComponent implements OnInit {
   maxDate: Date;
   finYearStartDate: Date;
 
+  action: string = 'create';
+
   stateOptions: any[];
 
   paymentFrequencies: IFrequency[];
   selectedPaymentFrequency: IFrequency;
+
+  addendumText: string = 'Funding Capture';
 
   amount: string = "0.00";
 
@@ -47,12 +53,16 @@ export class FCFundingDetailComponent implements OnInit {
     private _spinner: NgxSpinnerService,
     private _loggerService: LoggerService,
     private _datepipe: DatePipe,
-    private _fundingManagementRepo: FundingManagementService
+    private _fundingManagementRepo: FundingManagementService,
+    private _activeRouter: ActivatedRoute,
+    private _router: Router,
   ) { }
 
   ngOnInit(): void {
     this.loadFrequencies();
     this.updateDateField(this.fundingDetail.financialYearStartDate, this.fundingDetail.financialYearEndDate);
+    console.log('this.fundingDetail', this.fundingDetail);
+    this.addendumText = this.fundingDetail.isAddendum ? 'Addendum Funding Capture' : 'Funding Capture';
 
     this.stateOptions = [
       { label: 'Yes', value: true },
@@ -62,18 +72,26 @@ export class FCFundingDetailComponent implements OnInit {
 
 
   editAwardAmount(){
-    console.log('this.isEdit', this.isEdit);
-    console.log('this.fundingDetail.programmeBudget', this.fundingDetail.programmeBudget);
     if (!this.isEdit)
       return false;
 
     if (this.fundingDetail.programmeBudget === 0){
-      console.log('funding true');    
       return true;
+    }
+
+    if (this.action === 'addendum'){
+      this.npo.cCode = this.npo.cCode + 'ADDENDUM';
     }
   }
 
   private loadFrequencies() {
+
+    this._activeRouter.paramMap.subscribe(
+      params => {
+        let sku = params.get('id');
+        this.action = this._router.url.includes('addendum') ? 'addendum' : 'create';
+      });
+
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.Frequencies, false).subscribe(
       (results) => {

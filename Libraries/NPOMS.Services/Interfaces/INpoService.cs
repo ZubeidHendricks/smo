@@ -9,6 +9,8 @@ namespace NPOMS.Services.Interfaces
 	{
 		Task<IEnumerable<Npo>> Get(string userIdentifier, AccessStatusEnum accessStatus);
 
+        Task<IEnumerable<Npo>> Get(string email);
+
         Task<IEnumerable<Npo>> GetQuickCaptures(string userIdentifier, AccessStatusEnum accessStatus);
 
 

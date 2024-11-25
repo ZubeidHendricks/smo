@@ -26,5 +26,9 @@
 		NonCompliance = 22,
 		PendingReviewerSatisfaction = 23,
 		Completed = 24,
+		AddendumSaved = 25,
+		AddendumPendingApproval = 26,
+		AddendumApproved = 27,
+		AddendumRejected = 28
 	}
 }

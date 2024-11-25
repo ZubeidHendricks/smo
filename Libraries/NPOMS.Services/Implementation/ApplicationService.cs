@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NPOMS.Domain.Core;
 using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
+using NPOMS.Services.Models;
 using NPOMS.Domain.Enumerations;
 using NPOMS.Domain.Lookup;
 using NPOMS.Domain.Mapping;
@@ -529,7 +530,27 @@ namespace NPOMS.Services.Implementation
 
 		}
 
-		public async Task UpdateFundedApplicationScorecardCount(string userIdentifier, int fundingApplicationId)
+        public async Task CreateCfpApplication(dtoCfpApplication model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+            var application = new Application()
+            {
+                ApplicationPeriod = null,
+                IsActive = true,
+                CreatedUserId = loggedInUser.Id,
+                CreatedDateTime = DateTime.Now,
+                StatusId = 2,
+                ApplicationPeriodId = model.applicationPeriodId,
+                NpoId = model.npoId,
+                ProgrammeId = model.programmeId,
+                SubProgrammeId = model.subProgrammeId,
+                SubProgrammeTypeId = model.subProgrammeTypeId
+            };
+
+            await _applicationRepository.CreateEntity(application);
+        }
+
+        public async Task UpdateFundedApplicationScorecardCount(string userIdentifier, int fundingApplicationId)
 		{
             var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
             var fundingApplication = await _applicationRepository.GetById(fundingApplicationId);
