@@ -181,6 +181,8 @@ namespace NPOMS.Repository
         public DbSet<IncomeReportAudit> IncomeReportAudit { get; set; }
         public DbSet<GovernanceAudit> GovernanceAudits { get; set; }
 
+        public DbSet<Control> Control {  get; set; }
+
         /* Lookup */
         public DbSet<FacilityList> ActivityList { get; set; }
         public DbSet<FacilityList> FacilityList { get; set; }
