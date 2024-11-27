@@ -5,6 +5,7 @@ using NPOMS.Domain.Entities;
 using NPOMS.Domain.Enumerations;
 using NPOMS.Repository.Implementation.Core;
 using NPOMS.Repository.Interfaces.Core;
+using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Services.Email;
 using NPOMS.Services.Email.EmailTemplates;
 using NPOMS.Services.Implementation;
@@ -17,6 +18,7 @@ using System.Net.WebSockets;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using NPOMS.Repository.Implementation.Entities;
 
 namespace NPOMS.API.Controllers
 {
@@ -40,7 +42,10 @@ namespace NPOMS.API.Controllers
         private IGovernanceService _governanceService;
         private IAnyOtherService _anyOtherService;
         private ISDIPService _sdipService;
-        
+        private IApplicationRepository _applicationRepository;
+        private IUserRepository _userRepository;
+        private IProjectInformationRepository _projectInformationRepository;
+        private IObjectiveRepository _objectiveRepository;
         #endregion
 
         #region Constructors
@@ -59,7 +64,11 @@ namespace NPOMS.API.Controllers
             IIncomeAndExpenditureService incomeAndExpenditureService,
             IGovernanceService governanceService,
             IAnyOtherService anyOtherService,
-            ISDIPService sdipService
+            ISDIPService sdipService,
+            IApplicationRepository applicationRepository,
+            IUserRepository userRepository,
+            IProjectInformationRepository projectInformationRepository,
+            IObjectiveRepository objectiveRepository
             )
         {
             _logger = logger;
@@ -76,6 +85,10 @@ namespace NPOMS.API.Controllers
             _governanceService = governanceService;
             _anyOtherService = anyOtherService;
             _sdipService = sdipService;
+            _applicationRepository = applicationRepository;
+            _userRepository = userRepository;
+            _objectiveRepository = objectiveRepository;
+            projectInformationRepository = _projectInformationRepository;
         }
 
         #endregion
@@ -283,44 +296,6 @@ namespace NPOMS.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
-        [HttpPost("createCfp", Name = "CreateCfpApplication")]
-        public async Task<IActionResult> CreateCfpApplication(dtoCfpApplication model)
-        {
-            Application application;
-            try
-            {
-                var applicationPeriod = await _applicationService.GetApplicationPeriodById(model.applicationPeriodId);
-
-                // var application = 
-
-                //   var application = await _applicationService.GetApplicationByNpoIdAndPeriodIdAndYear(model.npoId, model.applicationPeriodId, applicationPeriod.FinancialYear.Name);
-
-                //if (application == null)
-                //{
-                //    await _applicationService.CreateApplication(model, base.GetUserIdentifier());
-                //    await CreateApplicationAudit(model);
-
-                //    var modelToReturn = application == null ? model : application;
-                //    return Ok(modelToReturn);
-
-                //}
-
-
-                await _applicationService.CreateCfpApplication(model, base.GetUserIdentifier());
-                //  await CreateApplicationAudit(application);
-
-                // var modelToReturn = application == null ? application : application;
-                return Redirect("https://wcgnpoms-training.westerncape.gov.za/#/applications");
-
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside CreateApplication action: {ex.Message} Inner Exception: {ex.InnerException}");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
 
         [HttpPut("updatePostReportStatus", Name = "UpdatePostReportStatus")]
         public async Task<IActionResult> UpdatePostReportStatus(BaseCompleteViewModel model)
@@ -1909,6 +1884,155 @@ namespace NPOMS.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Something went wrong inside DeleteApplicationById action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+        [HttpPost("createCfp", Name = "CreateCfpApplication")]
+        public async Task<IActionResult> CreateCfpApplication(dtoCfpApplication model)
+        {
+            try
+            {
+                var applicationPeriod = await _applicationService.GetApplicationPeriodById(model.applicationPeriodId);
+
+                // var application = 
+
+                //   var application = await _applicationService.GetApplicationByNpoIdAndPeriodIdAndYear(model.npoId, model.applicationPeriodId, applicationPeriod.FinancialYear.Name);
+
+                //if (application == null)
+                //{
+                //    await _applicationService.CreateApplication(model, base.GetUserIdentifier());
+                //    await CreateApplicationAudit(model);
+
+                //    var modelToReturn = application == null ? model : application;
+                //    return Ok(modelToReturn);
+
+                //}
+
+                var loggedInUser = await _userRepository.GetByUserNameWithDetails(base.GetUserIdentifier());
+                var application = new Application()
+                {
+                    ApplicationPeriod = null,
+                    IsActive = true,
+                    CreatedUserId = loggedInUser.Id,
+                    CreatedDateTime = DateTime.Now,
+                    StatusId = 2,
+                    ApplicationPeriodId = model.applicationPeriodId,
+                    NpoId = model.npoId,
+                    ProgrammeId = model.programmeId,
+                    SubProgrammeId = model.subProgrammeId,
+                    SubProgrammeTypeId = model.subProgrammeTypeId
+                };
+
+                await _applicationRepository.CreateEntity(application);
+
+                var projectInformation = new ProjectInformation()
+                {
+                    ApplicationId = application.Id,
+                    purposeQuestion = model.purposeOfProject,
+                    IsActive = true,
+                    CreatedUserId = loggedInUser.Id,
+                    CreatedDateTime = DateTime.Now
+                };
+
+                await _applicationService.CreateProjectInformation(projectInformation);
+                // await _projectInformationRepository.CreateEntity(projectInformation);
+
+                //  await _applicationService.CreateCfpApplication(model, base.GetUserIdentifier());
+                //  await CreateApplicationAudit(application);
+
+                // var modelToReturn = application == null ? application : application;
+                //application = await GetApplicationById(application.Id);
+
+                // return CreatedAtAction(nameof(GetApplicationById), new { id = application.Id }, application.Id);
+
+                return Ok(application.Id);
+                // return CreatedAtAction(nameof(GetApplicationById), new { id = application.Id }, application.Id);
+
+                //return Ok(model);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateApplication action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+        [HttpGet("objectives/applicationId/{applicationId}", Name = "GetAllObjectivesByApplicationId")]
+        public async Task<IActionResult> GetAllObjectivesByApplicationId(int applicationId)
+        {
+            try
+            {
+                var results = await _applicationService.GetAllCfpObjectivesAsync(applicationId);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetAllObjectives action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("objectives/id/{id}", Name = "GetAObjectivesById")]
+        public async Task<IActionResult> GetAObjectivesById(int id)
+        {
+            try
+            {
+                var results = await _objectiveRepository.GetById(id);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetAllObjectives action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("createObjectives", Name = "CreateObjectives")]
+        public async Task<IActionResult> CreateObjectives([FromBody] DtoObjectives model)
+        {
+            try
+            {
+                await _applicationService.CreateObjective(model, base.GetUserIdentifier());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateObjective action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("updateObjectives", Name = "UpdateObjectives")]
+        public async Task<IActionResult> UpdateObjectives([FromBody] DtoObjectives model)
+        {
+            try
+            {
+                await _applicationService.UpdateObjective(model, base.GetUserIdentifier());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateObjective action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("deleteObjectives/id/{id}", Name = "DeleteObjectives")]
+        public async Task<IActionResult> DeleteObjectives(int id)
+        {
+            try
+            {
+                var model = await _objectiveRepository.GetById(id);
+                await _objectiveRepository.DeleteAsync(model);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateObjective action: {ex.Message} Inner Exception: {ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
