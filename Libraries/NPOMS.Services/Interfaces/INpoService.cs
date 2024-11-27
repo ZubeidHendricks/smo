@@ -27,5 +27,8 @@ namespace NPOMS.Services.Interfaces
 		Task Update(Npo npo, string userIdentifier);
 
 		Task UpdateNpoStatus(Npo npo, string userIdentifier);
-	}
+
+		Task<string> GenerateCCode(string type);
+
+    }
 }

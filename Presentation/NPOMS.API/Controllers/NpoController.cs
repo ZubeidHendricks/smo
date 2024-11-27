@@ -265,6 +265,21 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
+        [HttpGet("generateccode", Name = "GenerateCCode")]
+        public async Task<IActionResult> GenerateCCode()
+		{
+
+
+			string ccode = string.Empty;
+			ccode = await _npoService.GenerateCCode("C");
+
+			var model = new { TypeCode = "C", CCode = ccode };
+
+
+            return Ok(model);
+
+        }
+
 		#endregion
 	}
 }

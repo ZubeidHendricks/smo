@@ -81,6 +81,9 @@ export class CreateNpoComponent implements OnInit {
   // Highlight required fields on validate click
   validated: boolean = false;
 
+  _ccode: string;
+  _disableGenerate : boolean = false ;
+
   constructor(
     private _router: Router,
     private _authService: AuthService,
@@ -445,5 +448,32 @@ export class CreateNpoComponent implements OnInit {
 
   updateNpoName() {
     this.npo.name = this.selectedNPO.name;
+  }
+
+  disableGenerate(){
+
+    console.log('disableGenerate', this.npo.cCode, this._disableGenerate);
+
+    if (this.npo.cCode === '' || this._disableGenerate === false)
+    {
+      return false;
+    }
+    else {
+      return true;
+    }
+
+
+  }
+
+
+  generateCCode(){
+    this._npoRepo.generateCCode().subscribe(
+      (results) => {
+        this._ccode = results.cCode;
+        this.npo.cCode = results.cCode;
+        this._disableGenerate = true;
+    });
+
+
   }
 }

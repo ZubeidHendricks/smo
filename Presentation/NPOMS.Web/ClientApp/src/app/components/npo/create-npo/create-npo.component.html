@@ -25,6 +25,7 @@
             <div class="p-field p-col-12 p-md-6">
                 <label class="non-mandatory-content">C-Code</label>
                 <input type="text" name="cCode" class="form-text" pInputText [(ngModel)]="npo.cCode" [ngModelOptions]="{standalone: true}">
+                <button pButton pRipple type="button" label="Generate" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableGenerate() (click)="generateCCode()"></button>
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="non-mandatory-content">Is the organisation also registered to provide Section 18 receipts?</label>

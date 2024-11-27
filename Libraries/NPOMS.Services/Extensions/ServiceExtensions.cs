@@ -145,6 +145,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IApplicationReviewerSatisfactionRepository, ApplicationReviewerSatisfactionRepository>();
             services.AddScoped<IContactInformationRepository, ContactInformationRepository>();
             services.AddScoped<INpoRepository, NpoRepository>();
+            services.AddScoped<IControlRepository, ControlRepository>();
             services.AddScoped<INpoProfileRepository, NpoProfileRepository>();
             services.AddScoped<IObjectiveRepository, ObjectiveRepository>();
             services.AddScoped<IResourceRepository, ResourceRepository>();
@@ -278,6 +279,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IDropdownService, DropdownService>();
             services.AddScoped<INpoProfileService, NpoProfileService>();
             services.AddScoped<INpoService, NpoService>();
+
             services.AddScoped<IUserNpoService, UserNpoService>();
             services.AddScoped<IApplicationPeriodService, ApplicationPeriodService>();
             services.AddScoped<IApplicationService, ApplicationService>();

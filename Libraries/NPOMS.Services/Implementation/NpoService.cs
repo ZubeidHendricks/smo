@@ -231,11 +231,12 @@ namespace NPOMS.Services.Implementation
 
                 isInteger = int.TryParse(control.Value, out cValue);
 
-				control.Value = string.Format("{0}", controlValue + 1);
+				control.Value = string.Format("{0}", (cValue + 1));
                 ccode = string.Format("{0}{1}", type, control.Value);
             }
 
 			_controlRepository.Update(control);
+			await _controlRepository.SaveAsync();
 
 			return ccode;
 		}
