@@ -86,6 +86,7 @@ export class ViewFundingCaptureComponent implements OnInit {
 
         this._fundingManagementRepo.getFundingById(Number(id)).subscribe(
           (results) => {
+            console.log('loadFunding', results);
             this.npo = results;
             this.fundingCapture = results.fundingCaptureViewModels[0];
             this.fundingDetail = this.fundingCapture.fundingDetailViewModel;

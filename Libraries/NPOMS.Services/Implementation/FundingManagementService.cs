@@ -268,7 +268,11 @@ namespace NPOMS.Services.Implementation
         {
             var fundingDetail = await _fundingDetailRepository.GetByFundingCaptureId(id);
             var sda = await _sdaRepository.GetByFundingCaptureId(id);
+
             var paymentSchedule = await _fundingPaymentScheduleRepository.GetByFundingCaptureId(id);
+            //var paymentSchedules = await _fundingPaymentScheduleRepository.GetAllByFundingCaptureId(id);
+
+
             var bankDetail = await _bankDetailRepository.GetByFundingCaptureId(id);
             var document = await _documentRepository.GetByFundingCaptureId(id);
 
