@@ -23,6 +23,11 @@ namespace NPOMS.Repository.Implementation.FundingManagement
             return await FindByCondition(x => x.FundingCaptureId.Equals(fundingCaptureId)).Include(x => x.PaymentScheduleItems.Where(y => y.IsActive)).AsNoTracking().FirstOrDefaultAsync();
         }
 
+        public async Task<List<PaymentSchedule>> GetAllByFundingCaptureId(int fundingCaptureId)
+        {
+            return await FindByCondition(x => x.FundingCaptureId.Equals(fundingCaptureId)).Include(x => x.PaymentScheduleItems.Where(y => y.IsActive)).AsNoTracking().ToListAsync();
+        }
+
         #endregion
     }
 }

@@ -4,6 +4,7 @@ import { FrequencyEnum } from 'src/app/models/enums';
 import { IFundingCaptureViewModel, IPaymentScheduleViewModel } from 'src/app/models/interfaces';
 import { FundingManagementService } from 'src/app/services/api-services/funding-management/funding-management.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-fc-payment-schedule',
@@ -69,16 +70,36 @@ export class FCPaymentScheduleComponent implements OnInit {
   compliances: any[];
   selectedCompliance: any;
 
+  hasCompliance: boolean = false;qq11
+
   selectedCycleNo: number = 5;
   selectedTpa:boolean = false;
 
   constructor(
     private _spinner: NgxSpinnerService,
     private _loggerService: LoggerService,
-    private _fundingManagementRepo: FundingManagementService
+    private _fundingManagementRepo: FundingManagementService,
+    private _router: Router,
   ) { }
 
   ngOnInit(): void {
+
+
+    this.hasCompliance = this._router.url.includes('compliance') ? true : false;
+    console.log('this.hasCompliance', this.hasCompliance);
+
+
+    this.cols = [
+      { header: 'Compliant Cycle', width: '15%' },
+      { header: 'Payment Date', width: '15%' },
+      { header: 'Payment Status', width: '15%' },
+      { header: 'Allocated Amount', width: '15%' },
+      { header: 'Approved Amount', width: '15%' },
+      { header: 'Paid Amount', width: '15%' }
+    ];
+
+    if (this.hasCompliance){
+     
     this.cols = [
       { header: 'Compliant Cycle', width: '15%' },
       { header: 'Payment Date', width: '15%' },
@@ -87,7 +108,8 @@ export class FCPaymentScheduleComponent implements OnInit {
       { header: 'Approved Amount', width: '15%' },
       { header: 'Paid Amount', width: '15%' },
       { header: 'Compliance', width: '15%' }
-    ];
+    ]; 
+    }
 
     this.compliances = [
       { finyear: '2024 - 2025', complianceCycle: 1, signedTpa: true, progressReport: true, nonFinData: true, isOverridden: true, isCompliant: true},

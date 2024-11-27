@@ -18,7 +18,7 @@
                     <td>{{rowData.allocatedAmount | currency: 'R'}}</td>
                     <td>{{rowData.approvedAmount | currency: 'R'}}</td>
                     <td>{{rowData.paidAmount | currency: 'R'}}</td>
-                    <td>
+                    <td *ngIf="hasCompliance">
                         <p-checkbox  (onChange)="onComplianceChange(rowData)" [(ngModel)]="rowData.isCompliant" [binary]="true"></p-checkbox>
                     </td>
                     <td *ngIf="paymentFrequencyId === FrequencyEnum.Adhoc"></td>
@@ -31,7 +31,7 @@
                     <td>{{paymentSchedule.approvedAmountTotal | currency: 'R'}}</td>
                     <td>{{paymentSchedule.paidAmountTotal | currency: 'R'}}</td>
                     <td *ngIf="paymentFrequencyId === FrequencyEnum.Adhoc"></td>
-                    <td></td>
+                    <td  *ngIf="hasCompliance"></td>
                 </tr>
                 <tr class="default-font">
                     <td colspan="4" style="text-align: right;">Balance</td>
@@ -39,7 +39,7 @@
                     <td>{{paymentSchedule.approvedAmountBalance | currency: 'R'}}</td>
                     <td>{{paymentSchedule.paidAmountBalance | currency: 'R'}}</td>
                     <td *ngIf="paymentFrequencyId === FrequencyEnum.Adhoc"></td>
-                    <td></td>
+                    <td  *ngIf="hasCompliance"></td>
                 </tr>
             </ng-template>
         </p-table>
