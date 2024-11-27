@@ -6,7 +6,7 @@ namespace NPOMS.Repository.Configurations.Entities
 {
 	public class StatusConfiguration : IEntityTypeConfiguration<Status>
 	{
-		public void Configure(EntityTypeBuilder<Status> builder)
+		public void Configure(EntityTypeBuilder<Status> builder)	
 		{
 			builder.Property("IsActive").HasDefaultValueSql("1");
 			builder.Property("CreatedUserId").HasDefaultValueSql("1");
