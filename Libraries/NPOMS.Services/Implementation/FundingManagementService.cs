@@ -493,7 +493,7 @@ namespace NPOMS.Services.Implementation
                             CompliantCycleId = compliantCycle.Id,
                             CycleNumber = compliantCycleRules.FirstOrDefault(x => x.Id.Equals(compliantCycle.CompliantCycleRuleId)).CycleNumber,
                             PaymentDate = applicableSchedule.PaymentDate.ToString("yyyy-MM-dd"),
-                            PaymentStatus = string.Empty,
+                            PaymentStatus = applicableSchedule.PaymentDate < DateTime.UtcNow ? "Paid" : "New",
                             AllocatedAmount = amount,
                             ApprovedAmount = applicableSchedule.PaymentDate < DateTime.Now.Date ? amount : 0,
                             PaidAmount = applicableSchedule.PaymentDate < DateTime.Now.Date ? amount : 0,
@@ -567,7 +567,7 @@ namespace NPOMS.Services.Implementation
                             CompliantCycleId = compliantCycle.Id,
                             CycleNumber = compliantCycleRules.FirstOrDefault(x => x.Id.Equals(compliantCycle.CompliantCycleRuleId)).CycleNumber,
                             PaymentDate = applicableSchedule.PaymentDate.ToString("yyyy-MM-dd"),
-                            PaymentStatus = string.Empty,
+                            PaymentStatus = "New",
                             AllocatedAmount = amount,
                             ApprovedAmount = applicableSchedule.PaymentDate < DateTime.Now.Date ? amount : 0,
                             PaidAmount = applicableSchedule.PaymentDate < DateTime.Now.Date ? amount : 0,
@@ -612,7 +612,7 @@ namespace NPOMS.Services.Implementation
 
             foreach (var paymentScheduleItem in model.PaymentScheduleItemViewModels)
             {
-                var psi = paymentSchedule.PaymentScheduleItems.Where(x => x.Id == paymentScheduleItem.Id).FirstOrDefault();
+                var psi = paymentSchedule.PaymentScheduleItems.Where(x => x.Id == paymentScheduleItem.Id && paymentScheduleItem.Id != 0).FirstOrDefault();
                 if (psi == null)
                 {
                     paymentSchedule.PaymentScheduleItems.Add(new()
@@ -697,6 +697,20 @@ namespace NPOMS.Services.Implementation
             fundingCapture.FinancialYear = null;
 
             await _fundingCaptureRepository.UpdateAsync(fundingCapture);
+
+            //Update the paymentscheduleItems
+            var paymentSched = await _fundingPaymentScheduleRepository.GetByFundingCaptureId(fundingCapture.Id);
+            if (paymentSched != null)
+            {
+                foreach (PaymentScheduleItem item in paymentSched.PaymentScheduleItems)
+                {
+                    if (item.PaymentStatus == "New")
+                    {
+                        item.PaymentStatus = "Pending Compliance";
+                    }
+                }
+            }
+            await _fundingPaymentScheduleRepository.UpdateAsync(paymentSched);
         }
 
         #endregion
