@@ -13,5 +13,7 @@ namespace NPOMS.Repository.Interfaces.Entities
 		Task UpdateEntity(Objective model, int currentUserId);
 
 		Task<Objective> GetById(int id);
-	}
+
+        Task<IEnumerable<Objective>> GetEntitiesByApplicationId(int applicationId);
+    }
 }

@@ -1624,10 +1624,81 @@ namespace NPOMS.Services.Implementation
 			await _myContentLinkRepository.UpdateAsync(model);
 		}
 
-		#endregion
+        public async Task<IEnumerable<Objective>> GetAllCfpObjectivesAsync(int applicationId)
+        {
+            var objectives = await _objectiveRepository.GetEntitiesByApplicationId(applicationId);
+            return objectives;
+        }
 
-		#region Place-SubPlace
-		public IEnumerable<SubPlace> GetSubplaces(List<int> placeIds)
+        public async Task CreateProjectInformation(ProjectInformation model)
+        {
+            await _projectInformationRepository.CreateEntity(model);
+        }
+
+        public async Task CreateObjective(DtoObjectives model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            var objective = new Objective()
+            {
+                ApplicationId = model.ApplicationId,
+                FinancialYear = model.FinancialYear,
+                Quarter = model.Quarter,
+                RecipientTypeId = model.Recipient,
+                Name = model.ObjectiveName,
+                Description = model.ObjectiveDescription,
+                IsActive = true,
+                CreatedUserId = loggedInUser.Id,
+                CreatedDateTime = DateTime.Now,
+
+            };
+
+            await _objectiveRepository.CreateAsync(objective);
+
+        }
+
+        public async Task UpdateObjective(DtoObjectives model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+            var oldEntity = await this._objectiveRepository.GetById(model.Id);
+            var objective = new Objective()
+            {
+                Id = model.Id,
+                ApplicationId = model.ApplicationId,
+                FinancialYear = model.FinancialYear,
+                Quarter = model.Quarter,
+                RecipientTypeId = model.Recipient,
+                Name = model.ObjectiveName,
+                Description = model.ObjectiveDescription,
+                IsActive = true,
+                CreatedUserId = oldEntity.CreatedUserId,
+                CreatedDateTime = oldEntity.CreatedDateTime,
+                UpdatedUserId = loggedInUser.Id,
+                UpdatedDateTime = DateTime.Now,
+
+            };
+
+            // var oldEntity = await this._objectiveRepository.GetById(model.Id);
+            await _objectiveRepository.UpdateAsync1(objective);
+
+        }
+
+        public async Task DeleteObjective(int id, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            var model = await _objectiveRepository.GetById(id);
+            model.IsActive = false;
+            model.UpdatedUserId = loggedInUser.Id;
+            model.UpdatedDateTime = DateTime.Now;
+
+            await _objectiveRepository.UpdateEntity(model, loggedInUser.Id);
+        }
+
+        #endregion
+
+        #region Place-SubPlace
+        public IEnumerable<SubPlace> GetSubplaces(List<int> placeIds)
 		{
 			var sublaces = _subPlaceRepository.FindAll().ToList();
 			var filteredSuPlace = new List<SubPlace>();
