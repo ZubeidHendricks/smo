@@ -297,7 +297,7 @@ export class CreateApplicationPeriodComponent implements OnInit {
         if(this.profile.departments[0].id === DepartmentEnum.DSD)
           this.applicationTypes = results.filter(x => x.systemName === 'FA' || x.systemName === 'QC');
         else if(this.profile.departments[0].id === DepartmentEnum.DOH)
-          this.applicationTypes = results.filter(x => x.systemName === 'SP' || x.systemName === 'BP');
+          this.applicationTypes = results.filter(x => x.systemName === 'SP' || x.systemName === 'BP' || x.systemName === 'CFP');
         else
         this.applicationTypes = results;
 
