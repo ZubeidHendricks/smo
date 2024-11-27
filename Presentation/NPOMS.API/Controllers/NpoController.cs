@@ -275,7 +275,6 @@ namespace NPOMS.API.Controllers
 
 			var model = new { TypeCode = "C", CCode = ccode };
 
-
             return Ok(model);
 
         }
