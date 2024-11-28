@@ -19,7 +19,7 @@
                     <td>{{rowData.approvedAmount | currency: 'R'}}</td>
                     <td>{{rowData.paidAmount | currency: 'R'}}</td>
                     <td *ngIf="hasCompliance">
-                        <p-checkbox  (onChange)="onComplianceChange(rowData)" [(ngModel)]="rowData.isCompliant" [binary]="true"></p-checkbox>
+                        <p-checkbox  (onChange)="onComplianceChange(rowData)" [(ngModel)]="rowData.isCompliant" [binary]="true" [disabled]="isComplianceDisabled(rowData.paymentDate)"></p-checkbox>
                     </td>
                     <td *ngIf="paymentFrequencyId === FrequencyEnum.Adhoc"></td>
                 </tr>

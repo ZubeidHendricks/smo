@@ -218,4 +218,8 @@ export class FCPaymentScheduleComponent implements OnInit {
             this.selectedComplianceOption = 'NO'
     }
   }
+
+  isComplianceDisabled(paymentDate: Date){
+    return paymentDate < new Date() ? true : false;
+  }
 }
