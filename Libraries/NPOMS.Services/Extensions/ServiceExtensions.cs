@@ -254,7 +254,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IProgrameContactDetailRepository, ProgrameContactDetailRepository>();
             services.AddScoped<IProgrameDeliveryRepository, ProgrameDeliveryRepository>();
 
-            services.AddScoped<IActivityDistrictRepository, ActivityDistrictRepository>();
+            services.AddScoped<Repository.Interfaces.Mapping.IActivityDistrictRepository, Repository.Implementation.Mapping.ActivityDistrictRepository>();
             services.AddScoped<IActivityManicipalityRepository, ActivityManicipalityRepository>();
             services.AddScoped<IActivitySubDistrictRepository, ActivitySubDistrictRepository>();
             services.AddScoped<IActivityAreaRepository, ActivityAreaRepository>();
