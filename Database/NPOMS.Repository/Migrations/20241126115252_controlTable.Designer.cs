@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NPOMS.Repository;
 
@@ -11,9 +12,11 @@ using NPOMS.Repository;
 namespace NPOMS.Repository.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20241126115252_controlTable")]
+    partial class controlTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -10185,15 +10188,6 @@ namespace NPOMS.Repository.Migrations
                             IsActive = true,
                             Name = "Business Plan Template",
                             SystemName = "BusinessPlanTemplate"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CreatedDateTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedUserId = 0,
-                            IsActive = true,
-                            Name = "Application Report",
-                            SystemName = "ApplicationReport"
                         });
                 });
 
@@ -18115,81 +18109,6 @@ namespace NPOMS.Repository.Migrations
                     b.ToTable("ProjectInformation", "fa");
                 });
 
-            modelBuilder.Entity("NPOMS.Domain.Entities.ReportChecklist", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ApplicationId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("ApprovalDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CreatedUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FinancialYearId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("QaurterId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("ReportedReportingPeriod")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ReportedReportingPeriodComments")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("ReportedServiceOutput")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ReportedServiceOutputComments")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("RequiresTPASubmission")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("RequiresTPASubmissionComments")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ServiceDeliveryAreaId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("SupportingDocuments")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SupportingDocumentsComments")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("UpdatedUserId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("VerifiableReasonsProvided")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("VerifiableReasonsProvidedComments")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedUserId");
-
-                    b.ToTable("ReportChecklists");
-                });
-
             modelBuilder.Entity("NPOMS.Domain.Entities.Resource", b =>
                 {
                     b.Property<int>("Id")
@@ -19134,74 +19053,6 @@ namespace NPOMS.Repository.Migrations
                         });
                 });
 
-            modelBuilder.Entity("NPOMS.Domain.Entities.VerifyActual", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ApplicationId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CreatedUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IndicatorReportId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("NPOReport")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NotVerified")
-                        .HasColumnType("int");
-
-                    b.Property<string>("NotVerifiedReason")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("QaurterId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("QuarterlyTarget")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ServiceDeliveryAreaId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StatusId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TargetVariance")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TargetVarianceReason")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedDateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("UpdatedUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Verified")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedUserId");
-
-                    b.HasIndex("StatusId");
-
-                    b.ToTable("VerifyActuals");
-                });
-
             modelBuilder.Entity("NPOMS.Domain.Evaluation.CapturedResponse", b =>
                 {
                     b.Property<int>("Id")
@@ -19854,61 +19705,6 @@ namespace NPOMS.Repository.Migrations
                             QuestionSectionId = 34,
                             ResponseTypeId = 19,
                             SortOrder = 100
-                        },
-                        new
-                        {
-                            Id = 123,
-                            CreatedDateTime = new DateTime(2024, 11, 27, 9, 30, 54, 856, DateTimeKind.Utc).AddTicks(7911),
-                            CreatedUserId = 1,
-                            IsActive = true,
-                            Name = "Requires TPA/Submission?",
-                            QuestionSectionId = 35,
-                            ResponseTypeId = 6,
-                            SortOrder = 100
-                        },
-                        new
-                        {
-                            Id = 124,
-                            CreatedDateTime = new DateTime(2024, 11, 27, 9, 30, 54, 856, DateTimeKind.Utc).AddTicks(7912),
-                            CreatedUserId = 1,
-                            IsActive = true,
-                            Name = "Verifiable reasons are provided for variance between reported and planned performance",
-                            QuestionSectionId = 35,
-                            ResponseTypeId = 6,
-                            SortOrder = 100
-                        },
-                        new
-                        {
-                            Id = 125,
-                            CreatedDateTime = new DateTime(2024, 11, 27, 9, 30, 54, 856, DateTimeKind.Utc).AddTicks(7913),
-                            CreatedUserId = 1,
-                            IsActive = true,
-                            Name = "Reported perfomance informatioom relates to the correct service and output",
-                            QuestionSectionId = 35,
-                            ResponseTypeId = 6,
-                            SortOrder = 100
-                        },
-                        new
-                        {
-                            Id = 126,
-                            CreatedDateTime = new DateTime(2024, 11, 27, 9, 30, 54, 856, DateTimeKind.Utc).AddTicks(7914),
-                            CreatedUserId = 1,
-                            IsActive = true,
-                            Name = "Reported performance information is for the correct reporting period",
-                            QuestionSectionId = 35,
-                            ResponseTypeId = 6,
-                            SortOrder = 100
-                        },
-                        new
-                        {
-                            Id = 127,
-                            CreatedDateTime = new DateTime(2024, 11, 27, 9, 30, 54, 856, DateTimeKind.Utc).AddTicks(7915),
-                            CreatedUserId = 1,
-                            IsActive = true,
-                            Name = "Supporting documents have a title and page number on each page and signed and dated by the resonsible person",
-                            QuestionSectionId = 35,
-                            ResponseTypeId = 6,
-                            SortOrder = 100
                         });
                 });
 
@@ -19991,15 +19787,6 @@ namespace NPOMS.Repository.Migrations
                             FundingTemplateTypeId = 1,
                             IsActive = true,
                             Name = "Assessment & Evaluation"
-                        },
-                        new
-                        {
-                            Id = 21,
-                            CreatedDateTime = new DateTime(2024, 11, 27, 11, 30, 54, 856, DateTimeKind.Local).AddTicks(6229),
-                            CreatedUserId = 1,
-                            FundingTemplateTypeId = 4,
-                            IsActive = true,
-                            Name = "Application Report"
                         });
                 });
 
@@ -20396,56 +20183,6 @@ namespace NPOMS.Repository.Migrations
                             HasDocument = false,
                             QuestionId = 122,
                             Weighting = 0
-                        },
-                        new
-                        {
-                            Id = 123,
-                            CommentRequired = false,
-                            DocumentRequired = false,
-                            HasComment = true,
-                            HasDocument = false,
-                            QuestionId = 123,
-                            Weighting = 0
-                        },
-                        new
-                        {
-                            Id = 124,
-                            CommentRequired = false,
-                            DocumentRequired = false,
-                            HasComment = true,
-                            HasDocument = false,
-                            QuestionId = 124,
-                            Weighting = 0
-                        },
-                        new
-                        {
-                            Id = 125,
-                            CommentRequired = false,
-                            DocumentRequired = false,
-                            HasComment = true,
-                            HasDocument = false,
-                            QuestionId = 125,
-                            Weighting = 0
-                        },
-                        new
-                        {
-                            Id = 126,
-                            CommentRequired = false,
-                            DocumentRequired = false,
-                            HasComment = true,
-                            HasDocument = false,
-                            QuestionId = 126,
-                            Weighting = 0
-                        },
-                        new
-                        {
-                            Id = 127,
-                            CommentRequired = false,
-                            DocumentRequired = false,
-                            HasComment = true,
-                            HasDocument = false,
-                            QuestionId = 127,
-                            Weighting = 0
                         });
                 });
 
@@ -20625,16 +20362,6 @@ namespace NPOMS.Repository.Migrations
                             Name = "Final Approver Section",
                             QuestionCategoryId = 20,
                             SortOrder = 5
-                        },
-                        new
-                        {
-                            Id = 35,
-                            CreatedDateTime = new DateTime(2024, 11, 27, 9, 30, 54, 857, DateTimeKind.Utc).AddTicks(1937),
-                            CreatedUserId = 1,
-                            IsActive = true,
-                            Name = "Report Check list",
-                            QuestionCategoryId = 21,
-                            SortOrder = 1
                         });
                 });
 
@@ -20660,9 +20387,6 @@ namespace NPOMS.Repository.Migrations
 
                     b.Property<string>("MainReviewerCategoryComment")
                         .HasColumnType("nvarchar(MAX)");
-
-                    b.Property<int?>("QaurterId")
-                        .HasColumnType("int");
 
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
@@ -20717,9 +20441,6 @@ namespace NPOMS.Repository.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("FundingApplicationId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("QaurterId")
                         .HasColumnType("int");
 
                     b.Property<int>("QuestionId")
@@ -27203,17 +26924,6 @@ namespace NPOMS.Repository.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("NPOMS.Domain.Entities.ReportChecklist", b =>
-                {
-                    b.HasOne("NPOMS.Domain.Core.User", "CreatedUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CreatedUser");
-                });
-
             modelBuilder.Entity("NPOMS.Domain.Entities.Resource", b =>
                 {
                     b.HasOne("NPOMS.Domain.Entities.Activity", "Activity")
@@ -27326,25 +27036,6 @@ namespace NPOMS.Repository.Migrations
                         .IsRequired();
 
                     b.Navigation("Activity");
-                });
-
-            modelBuilder.Entity("NPOMS.Domain.Entities.VerifyActual", b =>
-                {
-                    b.HasOne("NPOMS.Domain.Core.User", "CreatedUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("NPOMS.Domain.Entities.Status", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CreatedUser");
-
-                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("NPOMS.Domain.Evaluation.CapturedResponse", b =>

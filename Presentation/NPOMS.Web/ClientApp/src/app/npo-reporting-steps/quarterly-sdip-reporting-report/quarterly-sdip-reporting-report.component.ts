@@ -27,7 +27,7 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
   @Input() selectedsda!: number;
   @Input() selectedGroup!: string;
   @Output() rightHeaderChange = new EventEmitter<string>();
-
+  addOther: boolean = true;
   quarterId: number;
 
   serviceDeliveryAreaId: number;
@@ -530,13 +530,16 @@ export class QuarterlySDIPReportingReportComponent implements OnInit {
             });
             // this.filteredsdips = this.sdips.filter(x => x.qaurterId === quarter);
             this.rightHeaderChange.emit('Pending');
+            this.addOther = true;
             const allComplete = this.filteredsdips.length > 0 && this.filteredsdips.every(dip => dip.statusId === 24);
             const allSubmitted = this.filteredsdips.length > 0 && this.filteredsdips.every(dip => dip.statusId === 19);
             if (allComplete) {
               this.rightHeaderChange.emit('Completed');
+              this.addOther = true;
             }
             else if (allSubmitted) {
               this.rightHeaderChange.emit('Submitted');
+              this.addOther = false;
             }
             this.cdr.detectChanges();
           }  

@@ -33,6 +33,8 @@ namespace NPOMS.Domain.FundingManagement
 
         public DateTime? UpdatedDateTime { get; set; }
 
+        public bool IsAddendum { get; set; }
+
         public List<PaymentScheduleItem> PaymentScheduleItems { get; set; } = new List<PaymentScheduleItem>();
     }
 }

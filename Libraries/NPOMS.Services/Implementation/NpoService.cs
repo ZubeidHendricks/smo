@@ -4,6 +4,7 @@ using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Repository.Interfaces.Dropdown;
 using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Repository.Interfaces.Mapping;
+using NPOMS.Repository.Migrations;
 using NPOMS.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,8 @@ namespace NPOMS.Services.Implementation
 		#region Fields
 
 		private INpoRepository _npoRepository;
-		private IUserRepository _userRepository;
+        private IControlRepository _controlRepository;
+        private IUserRepository _userRepository;
 		private IOrganisationTypeRepository _organisationTypeRepository;
 		private IContactInformationRepository _contactInformationRepository;
 		private IUserNpoRepository _userNpoRepository;
@@ -30,6 +32,7 @@ namespace NPOMS.Services.Implementation
 
 		public NpoService(
 			INpoRepository npoRepository,
+			IControlRepository controlRepository,
 			IUserRepository userRepository,
 			IOrganisationTypeRepository organisationTypeRepository,
 			IContactInformationRepository contactInformationRepository,
@@ -37,6 +40,7 @@ namespace NPOMS.Services.Implementation
 			IRegistrationStatusRepository registrationStatusRepository)
 		{
 			_npoRepository = npoRepository;
+			_controlRepository = controlRepository;
 			_userRepository = userRepository;
 			_organisationTypeRepository = organisationTypeRepository;
 			_contactInformationRepository = contactInformationRepository;
@@ -73,6 +77,36 @@ namespace NPOMS.Services.Implementation
 
 				return results;
 			}
+		}
+
+		public async Task<IEnumerable<Npo>> Get(string email)
+		{
+			var loggedInUser = await _userRepository.GetByUserNameWithDetails(email);
+			var mappings = await _userNpoRepository.GetApprovedEntities(loggedInUser.Id);
+			var NpoIds = mappings.Select(x => x.NpoId);
+			var npos = await _npoRepository.GetPublicEntities();
+			var results = npos.Where(x => NpoIds.Contains(x.Id));
+			return results;
+			//if (Enum.IsDefined(typeof(AccessStatusEnum), accessStatus))
+			//{
+			//    int accessStatusId = (int)accessStatus;
+
+			//    if (accessStatusId != 0)
+			//        npos = npos.Where(x => x.ApprovalStatusId == accessStatusId);
+			//}
+
+			//if (loggedInUser.Roles.Any(x => x.IsActive && (x.RoleId.Equals((int)RoleEnum.ProgrammeApprover) || x.RoleId.Equals((int)RoleEnum.ProgrammeViewOnly) || x.RoleId.Equals((int)RoleEnum.ProgrammeCapturer) || x.RoleId.Equals((int)RoleEnum.SystemAdmin) || x.RoleId.Equals((int)RoleEnum.Admin) || x.RoleId.Equals((int)RoleEnum.ViewOnly))))
+			//{
+			//    return npos;
+			//}
+			//else
+			//{
+			//    var mappings = await _userNpoRepository.GetApprovedEntities(loggedInUser.Id);
+			//    var NpoIds = mappings.Select(x => x.NpoId);
+			//    var results = npos.Where(x => NpoIds.Contains(x.Id));
+
+			//    return results;
+			//}
 		}
 
 		public async Task<IEnumerable<Npo>> GetQuickCaptures(string userIdentifier, AccessStatusEnum accessStatus)
@@ -140,6 +174,7 @@ namespace NPOMS.Services.Implementation
 			await _npoRepository.CreateEntity(npo);
 		}
 
+
 		public async Task Update(Npo npo, string userIdentifier)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
@@ -182,6 +217,28 @@ namespace NPOMS.Services.Implementation
 			npo.ApprovalDateTime = DateTime.Now;
 
 			await _npoRepository.UpdateEntity(npo, loggedInUser.Id);
+		}
+
+		public async Task<string> GenerateCCode(string type){
+
+			string controlValue = string.Empty;
+			string ccode = string.Empty;
+			var control = await _controlRepository.GetByType("C");
+			if (control != null)
+			{
+				int cValue = 0;
+				bool isInteger = false;
+
+                isInteger = int.TryParse(control.Value, out cValue);
+
+				control.Value = string.Format("{0}", (cValue + 1));
+                ccode = string.Format("{0}{1}", type, control.Value);
+            }
+
+			_controlRepository.Update(control);
+			await _controlRepository.SaveAsync();
+
+			return ccode;
 		}
 
 		#endregion

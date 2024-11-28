@@ -203,6 +203,16 @@ export class NavigationComponent implements OnInit {
         });
       }
 
+      if (this.IsAuthorized(PermissionsEnum.ViewAdminMenu)) {
+        this.mainMenu.push({
+          label: 'Admin',
+          icon: 'fa fa-cogs wcg-icon',
+          command: () => {
+            this.displaySideMenu = true;
+          }
+        });
+      }
+
       if (this.IsAuthorized(PermissionsEnum.ViewFundingCaptureMenu)) {
       if (this.IsAuthorized(PermissionsEnum.ViewQC)) {
         this.mainMenu.push({
@@ -224,15 +234,6 @@ export class NavigationComponent implements OnInit {
         });
       }
 
-      if (this.IsAuthorized(PermissionsEnum.ViewAdminMenu)) {
-        this.mainMenu.push({
-          label: 'Admin',
-          icon: 'fa fa-cogs wcg-icon',
-          command: () => {
-            this.displaySideMenu = true;
-          }
-        });
-      }
       
       // if (this.IsAuthorized(PermissionsEnum.ViewQC)) {
       //   this.mainMenu.push({

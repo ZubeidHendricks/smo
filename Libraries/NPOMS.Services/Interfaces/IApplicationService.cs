@@ -35,8 +35,8 @@ namespace NPOMS.Services.Interfaces
 		Task CreateActivityRecipients(Application model, int financialYearId);
 
 		Task CreateApplication(Application model, string userIdentifier);
-
-		Task UpdateApplicationStatus(Application model, string userIdentifier);
+        Task CreateCfpApplication(dtoCfpApplication model, string userIdentifier);
+        Task UpdateApplicationStatus(Application model, string userIdentifier);
 
 		Task UpdateApplication(Application model, string userIdentifier);
 
@@ -145,5 +145,10 @@ namespace NPOMS.Services.Interfaces
 		Task<ApplicationPeriod> GetApplicationPeriodById(int id);
         Task<IEnumerable<Activity>> AllActivitiesAsync();
         Task SubmitReport(Application model, string userIdentifier);
+        Task CreateProjectInformation(ProjectInformation model);
+        Task CreateObjective(DtoObjectives model, string userIdentifier);
+        Task UpdateObjective(DtoObjectives model, string userIdentifier);
+        Task DeleteObjective(int id, string userIdentifier);
+        Task<IEnumerable<Objective>> GetAllCfpObjectivesAsync(int applicationId);
     }
 }

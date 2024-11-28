@@ -28,6 +28,8 @@ namespace NPOMS.Domain.FundingManagement
 
         public bool IsActive { get; set; }
 
+        public bool IsAddendum { get; set; }
+
         public int CreatedUserId { get; set; }
 
         public DateTime CreatedDateTime { get; set; }

@@ -46,6 +46,12 @@ namespace NPOMS.Repository.Implementation.Entities
 			return await FindByCondition(x => x.Id.Equals(id)).Include(x => x.ObjectiveProgrammes).AsNoTracking().FirstOrDefaultAsync();
 		}
 
-		#endregion
-	}
+        public async Task<IEnumerable<Objective>> GetEntitiesByApplicationId(int applicationId)
+        {
+            return await FindByCondition(x => x.ApplicationId.Equals(applicationId))
+                            .AsNoTracking().ToListAsync();
+        }
+
+        #endregion
+    }
 }

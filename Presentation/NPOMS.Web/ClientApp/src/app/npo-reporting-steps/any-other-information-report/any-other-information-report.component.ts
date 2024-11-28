@@ -34,6 +34,7 @@ export class AnyOtherInformationReportComponent implements OnInit {
   group: string;
   filteredotherInfors: IOtherInfor[];
   displayVieHistoryDialog: boolean;
+  addOtherfield: boolean = true;
 
   ngOnChanges(changes: SimpleChanges) {
       if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
@@ -533,11 +534,14 @@ addNewRow() {
 
             // this.filteredotherInfors = this.otherInfors.filter(x => x.qaurterId === quarter);
             this.otherrightHeaderChange.emit('Pending');
+            this.addOtherfield = true;
             const allComplete = this.filteredotherInfors.length > 0 && this.filteredotherInfors.every(dip => dip.statusId === 24);
             const allSubmitted = this.filteredotherInfors.length > 0 && this.filteredotherInfors.every(dip => dip.statusId === 19);
             if (allComplete) {
               this.otherrightHeaderChange.emit('Completed');
+              this.addOtherfield = true;
             } else if (allSubmitted) {
+               this.addOtherfield = false;
                this.otherrightHeaderChange.emit('Submitted');
              }
             this.cdr.detectChanges();

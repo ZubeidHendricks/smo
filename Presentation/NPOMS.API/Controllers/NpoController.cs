@@ -76,7 +76,22 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpGet("NpoId/{NpoId}", Name = "GetNpoById")]
+        [HttpGet("email/{email}", Name = "GetAllNposPublic")]
+        public async Task<IActionResult> GetAllNposPublic(string email)
+        {
+            try
+            {
+                var results = await _npoService.Get(email);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetAllNpos action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("NpoId/{NpoId}", Name = "GetNpoById")]
 		public async Task<IActionResult> GetNpoById(int NpoId)
 		{
 			try
@@ -249,6 +264,20 @@ namespace NPOMS.API.Controllers
 				_logger.LogError($"Something went wrong inside NpoConfigureEmail action: {ex.Message} Inner Exception: {ex.InnerException}");
 			}
 		}
+
+        [HttpGet("generateccode", Name = "GenerateCCode")]
+        public async Task<IActionResult> GenerateCCode()
+		{
+
+
+			string ccode = string.Empty;
+			ccode = await _npoService.GenerateCCode("C");
+
+			var model = new { TypeCode = "C", CCode = ccode };
+
+            return Ok(model);
+
+        }
 
 		#endregion
 	}

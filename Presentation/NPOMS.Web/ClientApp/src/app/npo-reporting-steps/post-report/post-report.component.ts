@@ -33,6 +33,8 @@ export class PostReportComponent implements OnInit {
   
   @Output() rightHeaderChangepost = new EventEmitter<string>();
   displayVieHistoryDialog: boolean;
+  addOther: boolean = true;
+   isLoading: boolean = false;
 
   ngOnChanges(changes: SimpleChanges) {
       if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
@@ -634,13 +636,16 @@ private loadPosts() {
             row.isEditable = !(row.id > 0);
           });
           this.rightHeaderChangepost.emit('Pending');
+          this.addOther = true;
           const allComplete = this.filteredposts.length > 0 && this.filteredposts.every(dip => dip.statusId === 24);
           const allSubmitted = this.filteredposts.length > 0 && this.filteredposts.every(dip => dip.statusId === 19);
           if (allComplete) {
             this.rightHeaderChangepost.emit('Completed');
+            this.addOther = true;
           }
           if (allSubmitted) {
             this.rightHeaderChangepost.emit('Submitted');
+            this.addOther = false;
           }
         
           this.cdr.detectChanges();

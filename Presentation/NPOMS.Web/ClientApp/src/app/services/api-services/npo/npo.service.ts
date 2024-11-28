@@ -71,4 +71,9 @@ export class NpoService {
     const url = `${this._envUrl.urlAddress}/api/npos/approval-status`;
     return this._http.put<INpo>(url, npo, httpOptions);
   }
+
+  public generateCCode() {
+    const url = `${this._envUrl.urlAddress}/api/npos/generateccode`;
+    return this._http.get<any>(url, httpOptions);
+  }
 }

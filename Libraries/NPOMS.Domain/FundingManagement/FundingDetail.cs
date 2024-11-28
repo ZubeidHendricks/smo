@@ -33,6 +33,8 @@ namespace NPOMS.Domain.FundingManagement
 
         public int CalculationTypeId { get; set; }
 
+        public bool IsAddendum { get; set; }
+
         public bool IsActive { get; set; }
 
         public int CreatedUserId { get; set; }

@@ -268,9 +268,12 @@ const routes: Routes = [
 
   // Funding Capture
   { path: 'funding-capture', component: FundingCaptureListComponent },
+  { path: 'funding-capture/addendum/:id', component: EditFundingCaptureComponent },
   { path: 'funding-capture/edit/:id', component: EditFundingCaptureComponent },
   { path: 'funding-capture/approve/:id', component: ApproveFundingCaptureComponent },
   { path: 'funding-capture/view/:id', component: ViewFundingCaptureComponent },
+  { path: 'funding-capture/compliance/:id', component: ViewFundingCaptureComponent },
+  //{ path: 'funding-capture', component: EditFundingCaptureComponent },
   // { path: 'funding-capture/download/:id', component: DownloadFundingCaptureComponent }
 
     // Funding Assessment

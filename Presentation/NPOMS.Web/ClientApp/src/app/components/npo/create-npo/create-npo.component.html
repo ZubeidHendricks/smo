@@ -24,8 +24,16 @@
             </div>
             <div class="p-field p-col-12 p-md-6">
                 <label class="non-mandatory-content">C-Code</label>
-                <input type="text" name="cCode" class="form-text" pInputText [(ngModel)]="npo.cCode" [ngModelOptions]="{standalone: true}">
+                <input type="text" name="cCode" class="form-text" pInputText [(ngModel)]="npo.cCode" [ngModelOptions]="{standalone: true}">             
+                <!-- <button pButton pRipple type="button" label="Generate" class="p-button-text" icon="fa plus-circle" [disabled]=disableGenerate() (click)="generateCCode()"></button> -->
             </div>
+            <div class="p-field p-col-12 p-md-6">
+                <label class="non-mandatory-content">Has existing C-Code</label>
+                <div style="text-align: left;">
+                <p-checkbox [binary]="true" name="groupname" [(ngModel)]="_hasCCodeAvail" (onChange)="generateCCode()"></p-checkbox>
+                </div>
+            </div>
+
             <div class="p-field p-col-12 p-md-6">
                 <label class="non-mandatory-content">Is the organisation also registered to provide Section 18 receipts?</label>
                 <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px', 'width': '25%'}" [(ngModel)]="npo.section18Receipts" [ngModelOptions]="{standalone: true}"></p-selectButton>

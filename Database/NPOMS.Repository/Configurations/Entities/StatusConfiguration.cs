@@ -6,7 +6,7 @@ namespace NPOMS.Repository.Configurations.Entities
 {
 	public class StatusConfiguration : IEntityTypeConfiguration<Status>
 	{
-		public void Configure(EntityTypeBuilder<Status> builder)
+		public void Configure(EntityTypeBuilder<Status> builder)	
 		{
 			builder.Property("IsActive").HasDefaultValueSql("1");
 			builder.Property("CreatedUserId").HasDefaultValueSql("1");
@@ -156,6 +156,30 @@ namespace NPOMS.Repository.Configurations.Entities
                     Id = 24,
                     Name = "Completed",
                     SystemName = "Completed"
+                },
+                new Status
+                {
+                    Id = 25,
+                    Name = "Addendum Saved",
+                    SystemName = "AddendumSaved"
+                },
+                new Status
+                {
+                    Id = 26,
+                    Name = "Addendum Pending Approval",
+                    SystemName = "AddendumPendingApproval"
+                },
+                new Status
+                {
+                    Id = 27,
+                    Name = "Addendum Approved",
+                    SystemName = "AddendumApproved"
+                },
+                new Status
+                {
+                    Id = 28,
+                    Name = "Addendum Rejected",
+                    SystemName = "AddendumRejected"
                 }
             );
 		}

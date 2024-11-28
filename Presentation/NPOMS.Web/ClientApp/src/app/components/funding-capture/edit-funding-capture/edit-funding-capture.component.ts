@@ -145,6 +145,7 @@ export class EditFundingCaptureComponent implements OnInit {
   }
 
   private updatePaymentSchedules(status: StatusEnum) {
+
     this._fundingManagementRepo.updatePaymentSchedules(this.paymentSchedule).subscribe(
       (resp) => {
         this.updateFundingCapture(status);
