@@ -98,6 +98,7 @@ export class FundingCaptureListComponent implements OnInit {
 
     this.npoCols = [
       { field: 'refNo', header: 'Ref. No.', width: '15%' },
+      { field: 'cCode', header: 'C Code.', width: '15%' },
       { field: 'name', header: 'Organisation Name', width: '60%' },
       { field: 'organisationTypeName', header: 'Organisation Type', width: '15%' }
     ];
