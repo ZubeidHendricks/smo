@@ -137,7 +137,7 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IGovernanceRepository, GovernanceRepository>();
             services.AddScoped<IAnyOtherRepository, AnyOtherRepository>();
             services.AddScoped<ISDIPRepository, SDIPRepository>();
-
+            services.AddScoped<IReportChecklistRepository, ReportChecklistRepository>();
             services.AddScoped<IApplicationApprovalRepository, ApplicationApprovalRepository>();
             services.AddScoped<IApplicationAuditRepository, ApplicationAuditRepository>();
             services.AddScoped<IApplicationCommentRepository, ApplicationCommentRepository>();
@@ -201,7 +201,8 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IIncomeAuditRepository, IncomeAuditRepository>();
             services.AddScoped<IAnyOtherAuditRepository, AnyOtherAuditRepository>();
             services.AddScoped<IAuditIndicatorRepository, AuditIndicatorRepository>();
-            //IAnyOtherAuditRepository
+            services.AddScoped<IVerifyActualRepository, VerifyActualRepository>();
+
 
             /* Lookup */
             services.AddScoped<IActivityListRepository, ActivityListRepository>();
@@ -299,6 +300,9 @@ namespace NPOMS.Services.Extensions
             services.AddScoped<IGovernanceService, GovernanceService>();
             services.AddScoped<IAnyOtherService, AnyOtherService>();
             services.AddScoped<ISDIPService, SDIPService>();
+            services.AddScoped<IReportChecklistService, ReportChecklistService>();
+            services.AddScoped<IVerifyActualService, VerifyActualService>();
+
 
             services.AddConfiguration<dtoBlobConfig>(builder.Configuration, "BlobStorageSettings");
             services.AddScoped<IFundingManagementService, FundingManagementService>();

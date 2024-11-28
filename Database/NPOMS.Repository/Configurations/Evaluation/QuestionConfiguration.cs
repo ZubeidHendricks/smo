@@ -467,7 +467,63 @@ namespace NPOMS.Repository.Configurations.Evaluation
                      CreatedUserId = 1,
                      CreatedDateTime = DateTime.UtcNow
                  }
-
+                 
+                 ,
+                 new Question
+                 {
+                     Id = 123,
+                     QuestionSectionId = 35,
+                     ResponseTypeId = 6,
+                     Name = "Requires TPA/Submission?",
+                     SortOrder = 100,
+                     IsActive = true,
+                     CreatedUserId = 1,
+                     CreatedDateTime = DateTime.UtcNow
+                 },
+                 new Question
+                 {
+                     Id = 124,
+                     QuestionSectionId = 35,
+                     ResponseTypeId = 6,
+                     Name = "Verifiable reasons are provided for variance between reported and planned performance",
+                     SortOrder = 100,
+                     IsActive = true,
+                     CreatedUserId = 1,
+                     CreatedDateTime = DateTime.UtcNow
+                 },
+                 new Question
+                 {
+                     Id = 125,
+                     QuestionSectionId = 35,
+                     ResponseTypeId = 6,
+                     Name = "Reported perfomance informatioom relates to the correct service and output",
+                     SortOrder = 100,
+                     IsActive = true,
+                     CreatedUserId = 1,
+                     CreatedDateTime = DateTime.UtcNow
+                 },
+                 new Question
+                 {
+                     Id = 126,
+                     QuestionSectionId = 35,
+                     ResponseTypeId = 6,
+                     Name = "Reported performance information is for the correct reporting period",
+                     SortOrder = 100,
+                     IsActive = true,
+                     CreatedUserId = 1,
+                     CreatedDateTime = DateTime.UtcNow
+                 },
+                 new Question
+                 {
+                     Id = 127,
+                     QuestionSectionId = 35,
+                     ResponseTypeId = 6,
+                     Name = "Supporting documents have a title and page number on each page and signed and dated by the resonsible person",
+                     SortOrder = 100,
+                     IsActive = true,
+                     CreatedUserId = 1,
+                     CreatedDateTime = DateTime.UtcNow
+                 }
             );
         }
     }

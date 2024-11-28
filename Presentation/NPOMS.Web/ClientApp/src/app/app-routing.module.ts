@@ -170,8 +170,6 @@ const routes: Routes = [
   
   { path: 'reviewReports/:id', component: ReportReviewComponent },
   { path: 'utilities/importReports', component: IndicatorImportComponent },
-
-  
   { path: 'application/create/:id', component: CreateApplicationComponent },
   { path: 'application/edit/:id/:activeStep', component: EditApplicationComponent },
   { path: 'application/review/:id', component: ReviewApplicationComponent },

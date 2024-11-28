@@ -6,7 +6,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MegaMenuItem, MessageService } from 'primeng/api';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, FrequencyEnum, FrequencyPeriodEnum, PermissionsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActuals, IActualsAudit, IApplication, IFinancialYear, INPOIndicator, IProgramme, ISDA, IStatus, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { IActivity, IActuals, IActualsAudit, IApplication, IFinancialYear, INPOIndicator, IProgramme, ISDA, IStatus, ISubProgramme, ISubProgrammeType, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { IndicatorService } from 'src/app/services/api-services/indicator/indicator.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
@@ -22,12 +22,16 @@ import { NpoProfileService } from 'src/app/services/api-services/npo-profile/npo
   styleUrls: ['./program-summary.component.css']
 })
 export class ProgramSummaryComponent implements OnInit {
+
   @Input() application: IApplication;
 
   @Output() rightHeaderIndicatorChange = new EventEmitter<string>();
   programme: string;
   programid: string;
   iNPOIndicatorsdata: INPOIndicator[];
+  yearSelectedId: number;
+  selectedSubProgrammeTypeId: number;
+  filteredActuals: IActuals[];
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -87,6 +91,16 @@ export class ProgramSummaryComponent implements OnInit {
   private financialYearsSubject = new BehaviorSubject<IFinancialYear[]>([]);
   private financialYears$ = this.financialYearsSubject.asObservable();
   yearSelected: boolean = false;
+  filteredSubProgrammes: ISubProgramme[] = []; 
+  filteredSubProgrammeTypes: ISubProgrammeType[] = [];
+  subProgrammeTypes: ISubProgrammeType[];
+  programmes: IProgramme[] = [];
+  allSubProgrammes: ISubProgramme[];  
+  subProgrammes: ISubProgramme[] = [];
+  selectedSubProgramme: ISubProgramme; 
+  AllsubProgrammesTypes: ISubProgrammeType[];
+  subProgrammesTypes: ISubProgrammeType[] = [];
+  selectedSubProgrammeType: ISubProgrammeType;
 
   constructor(
     private _dropdownRepo: DropdownService,
@@ -122,9 +136,25 @@ export class ProgramSummaryComponent implements OnInit {
         // this.loadProgrammes();
         this.loadFinancialYears()
         // this.MasterServiceDelivery();
+        this.loadSubProgrammeTypes();
       }
     });
   }
+
+  private loadSubProgrammeTypes() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
+      (results) => {
+        this.AllsubProgrammesTypes = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
 
   private loadFinancialYears() {
     this._spinner.show();
@@ -245,13 +275,27 @@ export class ProgramSummaryComponent implements OnInit {
   onDropdownChange(event: any) {
    this.selectedOptionId = this.selectedOption.id;
    this.iNPOIndicators = this.iNPOIndicatorsdata;
-   this.createMergedList();
+   this.filterActuals();
   }
 
   onProgramDropdownChange(event: any) {
     this.selectedProgrammeId = this.selectedProgramme.id;
     this.iNPOIndicators = this.iNPOIndicatorsdata;
+    //this.subProgrammeChange(this.selectedProgramme);
+    this.filterActuals();
    }
+
+   onSubprograDropdownChange($event: any) {
+    this.selectedSubProgrammeTypeId = this.selectedSubProgrammeType.id;
+    this.iNPOIndicators = this.iNPOIndicatorsdata;
+    this.filterActuals();
+    }
+
+    onyearDropdownChange($event: any) {
+      this.yearSelectedId = this.selectedFinancialYear.id;
+      this.iNPOIndicators = this.iNPOIndicatorsdata;
+      this.filterActuals();
+  }
 
   private loadProgrammes() {
     this._spinner.show();
@@ -314,29 +358,7 @@ private getAllIndicatorReports() {
   );
 }
 
-// //getAllIndicatorReports
-//  calculateTotalsPerQuarter(
-//   indicatorId: number,
-//   applicationId: number,
-// ): { quarterId: number; totalActual: number; totalTarget: number }[] {
-//   // Define quarters
-//   const quarters = [1, 2, 3, 4];
 
-//   // Calculate totals for each quarter
-//   return quarters.map(quarterId => {
-//     const filteredData = this.actuals.filter(row =>
-//       row.indicatorId === indicatorId &&
-//       row.applicationId === applicationId &&
-//       row.qaurterId === quarterId
-//     );
-
-//     // Calculate totals for the current quarter
-//     const totalActual = filteredData.reduce((sum, row) => sum + row.actual, 0);
-//     const totalTarget = filteredData.reduce((sum, row) => sum + row.targets, 0);
-
-//     return { quarterId, totalActual, totalTarget };
-//   });
-// }
 calculateTotalsPerQuarter(
   indicatorId: number,
   quarterId: number
@@ -360,21 +382,16 @@ calculateTotalsPerQuarter(
 }
 
 getTotalTargets(
-  q1Target: any,
-  q2Target: any,
-  q3Target: any,
-  q4Target: any
+  rowData: any
 ) {
-  return (Number(q1Target) + Number(q2Target) + Number(q3Target) + Number(q4Target));
+  return (Number(rowData.quarters[0]?.Targets) + Number(rowData.quarters[1]?.Targets) + Number(rowData.quarters[2]?.Targets) + Number(rowData.quarters[3]?.Targets));
+
 }
 
 getTotalActuals(
-  q1Actual: any,
-  q2Actual: any,
-  q3Actual: any,
-  q4Actual: any
+  rowData: any
 ) {
-  return (Number(q1Actual) + Number(q2Actual) + Number(q3Actual) + Number(q4Actual));
+  return (Number(rowData.quarters[0]?.Actual) + Number(rowData.quarters[1]?.Actual) + Number(rowData.quarters[2]?.Actual) + Number(rowData.quarters[3]?.Actual));
 }
 
 programmeName()
@@ -382,6 +399,51 @@ programmeName()
   return "Dummy Programme";
   //return this.programme;
 }
+
+resetFilters() {
+  // Clear all selection variables
+  this.selectedOptionId = null;
+  this.selectedProgrammeId = null;
+  this.selectedSubProgrammeTypeId = null;
+  this.yearSelectedId = null;
+
+  // Reset the filteredActuals to the original actuals
+  this.filteredActuals = [...this.actuals];
+
+  this.createMergedList()
+}
+
+filterActuals() {
+  // Start with the original actuals array
+  this.filteredActuals = this.actuals;
+
+  // Apply filters step-by-step
+  if (this.selectedOptionId > 0) {
+    this.filteredActuals = this.filteredActuals.filter(
+      actual => actual.serviceDeliveryAreaId === this.selectedOptionId
+    );
+  }
+
+  if (this.selectedProgrammeId > 0) {
+    this.filteredActuals = this.filteredActuals.filter(
+      actual => actual.programmeId === this.selectedProgrammeId
+    );
+  }
+
+  if (this.selectedSubProgrammeTypeId > 0) {
+    this.filteredActuals = this.filteredActuals.filter(
+      actual => actual.subProgrammeTypeId === this.selectedSubProgrammeTypeId
+    );
+  }
+
+  if (this.yearSelectedId > 0) {
+    this.filteredActuals = this.filteredActuals.filter(
+      actual => actual.financialYearId === this.yearSelectedId
+    );
+  }
+  this.createMergedList();
+}
+
 createMergedList() {
   this.mergedList = [];
 
@@ -390,8 +452,9 @@ createMergedList() {
     actual => actual.serviceDeliveryAreaId === this.selectedOptionId
   );
 
+
   // Merge actuals and indicators
-  this.actuals.forEach(actual => {
+  this.filteredActuals.forEach(actual => {
     const indicator = this.iNPOIndicators.find(
       ind => +ind.id === actual.indicatorId
     );
@@ -515,37 +578,29 @@ createEmptyIndicator(actual: any): INPOIndicator {
   };
 }
 
+subProgrammeChange(subProgramme: ISubProgramme) {
+  this.selectedSubProgrammeType = null;
+  this.filteredSubProgrammeTypes = [];
 
-// createMergedList() {
-//   this.mergedList = [];
-//   this.iNPOIndicators.forEach(indicator => {
-//     const actualData = this.actuals.find(act => 
-//       act.indicatorId === +indicator.id 
-//     );
-//     const actuals = actualData ? { ...actualData } : this.createEmptyActual(indicator);
+  if (subProgramme.id != null) {
+    this.filteredSubProgrammeTypes = this.AllsubProgrammesTypes.filter(x => x.subProgrammeId === subProgramme.id);
+  }
+}
 
-//     this.setTargetsBasedOnFrequency(actuals, indicator);
+disableSubProgramme(): boolean {
+  if (this.filteredSubProgrammes.length > 0)
+    return false;
 
-//     if (indicator && actuals) {
-//       const mergedObject = {
-//         ...indicator,
-//         ...actuals,
-//         organisationName: indicator.organisationName, 
-//         ccode: indicator.ccode,
-//         id: actuals.id,
-//         actual: actuals.actual,
-//         qaurterId: actuals.qaurterId,
-//         indicatorValue: indicator.indicatorId,
-//         indicatorId:indicator.id
-//       };
-//       this.mergedList.push(mergedObject); 
-//     }
-//   });
+  return true;
+}
 
-//   this.mergedList.forEach(row => {
-//     row.isEditable = !(row.id > 0);
-//   });
-// }
+disableSubProgrammeType(): boolean {
+  if (this.filteredSubProgrammeTypes.length > 0)
+    return false;
+
+  return true;
+}
+
 
 createEmptyActual(indicator: INPOIndicator): IActuals {
   return {

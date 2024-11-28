@@ -38,6 +38,13 @@ namespace NPOMS.Repository.Configurations.Dropdown
                     Name = "Business Plan Template",
                     SystemName = "BusinessPlanTemplate",
                     IsActive = true
+                },
+                new FundingTemplateType
+                {
+                    Id = 4,
+                    Name = "Application Report",
+                    SystemName = "ApplicationReport",
+                    IsActive = true
                 }
             );
         }

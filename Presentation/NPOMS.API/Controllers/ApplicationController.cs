@@ -1,22 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
 using NPOMS.Domain.Enumerations;
-using NPOMS.Repository.Implementation.Core;
-using NPOMS.Repository.Interfaces.Core;
 using NPOMS.Services.Email;
 using NPOMS.Services.Email.EmailTemplates;
-using NPOMS.Services.Implementation;
 using NPOMS.Services.Interfaces;
 using NPOMS.Services.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.WebSockets;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NPOMS.API.Controllers
 {
@@ -30,9 +21,6 @@ namespace NPOMS.API.Controllers
         private IApplicationService _applicationService;
         private IEmailService _emailService;
         private IUserService _userService;
-        private IProgrammeService _programmeService;
-        private IProgrameDeliveryService _programeDeliveryService;
-        private INpoService _npoService;
         private INpoProfileService _npoProfileService;
         private IIndicatorService _indicatorService;
         private IPostService _postService;
@@ -40,7 +28,9 @@ namespace NPOMS.API.Controllers
         private IGovernanceService _governanceService;
         private IAnyOtherService _anyOtherService;
         private ISDIPService _sdipService;
-        
+        private IReportChecklistService _reportChecklistService;
+        private IVerifyActualService _verifyActualService;
+
         #endregion
 
         #region Constructors
@@ -50,25 +40,22 @@ namespace NPOMS.API.Controllers
             IApplicationService applicationService,
             IEmailService emailService,
             IUserService userService,
-            IProgrammeService programmeService,
-            IProgrameDeliveryService programeDeliveryService,
-            INpoService npoService,
             INpoProfileService npoProfileService,
             IIndicatorService indicatorService,
             IPostService postService,
             IIncomeAndExpenditureService incomeAndExpenditureService,
             IGovernanceService governanceService,
             IAnyOtherService anyOtherService,
-            ISDIPService sdipService
+            ISDIPService sdipService,
+            IReportChecklistService reportChecklistService,
+            IVerifyActualService verifyActualService
+
             )
         {
             _logger = logger;
             _applicationService = applicationService;
             _emailService = emailService;
             _userService = userService;
-            _programmeService = programmeService;
-            _programeDeliveryService = programeDeliveryService;
-            _npoService = npoService;
             _npoProfileService = npoProfileService;
             _indicatorService = indicatorService;
             _postService = postService; 
@@ -76,6 +63,8 @@ namespace NPOMS.API.Controllers
             _governanceService = governanceService;
             _anyOtherService = anyOtherService;
             _sdipService = sdipService;
+            _reportChecklistService = reportChecklistService;
+            _verifyActualService = verifyActualService;
         }
 
         #endregion
@@ -248,6 +237,27 @@ namespace NPOMS.API.Controllers
             }
         }
 
+
+        [HttpPost("createChecklistReport", Name = "CreateChecklistReport")]
+        public async Task<IActionResult> CreateChecklistReport(ReportChecklist model)
+        {
+            try
+            {
+              
+                model.CreatedDateTime = DateTime.Now;
+                await _reportChecklistService.CreateEntity(model, base.GetUserIdentifier());
+            
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateReportChecklist action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+
         [HttpPost("createSDIPReport", Name = "CreateSDIPReport")]
         public async Task<IActionResult> CreateSDIPReport(SDIPReport model)
         {
@@ -262,6 +272,24 @@ namespace NPOMS.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Something went wrong inside CreateSDIPReport action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+        [HttpPost("createVerifyActual", Name = "CreateVerifyActual")]
+        public async Task<IActionResult> CreateVerifyActual(VerifyActual model)
+        {
+            try
+            {
+                model.StatusId = 2;
+                model.CreatedDateTime = DateTime.Now;
+                await _verifyActualService.CreateVerifiedActualsEntity(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateVerifyActual action: {ex.Message} Inner Exception: {ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -490,6 +518,24 @@ namespace NPOMS.API.Controllers
             }
         }
 
+
+
+        [HttpPut("updateVerifyActual", Name = "updateVerifyActual")]
+        public async Task<IActionResult> updateVerifyActual(VerifyActual model)
+        {
+            try
+            {
+                model.CreatedDateTime = DateTime.Now;
+                await _verifyActualService.UpdateVerifiedActualsEntity(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside updateVerifyActual action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpPut("updateAnyOtherStatus", Name = "UpdateAnyOtherStatus")]
         public async Task<IActionResult> UpdateAnyOtherStatus(BaseCompleteViewModel model)
         {
@@ -520,6 +566,23 @@ namespace NPOMS.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Something went wrong inside updatSDIPReport action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+        [HttpPut("updateChecklistReport", Name = "UpdateChecklistReport")]
+        public async Task<IActionResult> UpdateChecklistReport(ReportChecklist model)
+        {
+            try
+            {
+                model.CreatedDateTime = DateTime.Now;
+                await _reportChecklistService.UpdateEntity(model, base.GetUserIdentifier());
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside updateChecklistReport action: {ex.Message} Inner Exception: {ex.InnerException}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -665,6 +728,37 @@ namespace NPOMS.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
 
+        }
+
+        [HttpGet("getReportChecklistByAppIdQtrId/appid/qtrId/{appid}/{qtrId}", Name = "GetReportChecklistByAppIdQuarterId")]
+        public async Task<IActionResult> GetReportChecklistByAppIdQuarterId(int appid, int qtrId)
+        {
+            try
+            {
+                var results = await _reportChecklistService.GetByPeriodIdAndqtrId(appid, qtrId);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetReportChecklistByAppIdQuarterId action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+        [HttpGet("GetVeifiedActualByActualId/actualId/{actualId}", Name = "GetVeifiedActualByActualId")]
+        public async Task<IActionResult> GetVeifiedActualByAppId(int actualId)
+        {
+            try
+            {
+                var results = await _verifyActualService.GetVerifiedActualsByPeriodId(actualId);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetVeifiedActualByAppIdQuarterId action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpGet("getanyotherbyappid/appid/{appid}", Name = "GetAnyOtherByAppid")]

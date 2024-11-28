@@ -1,138 +1,302 @@
- <p-toast></p-toast>
- <p-panel 
- [toggleable]="false" 
- [style]="{'font-size':'12px'}" 
- [header]="'Performance Information - Organisation Name: ' + (npo?.name || '')" > 
-    <div class="p-grid">
-        <div class="p-col-fixed"></div>
+<p-toast></p-toast>
+<p-panel 
+[toggleable]="false" 
+[style]="{'font-size':'12px'}" 
+[header]="'Performance Information - Organisation Name: ' + (npo?.name || '')" > 
+   <div class="p-grid">
+       <div class="p-col-fixed"></div>
+       <div class="p-col">
+       </div>
+   </div>
+
+   <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"
+       *ngIf="IsAuthorized(PermissionsEnum.ShowApplicationActions)"></p-menubar>
+       <div style="height: 20px;"></div>
+   <p-accordion  *ngIf="isApplicationAvailable">
+               <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                   <button pButton 
+                   [label]="'Financial year: ' + getFinancialYear(application?.applicationPeriod?.financialYearId)" 
+                   class="grey-button" 
+                   >
+           </button>
+           <!-- <input 
+           type="text" 
+           placeholder="Enter Target Group" 
+           [(ngModel)]="customText"
+           (keyup)="onKeyUp($event)"
+           style="width: 200px; padding: 5px;"> -->
+           <p-dropdown
+               [(ngModel)]="selectedOption"
+               [options]="sdas"
+               placeholder="{{ isLoading ? 'Loading...' : 'Select service delivery area' }}"
+               optionLabel="name"
+               (onChange)="onDropdownChange($event)">
+         </p-dropdown>
+         
+           <button pButton 
+                   label="Quarter 1" 
+                   [disabled]="!btnEnabled"
+                   [ngClass]="{'p-button-primary': activeButton === 1, 'p-button-secondary': activeButton !== 1}"
+                   (click)="toggleButton(1)">
+           </button>
+           
+           <button pButton 
+                   label="Quarter 2" 
+                   [disabled]="!btnEnabled"
+                   [ngClass]="{'p-button-primary': activeButton === 2, 'p-button-secondary': activeButton !== 2}"
+                   (click)="toggleButton(2)">
+           </button>
+           
+           <button pButton 
+                   label="Quarter 3" 
+                   [disabled]="!btnEnabled"
+                   [ngClass]="{'p-button-primary': activeButton === 3, 'p-button-secondary': activeButton !== 3}"
+                   (click)="toggleButton(3)">
+           </button>
+           
+           <button pButton 
+                   label="Quarter 4" 
+                   [disabled]="!btnEnabled"
+                   [ngClass]="{'p-button-primary': activeButton === 4, 'p-button-secondary': activeButton !== 4}"
+                   (click)="toggleButton(4)">
+           </button>
+
+           <button pButton 
+           label="Download" 
+           icon="pi pi-download" 
+           [disabled]="!downloadEnabled"
+           class="p-button-success"
+           (click)="onDownload()">
+   </button>
+
+    <!-- New Modal Button -->
+    <button pButton 
+    label="Checklist" 
+    [disabled]="!downloadEnabled"
+    icon="pi pi-info-circle" 
+    class="p-button-info modal-button"
+    (click)="openModal()">
+</button>
+       </div>
+
+       <p-accordionTab>
+           <ng-template pTemplate="header">
+               <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                   <span style="flex: 1;">Section 1: Indicator Report</span>
+                   <span style="margin-left: auto;">{{ indicatordynamicHeaderText }}</span>
+               </div>
+           </ng-template>
+           <app-indicator-report [application]="application" [selectedGroup]="targetGroup" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (rightHeaderIndicatorChange)="onRightHeaderChange($event,'indicator')"></app-indicator-report>
+       </p-accordionTab>
+
+       <p-accordionTab>
+           <ng-template pTemplate="header">
+               <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                   <span style="flex: 1;">Section 2: Post Report</span>
+                   <span style="margin-left: auto;">{{ postdynamicHeaderText }}</span>
+               </div>
+           </ng-template>
+           <app-post-report [application]="application" [selectedGroup]="targetGroup" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (rightHeaderChangepost)="onRightHeaderChange($event,'post')"></app-post-report>
+       </p-accordionTab>
+       
+       <p-accordionTab>
+           <ng-template pTemplate="header">
+               <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                   <span style="flex: 1;">Section 3: Income and Expenditure Report</span>
+                   <span style="margin-left: auto;">{{ incomedynamicHeaderText }}</span>
+               </div>
+           </ng-template>
+           <app-details-of-income-and-and-expenditure-report [selectedsda]="selectedOptionId" [selectedGroup]="targetGroup" [application]="application" [selectedQuarter]="activeButton" (incomerightHeaderChange)="onRightHeaderChange($event,'income')"></app-details-of-income-and-and-expenditure-report>
+       </p-accordionTab>
+       
+       <p-accordionTab>
+           <ng-template pTemplate="header">
+               <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                   <span style="flex: 1;">Section 4: Governance</span>
+                   <span style="margin-left: auto;">{{ govnencedynamicHeaderText }}</span>
+               </div>
+           </ng-template>
+           <app-governance-report [application]="application" [selectedGroup]="targetGroup" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (govnencerightHeaderChange)="onRightHeaderChange($event,'govnence')"></app-governance-report>
+       </p-accordionTab>
+
+       <p-accordionTab>
+           <ng-template pTemplate="header">
+               <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                   <span style="flex: 1;">Section 5: Any other information</span>
+                   <span style="margin-left: auto;">{{ otherdynamicHeaderText }}</span>
+               </div>
+           </ng-template>
+           <app-any-other-information-report [application]="application" [selectedGroup]="targetGroup" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (otherrightHeaderChange)="onRightHeaderChange($event,'other')"></app-any-other-information-report>
+       </p-accordionTab>
+
+       <p-accordionTab>
+           <ng-template pTemplate="header">
+               <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                   <span style="flex: 1;">Section 6: SDIP</span>
+                   <span style="margin-left: auto;">{{ dynamicHeaderText }}</span>
+               </div>
+           </ng-template>
+           <app-quarterly-sdip-reporting-report [application]="application" [selectedGroup]="targetGroup" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (rightHeaderChange)="onRightHeaderChange($event,'sdip')"></app-quarterly-sdip-reporting-report>
+       </p-accordionTab>
+       
+   </p-accordion>
+   <div style="height: 20px;"></div>
+   <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"
+   *ngIf="IsAuthorized(PermissionsEnum.ShowApplicationActions)"></p-menubar>
+   <div style="height: 10px;"></div>
+</p-panel>
+
+<!-- <p-dialog 
+   header="Report Checklist"
+   [(visible)]="isModalVisible" 
+   [modal]="true" 
+   [closable]="true" 
+   [style]="{width: '50vw'}">
+ <p>Here goes the modal content!</p>
+</p-dialog> -->
+
+<p-dialog header="Reporting Checklist" 
+   [(visible)]="displayChecklistDialog" 
+   [style]="{width: '50vw'}" 
+   [focusOnShow]="false"
+   showEffect="fade"
+   [transitionOptions]="'0ms'"
+   [modal]="true">
+
+   <div *ngIf="this.IsAuthorized(PermissionsEnum.EvaluateOption) || this.IsAuthorized(PermissionsEnum.AdjudicateOption) || this.IsAuthorized(PermissionsEnum.ApproveOption)">
+    <div *ngIf="captureEvaluation()">
+        <p-panel header="Evaluate Funding Application" *ngIf="displayEvaluation()" [style]="{'font-size':'12px'}" id = "evaluatePanel">
+            <p-panel id = "pnlEvaluation">
+                <p-table [value]="reportQuestionnaire" *ngIf="reportQuestionnaire" [rowHover]="true" 
+                styleClass="p-datatable-striped" sortMode="single" dataKey="questionSectionName">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th style="width: 5%; text-align: center;">#</th>
+                            <th style="width: 45%;">Element / Question</th>
+                            <th style="width: 15%;">Value</th>
+                            <th style="width: 35%;" *ngIf="hasComment(reportQuestionnaire)">Comment</th>
+                            <!-- <th style="width: 15%;" *ngIf="hasDocument(evaluationQuestionnaire)">Evidence</th> -->
+                            <!-- <th style="width: 8%;" colspan="2"></th> -->
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-question let-rowIndex="rowIndex" let-expanded="expanded">
+                        <tr *ngIf="updateRowGroupMetaData(reportQuestionnaire)[question.questionSectionName].index === rowIndex">
+                            <td [attr.colspan]="getColspan(reportQuestionnaire, 8)">
+                                <button type="button" pButton pRipple [pRowToggler]="question" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                                <span class="p-text-bold p-ml-2"><b>{{question.questionSectionName}}</b></span>
+                                <!-- <div class="pull-right"><span class="{{'product-badge status-' + getStatus(reportQuestionnaire, question)}}">{{getStatusText(evaluationQuestionnaire, question)}}</span></div> -->
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="rowexpansion" let-question let-rowIndex="rowIndex" >
+                        <tr class="default-font">
+                            <td style="text-align: center;">{{rowIndex + 1}}</td>
+                            <td>{{question.questionName}}</td>
+                            <td [pEditableColumn]="question" pEditableColumn>
+                                <p-dropdown *ngIf="displayField(question)" [options]="getResponseOptions(question.responseTypeId)"
+                                    optionLabel="systemName" [(ngModel)]="question.responseOption" [ngModelOptions]="{standalone: true}"
+                                    placeholder="Select a Response" appendTo="body" [style]="{'width':'100%'}" 
+                                    (onChange)="onSaveResponse($event, question)"></p-dropdown>
+                            </td>
+                            <td [pEditableColumn]="question" pEditableColumn *ngIf="hasComment(reportQuestionnaire)">
+                                <textarea class="form-text" *ngIf="question.hasComment" [rows]="1" pInputTextarea [(ngModel)]="question.comment" 
+                                [ngModelOptions]="{standalone: true}" (change)="onSaveComment($event, question)" (keydown)="onInputCommentChange(question)" 
+                                [autoResize]="true"></textarea>
+                            </td>
+                          
+                            <!-- <td style="text-align: center;">
+                                <i *ngIf="displayField(question)" class="fa fa-circle {{getRagColour(question)}}" style="font-size: 1rem"></i>
+                            </td>
+                            <td style="text-align: center;">
+                                <p-button *ngIf="displayField(question)" tooltipPosition="left" pTooltip="View History" 
+                                (onClick)="onSelectViewHistory(question)" icon="pi pi-eye" class="action-button"></p-button>
+                            </td> -->
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                        <tr class="default-font">
+                            <td [attr.colspan]="getColspan(reportQuestionnaire, 8)" style="text-align: center;">No results found</td>
+                        </tr>
+                    </ng-template>
+                   <!-- <ng-template pTemplate="footer" *ngIf="hasWeighting(evaluationQuestionnaire)">
+                        <tr>
+                            <td colspan="2"><span style="font-weight: bold;">Total Score</span></td>
+                            <td [attr.colspan]="getColspan(evaluationQuestionnaire, 3)"><span style="font-weight: bold;">{{getAverageScoreTotal(evaluationQuestionnaire)}}</span></td>
+                            <td colspan="2"></td>
+                        </tr>
+                    </ng-template> -->
+                </p-table>
+            </p-panel>
+        </p-panel> 
+    </div>
+</div>
+     
+    <!-- <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="non-mandatory-content">Requires TPA/Submission?</span>
+            </div>
+        </div>
         <div class="p-col">
+            <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}"  [(ngModel)]="reportChecklist.requiresTPASubmission" [ngModelOptions]="{standalone: true}"></p-selectButton>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="1.5" [cols]="30" pInputTextarea  [(ngModel)]="reportChecklist.requiresTPASubmissionComments" [ngModelOptions]="{standalone: true}" ></textarea> 
         </div>
     </div>
-
-    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"
-        *ngIf="IsAuthorized(PermissionsEnum.ShowApplicationActions)"></p-menubar>
-        <div style="height: 20px;"></div>
-    <p-accordion  *ngIf="isApplicationAvailable">
-                <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-                    <button pButton 
-                    [label]="'Financial year: ' + getFinancialYear(application?.applicationPeriod?.financialYearId)" 
-                    class="grey-button" 
-                    >
-            </button>
-            <!-- <input 
-            type="text" 
-            placeholder="Enter Target Group" 
-            [(ngModel)]="customText"
-            (keyup)="onKeyUp($event)"
-            style="width: 200px; padding: 5px;"> -->
-            <p-dropdown
-                [(ngModel)]="selectedOption"
-                [options]="sdas"
-                placeholder="{{ isLoading ? 'Loading...' : 'Select service delivery area' }}"
-                optionLabel="name"
-                (onChange)="onDropdownChange($event)">
-          </p-dropdown>
-          
-            <button pButton 
-                    label="Quarter 1" 
-                    [disabled]="!btnEnabled"
-                    [ngClass]="{'p-button-primary': activeButton === 1, 'p-button-secondary': activeButton !== 1}"
-                    (click)="toggleButton(1)">
-            </button>
-            
-            <button pButton 
-                    label="Quarter 2" 
-                    [disabled]="!btnEnabled"
-                    [ngClass]="{'p-button-primary': activeButton === 2, 'p-button-secondary': activeButton !== 2}"
-                    (click)="toggleButton(2)">
-            </button>
-            
-            <button pButton 
-                    label="Quarter 3" 
-                    [disabled]="!btnEnabled"
-                    [ngClass]="{'p-button-primary': activeButton === 3, 'p-button-secondary': activeButton !== 3}"
-                    (click)="toggleButton(3)">
-            </button>
-            
-            <button pButton 
-                    label="Quarter 4" 
-                    [disabled]="!btnEnabled"
-                    [ngClass]="{'p-button-primary': activeButton === 4, 'p-button-secondary': activeButton !== 4}"
-                    (click)="toggleButton(4)">
-            </button>
-
-            <button pButton 
-            label="Download" 
-            icon="pi pi-download" 
-            [disabled]="!downloadEnabled"
-            class="p-button-success"
-            (click)="onDownload()">
-    </button>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Verifiable reasons are provided for variance between reported and planned performance</span>
+            </div>
         </div>
-
-        <p-accordionTab>
-            <ng-template pTemplate="header">
-                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
-                    <span style="flex: 1;">Section 1: Indicator Report</span>
-                    <span style="margin-left: auto;">{{ indicatordynamicHeaderText }}</span>
-                </div>
-            </ng-template>
-            <app-indicator-report [application]="application" [selectedGroup]="targetGroup" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (rightHeaderIndicatorChange)="onRightHeaderChange($event,'indicator')"></app-indicator-report>
-        </p-accordionTab>
-
-        <p-accordionTab>
-            <ng-template pTemplate="header">
-                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
-                    <span style="flex: 1;">Section 2: Post Report</span>
-                    <span style="margin-left: auto;">{{ postdynamicHeaderText }}</span>
-                </div>
-            </ng-template>
-            <app-post-report [application]="application" [selectedGroup]="targetGroup" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (rightHeaderChangepost)="onRightHeaderChange($event,'post')"></app-post-report>
-        </p-accordionTab>
-        
-        <p-accordionTab>
-            <ng-template pTemplate="header">
-                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
-                    <span style="flex: 1;">Section 3: Income and Expenditure Report</span>
-                    <span style="margin-left: auto;">{{ incomedynamicHeaderText }}</span>
-                </div>
-            </ng-template>
-            <app-details-of-income-and-and-expenditure-report [selectedsda]="selectedOptionId" [selectedGroup]="targetGroup" [application]="application" [selectedQuarter]="activeButton" (incomerightHeaderChange)="onRightHeaderChange($event,'income')"></app-details-of-income-and-and-expenditure-report>
-        </p-accordionTab>
-        
-        <p-accordionTab>
-            <ng-template pTemplate="header">
-                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
-                    <span style="flex: 1;">Section 4: Governance</span>
-                    <span style="margin-left: auto;">{{ govnencedynamicHeaderText }}</span>
-                </div>
-            </ng-template>
-            <app-governance-report [application]="application" [selectedGroup]="targetGroup" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (govnencerightHeaderChange)="onRightHeaderChange($event,'govnence')"></app-governance-report>
-        </p-accordionTab>
-
-        <p-accordionTab>
-            <ng-template pTemplate="header">
-                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
-                    <span style="flex: 1;">Section 5: Any other information</span>
-                    <span style="margin-left: auto;">{{ otherdynamicHeaderText }}</span>
-                </div>
-            </ng-template>
-            <app-any-other-information-report [application]="application" [selectedGroup]="targetGroup" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (otherrightHeaderChange)="onRightHeaderChange($event,'other')"></app-any-other-information-report>
-        </p-accordionTab>
-
-        <p-accordionTab>
-            <ng-template pTemplate="header">
-                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
-                    <span style="flex: 1;">Section 6: SDIP</span>
-                    <span style="margin-left: auto;">{{ dynamicHeaderText }}</span>
-                </div>
-            </ng-template>
-            <app-quarterly-sdip-reporting-report [application]="application" [selectedGroup]="targetGroup" [selectedsda]="selectedOptionId" [selectedQuarter]="activeButton" (rightHeaderChange)="onRightHeaderChange($event,'sdip')"></app-quarterly-sdip-reporting-report>
-        </p-accordionTab>
-        
-    </p-accordion>
-    <div style="height: 20px;"></div>
-    <p-menubar [model]="menuActions" [style]="{'font-size':'14px', 'height': '43px'}"
-    *ngIf="IsAuthorized(PermissionsEnum.ShowApplicationActions)"></p-menubar>
-    <div style="height: 10px;"></div>
-</p-panel>
+        <div class="p-col">
+            <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}"  [(ngModel)]="reportChecklist.verifiableReasonsProvided" [ngModelOptions]="{standalone: true}"></p-selectButton>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="1.5" [cols]="30" pInputTextarea  [(ngModel)]="reportChecklist.verifiableReasonsProvidedComments" [ngModelOptions]="{standalone: true}"></textarea> 
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Reported perfomance informatioom relates to the correct service and output </span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}"  [(ngModel)]="reportChecklist.reportedServiceOutput" [ngModelOptions]="{standalone: true}"></p-selectButton>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="1.5" [cols]="30" pInputTextarea  [(ngModel)]="reportChecklist.reportedServiceOutputComments" [ngModelOptions]="{standalone: true}"></textarea> 
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Reported performance information is for the correct reporting period </span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}"  [(ngModel)]="reportChecklist.reportedReportingPeriod"  [ngModelOptions]="{standalone: true}"></p-selectButton>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="1.5" [cols]="30" pInputTextarea  [(ngModel)]="reportChecklist.reportedReportingPeriodComments" [ngModelOptions]="{standalone: true}"></textarea>   
+        </div>
+    </div>
+    <div class="p-grid">
+        <div class="p-col-fixed form-label">
+            <div class="box">
+                <span class="mandatory-content">Supporting documents have a title and page number on each page and signed and dated by the resonsible person  </span>
+            </div>
+        </div>
+        <div class="p-col">
+            <p-selectButton [options]="stateOptions" optionLabel="label" optionValue="value" [style]="{'font-size': '12px'}"  [(ngModel)]="reportChecklist.supportingDocuments" [ngModelOptions]="{standalone: true}"></p-selectButton>
+        </div>
+        <div class="p-col">
+            <textarea class="form-text" [rows]="1.5" [cols]="30" pInputTextarea  [(ngModel)]="reportChecklist.supportingDocumentsComments" [ngModelOptions]="{standalone: true}"></textarea>   
+        </div>
+    </div>
+ <ng-template pTemplate="footer">
+     <button pButton pRipple type="button" label="Save" class="p-button-text" icon="fa fa-floppy-o" [disabled]=disableSaveChecklist() (click)="saveChecklist()"></button>
+ </ng-template> -->
+</p-dialog>

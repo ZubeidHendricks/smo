@@ -573,6 +573,7 @@ export interface IQuestionResponseViewModel {
     questionId: number;
     questionName: string;
     questionSortOrder: number;
+    qaurterId: number;
 
     hasComment: boolean;
     commentRequired: boolean;

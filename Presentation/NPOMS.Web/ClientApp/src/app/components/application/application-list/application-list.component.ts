@@ -520,16 +520,16 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
-      if (this.IsAuthorized(PermissionsEnum.ViewOption)) {
-        this.buttonItems[0].items.push({
-          label: 'Review Report',
-          target: 'Funded Npo',
-          icon: 'fa fa-file-text-o',
-          command: () => {
-            this._router.navigateByUrl('reviewReports/' + this.selectedApplication.id);
-          }
-        });
-      }
+      // if (this.IsAuthorized(PermissionsEnum.ViewOption)) {
+      //   this.buttonItems[0].items.push({
+      //     label: 'Review Report',
+      //     target: 'Funded Npo',
+      //     icon: 'fa fa-file-text-o',
+      //     command: () => {
+      //       this._router.navigateByUrl('reviewReports/' + this.selectedApplication.id);
+      //     }
+      //   });
+      // }
 
       if (this.IsAuthorized(PermissionsEnum.EditApplication)) {
         this.buttonItems[0].items.push({
@@ -642,6 +642,8 @@ export class ApplicationListComponent implements OnInit {
       this.optionItemExists('Quartery Perfomance Capture'); 
       this.optionItemExists('Program Report Summary');
       this.optionItemExists('SubProgrammeType Report Summary')
+      this.optionItemExists('Review Report')
+      
     }   
     if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP)
     {
@@ -652,6 +654,7 @@ export class ApplicationListComponent implements OnInit {
         this.optionItemExists('Quartery Perfomance Capture'); 
         this.optionItemExists('Program Report Summary');
         this.optionItemExists('SubProgrammeType Report Summary')
+        this.optionItemExists('Review Report Summary')
     }
 
     if (this.selectedApplication.statusId === StatusEnum.Approved && this.selectedApplication.applicationPeriod.departmentId === 7)
@@ -1113,12 +1116,22 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
+      // if (true) {
+      //   this.optionItems[0].items.push({
+      //     label: 'SubProgrammeType Report Summary',
+      //     icon: 'fa fa-file-text-o',
+      //     command: () => {
+      //       this._router.navigateByUrl('subprogramsummary/' + this.selectedApplication.id + '/' + this.selectedApplication.applicationPeriod.programmeId);  
+      //     }
+      //   });
+      // }
+
       if (true) {
         this.optionItems[0].items.push({
-          label: 'SubProgrammeType Report Summary',
+          label: 'Review Report',
           icon: 'fa fa-file-text-o',
           command: () => {
-            this._router.navigateByUrl('subprogramsummary/' + this.selectedApplication.id + '/' + this.selectedApplication.applicationPeriod.programmeId);  
+            this._router.navigateByUrl('reviewReports/' + this.selectedApplication.id); 
           }
         });
       }

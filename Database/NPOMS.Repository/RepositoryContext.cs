@@ -145,6 +145,9 @@ namespace NPOMS.Repository
         public DbSet<MonitoringEvaluation> MonitoringEvaluations { get; set; }
         public DbSet<ProjectImplementation> ProjectImplementations { get; set; }
         public DbSet<IndicatorReport> IndicatorReports { get; set; }
+        public DbSet<VerifyActual> VerifyActuals { get; set; }
+
+        
 
 
         public DbSet<FinancialMattersIncome> FinancialMattersIncomes { get; set; }
@@ -198,6 +201,8 @@ namespace NPOMS.Repository
         public DbSet<ResponseType> ResponseTypes { get; set; }
         public DbSet<WorkflowAssessment> WorkflowAssessments { get; set; }
         public DbSet<CapturedResponse> CapturedResponses { get; set; }
+        public DbSet<ReportChecklist> ReportChecklists { get; set; }
+       
 
         /* Mapping */
         public DbSet<ActivitySubProgramme> ActivitySubProgrammes { get; set; }

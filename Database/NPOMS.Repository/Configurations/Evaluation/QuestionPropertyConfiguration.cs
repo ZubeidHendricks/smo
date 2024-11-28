@@ -55,7 +55,13 @@ namespace NPOMS.Repository.Configurations.Evaluation
 
                 new QuestionProperty { Id = 110, QuestionId = 110, HasComment = true, CommentRequired = false, HasDocument = false, DocumentRequired = false, Weighting = 0 },
                 new QuestionProperty { Id = 112, QuestionId = 112, HasComment = true, CommentRequired = false, HasDocument = false, DocumentRequired = false, Weighting = 0 },
-                new QuestionProperty { Id = 122, QuestionId = 122, HasComment = true, CommentRequired = false, HasDocument = false, DocumentRequired = false, Weighting = 0 }
+                new QuestionProperty { Id = 122, QuestionId = 122, HasComment = true, CommentRequired = false, HasDocument = false, DocumentRequired = false, Weighting = 0 },
+
+                new QuestionProperty { Id = 123, QuestionId = 123, HasComment = true, CommentRequired = false, HasDocument = false, DocumentRequired = false, Weighting = 0 },
+                new QuestionProperty { Id = 124, QuestionId = 124, HasComment = true, CommentRequired = false, HasDocument = false, DocumentRequired = false, Weighting = 0 },
+                new QuestionProperty { Id = 125, QuestionId = 125, HasComment = true, CommentRequired = false, HasDocument = false, DocumentRequired = false, Weighting = 0 },
+                new QuestionProperty { Id = 126, QuestionId = 126, HasComment = true, CommentRequired = false, HasDocument = false, DocumentRequired = false, Weighting = 0 },
+                new QuestionProperty { Id = 127, QuestionId = 127, HasComment = true, CommentRequired = false, HasDocument = false, DocumentRequired = false, Weighting = 0 }
             );
 		}
 	}

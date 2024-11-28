@@ -67,9 +67,18 @@ namespace NPOMS.Services.Implementation
 
         public async Task<IEnumerable<QuestionResponseViewModel>> GetQuestionnaire(int fundingApplicationId, string userIdentifier)
         {
+           var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+           var questions = await _questionRepository.GetAllWithDetails();
+           var responses = await _responseRepository.GetByIdsWithDetail(fundingApplicationId, currentUser.Id);
+
+            return new AllQuestionResponseViewModel(questions.ToList(), responses.ToList()).QuestionResponses;
+        }
+
+        public async Task<IEnumerable<QuestionResponseViewModel>> GetQuestionnaireReport(int fundingApplicationId, int qtrId, string userIdentifier)
+        {
             var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
             var questions = await _questionRepository.GetAllWithDetails();
-            var responses = await _responseRepository.GetByIdsWithDetail(fundingApplicationId, currentUser.Id);
+            var responses = await _responseRepository.GetByIdsWithDetailReport(fundingApplicationId, qtrId, currentUser.Id);
 
             return new AllQuestionResponseViewModel(questions.ToList(), responses.ToList()).QuestionResponses;
         }
@@ -301,6 +310,43 @@ namespace NPOMS.Services.Implementation
         {
             return await _workflowAssessmentRepository.GetByQuestionCategoryId(questionCategoryId);
         }
+
+
+
+        public async Task<QuestionResponseViewModel> UpdateReportResponse(Response model, string userIdentifier)
+        {
+            var currentUser = await _userRepository.GetUserByUserNameWithDetailsAsync(userIdentifier);
+            var response = await _responseRepository.GetReportResponseByIds(model.FundingApplicationId, model.QuestionId, (int)model.QaurterId, currentUser.Id);
+
+            if (response == null)
+            {
+                model.CreatedUserId = currentUser.Id;
+                model.CreatedDateTime = DateTime.Now;
+                await _responseRepository.CreateAsync(model);
+            }
+            else
+            {
+                response.ResponseOptionId = model.ResponseOptionId;
+                response.Comment = model.Comment;
+                response.UpdatedUserId = currentUser.Id;
+                response.UpdatedDateTime = DateTime.Now;
+                await _responseRepository.UpdateAsync(response);
+            }
+
+            var newResponse = response == null ? true : false;
+            var modelToReturn = response == null ? model : response;
+
+            await CreateResponseHistory(modelToReturn, newResponse);
+
+            var question = await _questionRepository.GetById(model.QuestionId);
+            //var documents = await _documentStoreRepository.GetByEntityTypeId((int)EntityTypeEnum.TPAEvidence);
+            //var paymentScheduleResponse = await _paymentScheduleResponseRepository.GetByIds(model.ApplicationId, model.QuestionId);
+
+            return new QuestionResponseViewModel(question, modelToReturn);
+        }
+
+
+
 
         #endregion
     }

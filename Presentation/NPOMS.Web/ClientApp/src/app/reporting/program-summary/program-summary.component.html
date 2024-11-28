@@ -5,49 +5,140 @@
     <p-panel [style]="{'font-size':'12px'}" header="Summary">
         <p-card [style]="{width: '100%',backgroundColor:'var(--surface-b)'}">
             <div style="margin-top: 0px;" class="p-grid">
-                <div class="p-col-6">
+                <div class="p-col-12">
                     <div class="p-fluid">
                         <div class="p-grid">
-                            <div class="p-col-fixed form-label">
-                                <div class="box">
-                                    <span class="non-mandatory-content">Service Delivery Area</span>
+                            <!-- First Dropdown (Service Delivery Area) -->
+                            <!-- <div class="p-col-6">
+                                <div class="p-grid">
+                                    <div class="p-col-fixed form-label">
+                                        <div class="box">
+                                            <span class="non-mandatory-content">Service Delivery Area</span>
+                                        </div>
+                                    </div>
+                                    <div class="p-col">
+                                        <p-dropdown
+                                            [(ngModel)]="selectedOption"
+                                            [options]="sdas"
+                                            placeholder="Select service delivery area"
+                                            optionLabel="name"
+                                            (onChange)="onDropdownChange($event)">
+                                        </p-dropdown>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="p-col">
-                                <p-dropdown
-                                [(ngModel)]="selectedOption"
-                                [options]="sdas"
-                                placeholder="Select service delivery area"
-                                optionLabel="name"
-                                (onChange)="onDropdownChange($event)">
-                          </p-dropdown>  </div>
+                             -->
+                            <!-- Second Dropdown (Programme) -->
+                            <div class="p-col-6">
+                                <div class="p-grid">
+                                    <div class="p-col-fixed form-label">
+                                        <div class="box">
+                                            <span class="non-mandatory-content">Programme</span>
+                                        </div>
+                                    </div>
+                                    <div class="p-col">
+                                        <p-dropdown
+                                            [(ngModel)]="selectedProgramme"
+                                            [options]="allProgrammes"
+                                            placeholder="Select programme"
+                                            optionLabel="name"
+                                            (onChange)="onProgramDropdownChange($event)">
+                                        </p-dropdown>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                    
                         <div class="p-grid">
-                            <div class="p-col-fixed form-label">
-                                <div class="box">
-                                    <span class="non-mandatory-content">Programme</span>
+                            <!-- Third Dropdown (Sub Programme Types) -->
+
+                            <div class="p-col-6">
+                                <div class="p-grid">
+                                    <div class="p-col-fixed form-label">
+                                        <div class="box">
+                                            <span class="non-mandatory-content"> Sub Programme Type</span>
+                                        </div>
+                                    </div>
+                                    <div class="p-col">
+                                        <p-dropdown [options]="filteredSubProgrammeTypes" placeholder="Select a Sub-Programme Type" optionLabel="name"
+                                        [(ngModel)]="selectedSubProgrammeType" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}"
+                                         appendTo="body"  (onChange)="onSubprograDropdownChange($event)" #subProgrammeType="ngModel"
+                                         appendTo="body" 
+                                      ></p-dropdown>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="p-col">
-                                <p-dropdown
-                                [(ngModel)]="selectedProgramme"
-                                [options]="allProgrammes"
-                                placeholder="Select programme"
-                                optionLabel="name"
-                                (onChange)="onProgramDropdownChange($event)">
-                          </p-dropdown>  </div>
+                           
+                    
+                            <!-- Fourth Dropdown (Indicator Value) -->
+                            <!-- <div class="p-col-6">
+                                <div class="p-grid">
+                                    <div class="p-col-fixed form-label">
+                                        <div class="box">
+                                            <span class="non-mandatory-content">Indicator Value</span>
+                                        </div>
+                                    </div>
+                                    <div class="p-col">
+                                        <p-dropdown
+                                            [(ngModel)]="selectedProgramme"
+                                            [options]="allProgrammes"
+                                            placeholder="Select indicator value"
+                                            optionLabel="name"
+                                            (onChange)="onProgramDropdownChange($event)">
+                                        </p-dropdown>
+                                    </div>
+                                </div>
+                            </div> -->
                         </div>
+                    
+                        <!-- Fifth Dropdown (Financial Year) -->
                         <div class="p-grid">
-                            <div class="p-col-fixed form-label">
-                                <div class="box">
-                                    <span class="mandatory-content">Financial Year</span>
+                            <div class="p-col-6">
+                                <div class="p-grid">
+                                    <div class="p-col-fixed form-label">
+                                        <div class="box">
+                                            <span class="mandatory-content">Financial Year</span>
+                                        </div>
+                                    </div>
+                                    <div class="p-col">
+                                        <p-dropdown
+                                            [options]="financialYears"
+                                            placeholder="Select a Financial Year"
+                                            optionLabel="name"
+                                            [(ngModel)]="selectedFinancialYear"
+                                            (onChange)="onyearDropdownChange($event)"
+                                            [ngModelOptions]="{standalone: true}"
+                                            [style]="{'width':'100%'}"
+                                            appendTo="body">
+                                        </p-dropdown>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="p-col">
-                                <p-dropdown [options]="financialYears" placeholder="Select a Financial Year" optionLabel="name" [(ngModel)]="selectedFinancialYear" [ngModelOptions]="{standalone: true}" [style]="{'width':'100%'}" appendTo="body"></p-dropdown>
+                        </div>
+
+                        <div class="p-grid">
+                            <div class="p-col-6">
+                                <div class="p-grid">
+                                    <div class="p-col-fixed form-label">
+                                        <div class="box">
+                                            <span class="mandatory-content">Reset Filters</span>
+                                        </div>
+                                    </div>
+                                    <div class="p-col">
+                                        <button 
+                                            pButton 
+                                            type="button" 
+                                            label="Reset" 
+                                            class="p-button-outlined p-button-success"
+                                            (click)="resetFilters()">
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        
                     </div>
+                    
                 </div>
             </div>
         </p-card>
@@ -260,22 +351,12 @@
 
                 <td style="text-align: center;">
                     <span >
-                        {{getTotalTargets(
-                            calculateTotalsPerQuarter(rowData.qaurterId, 1).totalTarget,
-                            calculateTotalsPerQuarter(rowData.qaurterId, 2).totalTarget,
-                            calculateTotalsPerQuarter(rowData.qaurterId, 3).totalTarget,
-                            calculateTotalsPerQuarter(rowData.qaurterId, 4).totalTarget
-                        )}}
+                        {{getTotalTargets(rowData)}}
                     </span>
                 </td>
                 <td style="text-align: center;">
                     <span >
-                        {{getTotalTargets(
-                            calculateTotalsPerQuarter(rowData.qaurterId, 1).totalActual,
-                            calculateTotalsPerQuarter(rowData.qaurterId, 2).totalActual,
-                            calculateTotalsPerQuarter(rowData.qaurterId, 3).totalActual,
-                            calculateTotalsPerQuarter(rowData.qaurterId, 4).totalActual
-                        )}}
+                        {{getTotalActuals(rowData)}}
                     </span>
                 </td>
                 </tr>

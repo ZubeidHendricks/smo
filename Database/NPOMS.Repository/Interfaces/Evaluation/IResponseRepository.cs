@@ -8,11 +8,15 @@ namespace NPOMS.Repository.Interfaces.Evaluation
 	{
         Task<IEnumerable<Response>> GetAllResponses();
         Task<IEnumerable<Response>> GetByIdsWithDetail(int fundingApplicationId, int currentUserId);
+
+        Task<IEnumerable<Response>> GetByIdsWithDetailReport(int fundingApplicationId,int qtrId, int currentUserId);
         Task<IEnumerable<Response>> GetScorecardByIdsWithDetail(int fundingApplicationId, int currentUserId);
 
         Task<IEnumerable<Response>> GetByFundingApplicationId(int fundingApplicationId);
 
 		Task<Response> GetResponseByIds(int fundingApplicationId, int questionId, int currentUserId);
+        Task<Response> GetReportResponseByIds(int fundingApplicationId, int questionId, int qtrId, int currentUserId);
+        
         Task<Response> GetResponseByIds(int fundingApplicationId, int questionId, int responseOptionId, int createdUserId);
         Task<Response> GetResponses(int fundingApplicationId, int questionId, int responseOptionId);
         Task<Response> GetResponses(int fundingApplicationId, int questionId, int responseOptionId, int CREATEDuSERiD);

@@ -4,7 +4,7 @@ import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IActuals, IActualsAudit, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IDocumentType, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IFrequencyPeriod, IIndicator, IManicipalityDemographic, IndicatorReport, INpo, INPOIndicator, IObjective, IProgramme, IQuarterlyPeriod, IRecipientType, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IActuals, IActualsAudit, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IDocumentType, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IFrequencyPeriod, IIndicator, IManicipalityDemographic, IndicatorReport, INpo, INPOIndicator, IObjective, IProgramme, IQuarterlyPeriod, IRecipientType, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser, IVerifiedActuals, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -27,12 +27,17 @@ import { finalize, tap } from 'rxjs/operators';
 })
 
 export class IndicatorReportComponent implements OnInit {
+cancelVerifiedActual() {
+  this.displayVerifyActualDialog = false;
+}
   @Input() selectedQuarter!: number;
   @Input() selectedsda!: number;
  @Input() selectedGroup!: string;
-  
+
+  displayVerifyActualDialog: boolean;
   displayVieHistoryDialog: boolean;
   @Output() rightHeaderIndicatorChange = new EventEmitter<string>();
+  verifyCols:any[];
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['selectedQuarter'] && changes['selectedQuarter'].currentValue) {
@@ -97,6 +102,8 @@ filterDataByQuarter(quarter: number) {
   indicators: IIndicator[];
   iNPOIndicators: INPOIndicator[] = [];
   actuals: IActuals[] = [];
+  verifiedActuals: IVerifiedActuals[] = []; 
+  verifiedActual: IVerifiedActuals =  {} as IVerifiedActuals; 
   actual: IActuals = {} as IActuals;
   seletedAactuals: IActuals;
   @ViewChild('addDoc') element: ElementRef;
@@ -311,6 +318,21 @@ filterDataByQuarter(quarter: number) {
       { header: 'User', width: '20%' },
       { header: 'Date', width: '20%' }
     ];
+
+        
+    this.verifyCols = [
+      {
+        header: 'Quarterly Target', width: '10%'
+      },
+      { header: 'NPO Report', width: '15%', field: '' },
+      { header: 'Verified', width: '15%', field: '' },
+      { header: 'Not verified', width: '15%', field: '' },
+      { header: 'Reasons for not verified numbers ', width: '15%', field: '' },
+      { header: 'Variance from Target', width: '15%', field: '' },
+      { header: 'Reason for variance from Targets', width: '10%',  field: '' },
+
+
+    ];
     
     this.commentCols = [
       { header: '', width: '5%' },
@@ -339,6 +361,7 @@ filterDataByQuarter(quarter: number) {
       { field: 'successIndicator', header: 'Indicator', width: '30%' },
       { field: 'target', header: 'Target', width: '9%' },
     ];
+
   }
 
 onKeyUp(rowData: any, event: any) {
@@ -351,6 +374,11 @@ if (rowData.targets !== undefined && !isNaN(rowData.actual)) {
 } else {
     rowData.variance = 0; // Set to zero or handle it as per your requirement
 }
+}
+
+onVerifiedKeyUp() {
+  this.verifiedActual.notVerified = this.verifiedActual.verified - this.verifiedActual.quarterTargets;
+  this.verifiedActual.targetVariance = this.verifiedActual.verified - this.verifiedActual.quarterTargets;
 }
 
 onKeyUpAdjustedActual(event: any, rowData: any) {
@@ -443,84 +471,8 @@ createMergedList() {
   // this.performPostMergeOperations();
 }
 
-// Example of the method to handle operations after merging
-// performPostMergeOperations() {
-//   // Perform your additional code logic here
-//   this.mergedList.forEach(row => {
-//     row.isEditable = !(row.id > 0); // Set the editable state based on row.id
-//   });
-
-//   console.log('this.mergedList', this.mergedList); // Log the final merged list
-//   this.rightHeaderIndicatorChange.emit('Pending');
-
-//   const allComplete = this.mergedList.length > 0 && this.mergedList.every(dip => dip?.actuals?.status?.id === 24);
-//   const allSubmitted = this.mergedList.length > 0 && this.mergedList.every(dip => dip?.actuals?.status?.id === 19);
-
-//   console.log('this.allComplete', allComplete);
-//   if (allComplete) {
-//       this.rightHeaderIndicatorChange.emit('Completed');
-//   }
-//   if (allSubmitted) {
-//       this.rightHeaderIndicatorChange.emit('Submitted');
-//   }
-
-//   this.cdr.detectChanges(); // Trigger change detection
-// }
-
-// createMergedList() {
-//   this.mergedList = this.iNPOIndicators.map(indicator => {
-//       // Attempt to find the actual data based on criteria
-//       const actualData = this.actuals.find(act => 
-//           act.indicatorId === +indicator.id && 
-//           act.financialYearId === this.selectedFinancialYear.id && 
-//           act.qaurterId === this.quarterId
-//       );
-
-//       // Use found actualData if available, otherwise create a new object
-//       const actuals = actualData ? { ...actualData } : this.createEmptyActual(indicator);
-
-//       // Call setTargetsBasedOnFrequency with the actuals object
-//       this.setTargetsBasedOnFrequency(actuals, indicator);
-
-//       console.log('actuals', actuals); // Ensure the `actuals` object includes `status`
-
-//       return {
-//           ...indicator,
-//           actuals // Return the actuals object (either found or newly created)
-//       };
-//   });
-// }
 
 
-// createMergedList() {
-//     this.mergedList = this.iNPOIndicators.map(indicator => {
-//         // Attempt to find the actual data based on criteria
-
-//         const actualData = this.actuals.find(act => 
-//             act.indicatorId === +indicator.id && 
-//             act.financialYearId === this.selectedFinancialYear.id && 
-//             act.qaurterId === this.quarterId
-//         );
-
-//         const actualData1 = { ...this.actuals.find(act => 
-//           act.indicatorId === +indicator.id && 
-//             act.financialYearId === this.selectedFinancialYear.id && 
-//             act.qaurterId === this.quarterId
-//       )};
-
-//         // Create an actual object if actualData is undefined
-//         const actuals = actualData1 || this.createEmptyActual(indicator);
-
-//         console.log('actuals',actuals);
-
-//         // Call setTargetsBasedOnFrequency with the actuals object
-//         this.setTargetsBasedOnFrequency(actuals,indicator);
-//         return {
-//             ...indicator,
-//             actuals // Return the actuals object (either found or newly created)
-//         };
-//     });
-// }
  
 status(data: any) {
   return data?.status?.name || 'New';
@@ -628,7 +580,21 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
           }
         });
       }
+
+      if (this.IsAuthorized(PermissionsEnum.ApproveWorkplanActual)) {
+        this.buttonItems[0].items.push({
+          label: 'Verify Actual',
+          icon: 'fa fa-thumbs-o-up',
+          command: () => {
+           this.verifyActual(this.merged);
+          }
+        });
+      }
     }
+  }
+
+  private verifyActual(rowData: any) {
+   this.GetVerifiedActualByActualId(rowData.id, rowData);
   }
 
   private viewHistory(rowData: any) {
@@ -896,6 +862,52 @@ private GetIndicatorReportsByAppid() {
      this.actuals = results;
       this._spinner.hide();
       this.createMergedList();
+    },
+    (err) => {
+      this._loggerService.logException(err);
+      this._spinner.hide();
+    }
+  );
+}
+
+
+private GetVerifiedActualByActualId(actualId: number, rowData: any) {
+  this._spinner.show();
+  this._applicationRepo.GetVerifiedByAppid(actualId).subscribe(
+    (result) => {
+    this.verifiedActual = result;
+    this._spinner.hide();
+    console.log('rowData',this.verifiedActual);
+    if( this.verifiedActual === undefined || this.verifiedActual === null || this.verifiedActual.id === 0) 
+    {
+       this.verifiedActual = {} as IVerifiedActuals;
+        this.verifiedActual.id = 0;
+        this.verifiedActual.quarterTargets = rowData.targets;
+        this.verifiedActual.npoReport = rowData.actual;
+        this.verifiedActual.IndicatorReportId = rowData.id;
+    }
+
+   if(this.quarterId === 1)
+    {
+      this.verifiedActual.quarterTargets = rowData.q1;
+    }else 
+    
+    if(this.quarterId === 2){
+      this.verifiedActual.quarterTargets = rowData.q2;
+    }else
+    
+    if(this.quarterId === 3){
+      this.verifiedActual.quarterTargets = rowData.q3;
+    }
+    else 
+    
+    if(this.quarterId === 4){
+      this.verifiedActual.quarterTargets = rowData.q4;
+    }
+    
+    this.displayVerifyActualDialog = true;
+
+      // this.createMergedList();
     },
     (err) => {
       this._loggerService.logException(err);
@@ -1202,11 +1214,65 @@ if(rowData.group===null || rowData.group===undefined || rowData.group===''){
     // Update existing actual
     this.updateActual(actualobj);
   }
+};   
+
+
+saveVerifiedActual() {
+  let verifiedobj = {} as IVerifiedActuals;
+  verifiedobj.id = this.verifiedActual.id;
+  verifiedobj.quarterTargets = this.verifiedActual.quarterTargets;
+  // actualobj.financialYear = this.selectedFinancialYear.id;
+  verifiedobj.verified = this.verifiedActual.verified;
+  verifiedobj.notVerified = this.verifiedActual.notVerified;
+  verifiedobj.notVerifiedReason = this.verifiedActual.notVerifiedReason;
+  verifiedobj.targets = this.verifiedActual.targets;
+  verifiedobj.targetVarianceReason = this.verifiedActual.targetVarianceReason;
+  verifiedobj.targetVariance = this.verifiedActual.targetVariance;
+  verifiedobj.IndicatorReportId = this.verifiedActual.IndicatorReportId;
+  verifiedobj.isActive = true;
+  verifiedobj.npoReport= this.verifiedActual.npoReport;
+
+  // Check if it's a new actual or an update
+  if (this.verifiedActual.id === 0) {
+    // Create new actual
+    this.createVerifiedActual(verifiedobj);
+  } else {
+    // Update existing actual
+    this.updateVerifiedActual(verifiedobj);
+  }
 }
 
 getFinancialYear(id: number): string | undefined {
   const financialYear = this.financialYears?.find(year => year.id === id);
   return financialYear ? financialYear.name : undefined;
+}
+
+createVerifiedActual(verifiedactual: IVerifiedActuals) {
+  this._applicationRepo.createVerifiedActual(verifiedactual).subscribe(
+    (resp) => {
+      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'successfully added.' });
+      //this.GetVerifiedActualByAppid()
+    },
+    (err) => {
+      this._loggerService.logException(err);
+      this._spinner.hide();
+    }
+  );
+}
+
+
+updateVerifiedActual(verifiedactual: IVerifiedActuals) {
+  this._applicationRepo.updateVerifiedActual(verifiedactual).subscribe(
+    (resp) => {
+      this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'successfully updated.' });
+      //this.GetVerifiedActualByAppid()
+      //this.displayActualDialog = false;
+    },
+    (err) => {
+      this._loggerService.logException(err);
+      this._spinner.hide();
+    }
+  );
 }
 
 

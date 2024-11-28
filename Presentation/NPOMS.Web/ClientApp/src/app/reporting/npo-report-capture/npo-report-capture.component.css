@@ -22,3 +22,23 @@
     border-color: #ccc !important; /* Grey border */
     /* Optional: Override any padding, margin, or border-radius here if needed */
 }
+.button-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Adds spacing between buttons */
+  }
+  
+  .modal-button {
+    margin-left: auto; /* Pushes the modal button to the far right */
+  }
+
+  .answer-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .form-text {
+    flex: 1;
+  }
+  

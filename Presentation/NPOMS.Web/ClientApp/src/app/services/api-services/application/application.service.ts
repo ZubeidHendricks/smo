@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ApplicationWithUsers, IActivity, IActuals, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IBankDetail, IBaseCompleteViewModel, IExpenditure, IFacilityList, IFinancialYear, IFundingApplicationDetails, IGovernance, IMyContentLink, IObjective, IOtherInfor, IPlace, IPosts, IProjectImplementation, IResource, ISDA, ISDIP, ISubPlace, ISustainabilityPlan, IUser } from 'src/app/models/interfaces';
+import { ApplicationWithUsers, IActivity, IActuals, IApplication, IApplicationApproval, IApplicationAudit, IApplicationComment, IApplicationReviewerSatisfaction, IBankDetail, IBaseCompleteViewModel, IExpenditure, IFacilityList, IFinancialYear, IFundingApplicationDetails, IGovernance, IMyContentLink, IObjective, IOtherInfor, IPlace, IPosts, IProjectImplementation, IReportChecklist, IResource, ISDA, ISDIP, ISubPlace, ISustainabilityPlan, IUser, IVerifiedActuals } from 'src/app/models/interfaces';
 import { EnvironmentUrlService } from '../../environment-url/environment-url.service';
 import { Observable } from 'rxjs';
 
@@ -102,6 +102,21 @@ export class ApplicationService {
     return this._http.put<IApplication>(url, application, httpOptions);
   }
 
+  public saveChecklistData(reportChecklist: IReportChecklist) {
+    const url = `${this._envUrl.urlAddress}/api/applications/createChecklistReport`;
+    return this._http.post<IReportChecklist>(url, reportChecklist, httpOptions);
+  }
+
+  public updateChecklistData(reportChecklist: IReportChecklist) {
+    const url = `${this._envUrl.urlAddress}/api/applications/updateChecklistReport`;
+    return this._http.put<IReportChecklist>(url, reportChecklist, httpOptions);
+  }
+
+  public getReportChecklistByAppIdQtrId(appid: number, qtrId: number ) {
+    const url = `${this._envUrl.urlAddress}/api/applications/getReportChecklistByAppIdQtrId/appid/qtrId/${appid}/${qtrId}`;
+    return this._http.get<IReportChecklist>(url, httpOptions);
+  }
+
   public addProjectImplementation(projectImplementation: IProjectImplementation) {
     const url = `${this._envUrl.urlAddress}/api/applications/addProjectImplementation`;
     return this._http.post<IProjectImplementation>(url, projectImplementation, httpOptions);
@@ -163,6 +178,12 @@ export class ApplicationService {
   public GetIndicatorReportsByAppid(application: IApplication) {
     const url = `${this._envUrl.urlAddress}/api/applications/getindicatorreportsbyappid/appid/${application?.id}`;
     return this._http.get<IActuals[]>(url, httpOptions);
+
+  }
+
+  public GetVerifiedByAppid(actualId: number) {
+    const url = `${this._envUrl.urlAddress}/api/applications/GetVeifiedActualByActualId/actualId/${actualId}`;
+    return this._http.get<IVerifiedActuals>(url, httpOptions);
 
   }
 
@@ -240,6 +261,11 @@ export class ApplicationService {
   public updateActual(actual: IActuals) {
     const url = `${this._envUrl.urlAddress}/api/applications/updateIndicatorReport`;
     return this._http.put<IActuals>(url, actual, httpOptions);
+  }
+
+  public updateVerifiedActual(actual: IVerifiedActuals) {
+    const url = `${this._envUrl.urlAddress}/api/applications/updateVerifyActual`;
+    return this._http.put<IVerifiedActuals>(url, actual, httpOptions);
   }
   public getAllResources(application: IApplication) {
     const url = `${this._envUrl.urlAddress}/api/applications/resources/npoId/${application.npoId}/applicationPeriodId/${application.applicationPeriodId}`;
@@ -403,6 +429,11 @@ public updateApplicationWithApprovers(model: ApplicationWithUsers) {
 public createActual(actual: IActuals ) {
   const url = `${this._envUrl.urlAddress}/api/applications/CreateIndicatorReport`;
   return this._http.post<IActuals>(url, actual, httpOptions);
+}
+
+public createVerifiedActual(verifiedactual: IVerifiedActuals ) {
+  const url = `${this._envUrl.urlAddress}/api/applications/createVerifyActual`;
+  return this._http.post<IVerifiedActuals>(url, verifiedactual, httpOptions);
 }
 public createPost(post: IPosts) {
   const url = `${this._envUrl.urlAddress}/api/applications/createPostReport`;
