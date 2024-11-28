@@ -57,7 +57,7 @@ namespace NPOMS.API.Controllers
             IAnyOtherService anyOtherService,
             ISDIPService sdipService,
             IReportChecklistService reportChecklistService,
-            IVerifyActualService verifyActualService
+            IVerifyActualService verifyActualService,
 
             IApplicationRepository applicationRepository,
             IUserRepository userRepository,
