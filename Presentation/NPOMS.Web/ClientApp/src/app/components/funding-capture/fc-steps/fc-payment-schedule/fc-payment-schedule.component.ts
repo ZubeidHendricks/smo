@@ -219,7 +219,16 @@ export class FCPaymentScheduleComponent implements OnInit {
     }
   }
 
-  isComplianceDisabled(paymentDate: Date){
-    return paymentDate < new Date() ? true : false;
+  isComplianceDisabled(paymentDate){
+    const sysDate = this.formatDate(new Date);
+    return paymentDate < sysDate ? true : false;
   }
+
+  formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
 }
