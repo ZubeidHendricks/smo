@@ -67,7 +67,6 @@ namespace NPOMS.Repository
        // public DbSet<UserProgram> UserProgram { get; set; }
         public DbSet<DocumentStore> DocumentStores { get; set; }
         public DbSet<FundAppDocuments> FundAppDocuments { get; set; }
-
         public DbSet<DocumentType> DocumentTypes { get; set; }
         public DbSet<EmailAccount> EmailAccounts { get; set; }
         public DbSet<EmailQueue> EmailQueues { get; set; }
