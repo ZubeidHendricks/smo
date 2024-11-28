@@ -633,6 +633,7 @@ namespace NPOMS.Services.Implementation
                 }
                 else
                 {
+                    psi.PaymentStatus = (paymentScheduleItem.IsCompliant && paymentScheduleItem.PaymentStatus == "Pending Compliance") ? "Compliant" : "Pending Compliance";
                     psi.IsCompliant = paymentScheduleItem.IsCompliant;
                     psi.UpdatedUserId = loggedInUser.Id;
                     psi.UpdatedDateTime = DateTime.Now;
