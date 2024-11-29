@@ -149,6 +149,7 @@ export class EditFundingCaptureComponent implements OnInit {
     this._fundingManagementRepo.updatePaymentSchedules(this.paymentSchedule).subscribe(
       (resp) => {
         this.updateFundingCapture(status);
+        this._router.navigateByUrl('funding-capture');
       },
       (err) => {
         this._loggerService.logException(err);
@@ -170,10 +171,10 @@ export class EditFundingCaptureComponent implements OnInit {
     this.validated = true;
     this.loadFunding();
 
-    if (!this.fundingDetail.financialYearId || !this.fundingDetail.startDate || !this.fundingDetail.fundingTypeId || !this.fundingDetail.frequencyId || !this.fundingDetail.programmeId || !this.fundingDetail.subProgrammeId || !this.fundingDetail.subProgrammeTypeId || this.fundingDetail.amountAwarded < 1 || !this.fundingDetail.calculationTypeId)
+    if (!this.fundingDetail.financialYearId || !this.fundingDetail.startDate || !this.fundingDetail.fundingTypeId || !this.fundingDetail.frequencyId || !this.fundingDetail.programmeId || !this.fundingDetail.subProgrammeId || !this.fundingDetail.subProgrammeTypeId || this.fundingDetail.amountAwarded === 0 || !this.fundingDetail.calculationTypeId)
       this.validationErrors.push({ severity: 'error', summary: "Funding:", detail: "Please capture all required fields." });
 
-    if (this.fundingDetail.amountAwarded < 1)
+    if (this.fundingDetail.amountAwarded === 0)
       this.validationErrors.push({ severity: 'warn', summary: "Amounts:", detail: "Please capture Amount Awarded." });
 
     if (!this.sda.serviceDeliveryAreaId || !this.sda.placeId)

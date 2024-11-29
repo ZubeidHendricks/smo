@@ -633,7 +633,22 @@ namespace NPOMS.Services.Implementation
                 }
                 else
                 {
-                    psi.PaymentStatus = (paymentScheduleItem.IsCompliant && paymentScheduleItem.PaymentStatus == "Pending Compliance") ? "Compliant" : "Pending Compliance";
+                    if (paymentScheduleItem.PaymentStatus == "Pending Compliance")
+                    {
+                        if (paymentScheduleItem.IsCompliant)
+                        {
+                            psi.PaymentStatus = "Compliant";
+                        }
+                        else
+                        {
+                            psi.PaymentStatus = paymentScheduleItem.PaymentStatus;
+                        }
+                    }
+                    else
+                    {
+                        psi.PaymentStatus = paymentScheduleItem.PaymentStatus;
+                    }
+                    //psi.PaymentStatus = (paymentScheduleItem.IsCompliant && paymentScheduleItem.PaymentStatus == "Pending Compliance") ? "Compliant" : "Pending Compliance";
                     psi.IsCompliant = paymentScheduleItem.IsCompliant;
                     psi.UpdatedUserId = loggedInUser.Id;
                     psi.UpdatedDateTime = DateTime.Now;
