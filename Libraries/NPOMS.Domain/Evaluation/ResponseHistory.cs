@@ -11,7 +11,9 @@ namespace NPOMS.Domain.Evaluation
 
 		public int QuestionId { get; set; }
 
-		public int ResponseOptionId { get; set; }
+        public int? QaurterId { get; set; }
+
+        public int ResponseOptionId { get; set; }
 
 		[Column(TypeName = "nvarchar(MAX)")]
 		public string Comment { get; set; }

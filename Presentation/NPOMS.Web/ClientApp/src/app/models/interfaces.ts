@@ -557,6 +557,32 @@ export interface IIndicator {
     indicator: INPOIndicator;
     isEditable: boolean;
   }
+
+
+  
+  export interface IVerifiedActuals {
+    id: number; 
+    IndicatorReportId: number;
+    quarterTargets: number;
+    npoReport: number;
+    verified: number;
+    notVerified : number;
+    notVerifiedReason : string;
+    targets: number;
+    targetVarianceReason: string;
+    // indicatorId: number;
+    // indicatorValue: string;
+    // applicationId: number;
+    targetVariance: number,
+    adjustedVariance: number,
+    // serviceDeliveryAreaId: number;
+    // qaurterId: number;
+    actual: number;
+    isActive: boolean;
+    // statusId: number;
+    // status: IStatus  
+    
+  }
   
 
   export interface IActuals {
@@ -2058,6 +2084,7 @@ export interface ICapturedResponse {
 export interface IResponse {
     id: number;
     fundingApplicationId: number;
+    qaurterId: number;
     questionId: number;
     responseOptionId: number;
     comment: string;
@@ -2074,6 +2101,7 @@ export interface IQuestionResponseViewModel {
     questionId: number;
     questionName: string;
     questionSortOrder: number;
+    qaurterId: number;
 
     hasComment: boolean;
     commentRequired: boolean;
@@ -2313,4 +2341,32 @@ export interface IDocumentViewModel {
     fundingCaptureId: number;
     tpaLink: string;
     isActive: boolean;
+}
+
+export interface IReportChecklist {
+    id:number,
+    requiresTPASubmission: boolean;
+    verifiableReasonsProvided: boolean;
+    reportedReportingPeriod: boolean;
+    reportedServiceOutput: boolean;
+    supportingDocuments: boolean;
+
+    requiresTPASubmissionComments: string;
+    verifiableReasonsProvidedComments: string;
+    reportedReportingPeriodComments: string;
+    reportedServiceOutputComments: string;
+    supportingDocumentsComments: string;
+
+    applicationId: number;
+    serviceDeliveryAreaId: number;
+    qaurterId: number;
+    financialYearId: number;
+
+    isActive: boolean;
+    createdUserId: number;
+    createdDateTime: Date;
+    updatedUserId?: number;
+    updatedDateTime?: Date;
+    approvalDateTime?: Date;
+    createdUser: IUser;
 }

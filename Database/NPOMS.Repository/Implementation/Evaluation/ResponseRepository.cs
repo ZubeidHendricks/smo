@@ -118,6 +118,23 @@ namespace NPOMS.Repository.Implementation.Evaluation
             return model;
         }
 
+
+        public async Task<Response> GetReportResponseByIds(int fundingApplicationId, int questionId, int qtrId, int currentUserId)
+        {
+            return await FindByCondition(x => x.FundingApplicationId.Equals(fundingApplicationId) &&
+                                              x.QuestionId.Equals(questionId) &&
+                                              x.QaurterId.Equals(qtrId) &&
+                                              x.CreatedUserId.Equals(currentUserId))
+                            .AsNoTracking().FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<Response>> GetByIdsWithDetailReport(int fundingApplicationId, int qtrId, int currentUserId)
+        {
+            return await FindByCondition(x => x.FundingApplicationId.Equals(fundingApplicationId) && x.QaurterId.Equals(qtrId))
+                            .Include(x => x.ResponseOption)
+                            .AsNoTracking().ToListAsync();
+        }
+
         #endregion
     }
 }

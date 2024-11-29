@@ -116,6 +116,8 @@ import { ReportReviewComponent } from './reporting/report-review/report-review.c
 import { IndicatorImportComponent } from './reporting/indicator-import/indicator-import.component';
 import { ReportDownloadComponent } from './reporting/report-download/report-download.component';
 import { FundingAssessmentListComponent } from './components/funding-assessment/funding-assessment-list/funding-assessment-list.component';
+import { ProgramSummaryComponent } from './reporting/program-summary/program-summary.component';
+import { SubprogrammetypeSummaryComponent } from './reporting/subprogrammetype-summary/subprogrammetype-summary.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -163,10 +165,11 @@ const routes: Routes = [
   { path: 'qcOpenApplicationDohList', component: QcApplicationPeriodsDohComponent },
 
   { path: 'reports/:id', component: NpoReportCaptureComponent },
+  { path: 'programsummary/:id/:programid', component: ProgramSummaryComponent },
+  { path: 'subprogramsummary/:id/:programid', component: SubprogrammetypeSummaryComponent },
+  
   { path: 'reviewReports/:id', component: ReportReviewComponent },
   { path: 'utilities/importReports', component: IndicatorImportComponent },
-
-  
   { path: 'application/create/:id', component: CreateApplicationComponent },
   { path: 'application/edit/:id/:activeStep', component: EditApplicationComponent },
   { path: 'application/review/:id', component: ReviewApplicationComponent },

@@ -88,7 +88,7 @@ namespace NPOMS.API.Controllers
 			try
 			{
 				var results = await _evaluationService.GetQuestionnaire(fundingApplicationId, base.GetUserIdentifier());
-				return Ok(results);
+                return Ok(results);
 			}
 			catch (Exception ex)
 			{
@@ -96,6 +96,21 @@ namespace NPOMS.API.Controllers
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
+
+        [HttpGet("fundingApplicationId/{fundingApplicationId}/qtrId/{qtrId}")]
+        public async Task<IActionResult> GetQuestionnaireReport(int fundingApplicationId, int qtrId)
+        {
+            try
+            {
+                var results = await _evaluationService.GetQuestionnaireReport(fundingApplicationId,qtrId, base.GetUserIdentifier());
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetQuestionnaire action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
         [HttpGet("funId/{funId}")]
         public async Task<IActionResult> GetAddScoreQuestionnaire(int funId)
@@ -240,8 +255,14 @@ namespace NPOMS.API.Controllers
 		{
 			try
 			{
+                if (model.QaurterId > 0)
+                {
+                    var qresults = await this._evaluationService.UpdateReportResponse(model, base.GetUserIdentifier());
+                    return Ok(qresults);
+                }
 				var results = await this._evaluationService.UpdateResponse(model, base.GetUserIdentifier());
-				return Ok(results);
+
+                return Ok(results);
 			}
 			catch (Exception ex)
 			{
@@ -249,6 +270,21 @@ namespace NPOMS.API.Controllers
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
+
+        //[HttpPut("reportresponse", Name = "UpdateReportResponse")]
+        //public async Task<IActionResult> UpdateReportResponse([FromBody] Response model)
+        //{
+        //    try
+        //    {
+        //        var results = await this._evaluationService.UpdateReportResponse(model, base.GetUserIdentifier());
+        //        return Ok(results);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Something went wrong inside UpdateResponse action: {ex.Message} Inner Exception: {ex.InnerException}");
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
 
         [HttpPut("scorecardResponse", Name = "UpdateScorecardResponse")]
         public async Task<IActionResult> UpdateScorecardResponse([FromBody] Response model)

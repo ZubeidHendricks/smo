@@ -45,7 +45,12 @@ namespace NPOMS.Repository.Implementation.Lookup
 			return await FindByCondition(x => x.Name.Contains(name)).AsNoTracking().ToListAsync();
 		}
 
-		public async Task CreateEntity(ActivityList model)
+        public async Task <ActivityList> GetById(int id)
+        {
+            return await FindByCondition(x => x.Id.Equals(id)).FirstOrDefaultAsync();
+        }
+
+        public async Task CreateEntity(ActivityList model)
 		{
 			await CreateAsync(model);
 		}

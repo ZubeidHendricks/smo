@@ -27,6 +27,8 @@ namespace NPOMS.Services.Interfaces
         Task<IEnumerable<ResponseHistory>> GetCapturedResponseHistory(int fundingApplicationId, int questionId, int createdUserId);
 
 		Task<QuestionResponseViewModel> UpdateResponse(Response model, string userIdentifier);
+        Task<QuestionResponseViewModel> UpdateReportResponse(Response model, string userIdentifier);
+        
         Task<QuestionResponseViewModel> UpdateScorecardResponse(Response model, string userIdentifier);
 
         Task<QuestionResponseViewModel> UpdateScorecardRejectionResponse(Response model, string userIdentifier, int param);
@@ -39,5 +41,6 @@ namespace NPOMS.Services.Interfaces
         Task UpdateReviewerComment(CapturedResponse model, int createdUserId);        
 
         Task<WorkflowAssessment> GetWorkflowAssessmentByQuestionCategoryId(int questionCategoryId);
-	}
+        Task<IEnumerable<QuestionResponseViewModel>> GetQuestionnaireReport(int fundingApplicationId, int qtrId, string userIdentifier);
+    }
 }

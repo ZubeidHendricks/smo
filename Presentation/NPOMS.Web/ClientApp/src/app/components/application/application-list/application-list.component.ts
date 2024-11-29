@@ -640,6 +640,10 @@ export class ApplicationListComponent implements OnInit {
       this.optionItemExists('Conclude Scorecard');  
       this.optionItemExists('Summary');  
       this.optionItemExists('Quartery Perfomance Capture'); 
+      this.optionItemExists('Program Report Summary');
+      this.optionItemExists('SubProgrammeType Report Summary')
+      this.optionItemExists('Review Report')
+      
     }   
     if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP)
     {
@@ -648,6 +652,9 @@ export class ApplicationListComponent implements OnInit {
         this.optionItemExists('Adjudicate Funded Npo');  
         this.optionItemExists('Review Adjudicated Funded Npo');
         this.optionItemExists('Quartery Perfomance Capture'); 
+        this.optionItemExists('Program Report Summary');
+        this.optionItemExists('SubProgrammeType Report Summary')
+        this.optionItemExists('Review Report Summary')
     }
 
     if (this.selectedApplication.statusId === StatusEnum.Approved && this.selectedApplication.applicationPeriod.departmentId === 7)
@@ -1095,6 +1102,36 @@ export class ApplicationListComponent implements OnInit {
           icon: 'fa fa-file-text-o',
           command: () => {
             this._router.navigateByUrl('reports/' + this.selectedApplication.id);
+          }
+        });
+      }
+
+      if (true) {
+        this.optionItems[0].items.push({
+          label: 'Program Report Summary',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            this._router.navigateByUrl('programsummary/' + this.selectedApplication.id + '/' + this.selectedApplication.applicationPeriod.programmeId);  
+          }
+        });
+      }
+
+      // if (true) {
+      //   this.optionItems[0].items.push({
+      //     label: 'SubProgrammeType Report Summary',
+      //     icon: 'fa fa-file-text-o',
+      //     command: () => {
+      //       this._router.navigateByUrl('subprogramsummary/' + this.selectedApplication.id + '/' + this.selectedApplication.applicationPeriod.programmeId);  
+      //     }
+      //   });
+      // }
+
+      if (true) {
+        this.optionItems[0].items.push({
+          label: 'Review Report',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            this._router.navigateByUrl('reviewReports/' + this.selectedApplication.id); 
           }
         });
       }

@@ -1,8 +1,10 @@
 {
   "name": "NPOMSWeb",
   "version": "0.0.0",
+  "build-serve": "node --max_old_space_size=8048 ./node_modules/@angular/cli/bin/ng serve",
   "scripts": {
     "ng": "ng",
+    "build-serve": "node --max_old_space_size=8048 ./node_modules/@angular/cli/bin/ng serve",
     "start": "echo Starting... && ng serve",
     "build": "ng build",
     "build:ssr": "ng run NPOMSWeb:server:dev",

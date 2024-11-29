@@ -18,6 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NPOMS.Repository.Interfaces.Lookup;
+using Microsoft.Extensions.Azure;
 
 namespace NPOMS.Services.Implementation
 {
@@ -60,7 +62,7 @@ namespace NPOMS.Services.Implementation
 		private ISubRecipientRepository _subRecipientRepository;
 		private ISubSubRecipientRepository _subSubRecipientRepository;
 		private IActivityRecipientRepository _activityRecipientRepository;
-        private IActivityDistrictRepository _activityDistrictRepository;
+        private Repository.Interfaces.Mapping.IActivityDistrictRepository _activityDistrictRepository;
         private IActivityManicipalityRepository _activityManicipalityRepository;
         private IActivitySubDistrictRepository _activitySubDistrictRepository;
         private IActivitySubStructureRepository _activitySubStructureRepository;
@@ -74,7 +76,7 @@ namespace NPOMS.Services.Implementation
         private ISDIPRepository _sDIPRepository;
         private IIndicatorReportRepository _indicatorRepository;
         private IIncomeAndExpenditureRepository _expenditureRepository;
-
+		private IActivityListRepository _activityListRepository;
         private RepositoryContext _repositoryContext;
 
 		#endregion
@@ -118,7 +120,7 @@ namespace NPOMS.Services.Implementation
 			IActivityRecipientRepository activityRecipientRepository,
             IDepartmentRepository departmentRepository,
             Repository.Interfaces.Dropdown.IProgrammeRepository programmeRepository,
-            IActivityDistrictRepository activityDistrictRepository,
+            Repository.Interfaces.Mapping.IActivityDistrictRepository activityDistrictRepository,
             IActivityManicipalityRepository activityManicipalityRepository,
             IActivitySubDistrictRepository activitySubDistrictRepository,
             IActivitySubStructureRepository activitySubStructureRepository,
@@ -130,7 +132,8 @@ namespace NPOMS.Services.Implementation
 			IAnyOtherRepository anyOtherRepository,
 			ISDIPRepository sDIPRepository,
             IIndicatorReportRepository indicatorRepository,
-			IIncomeAndExpenditureRepository expenditureRepository
+			IIncomeAndExpenditureRepository expenditureRepository,
+            IActivityListRepository activityListRepository
             )
 		{
             _applicationRepository = applicationRepository;
@@ -182,6 +185,7 @@ namespace NPOMS.Services.Implementation
             _sDIPRepository = sDIPRepository;
             _indicatorRepository = indicatorRepository;
             _expenditureRepository = expenditureRepository;
+            _activityListRepository = activityListRepository;
         }
 
 		#endregion
@@ -1104,12 +1108,35 @@ namespace NPOMS.Services.Implementation
 			return activities;
 		}
 
-		public async Task<Activity> GetActivityById(int id)
+        public async Task<IEnumerable<Activity>> GetAllActivitiesByApplicationIdAsync(int ApplicationId)
+        {
+            var activities = await _activityRepository.GetByApplicationId(ApplicationId);
+
+            foreach (var item in activities)
+            {
+                var subProgrammeMappings = await _activitySubProgrammeRepository.GetByActivityId(item.Id, true);
+                item.ActivitySubProgrammes = subProgrammeMappings.ToList();
+
+                var facilityListMappings = await _activityFacilityListRepository.GetByActivityId(item.Id, true);
+                item.ActivityFacilityLists = facilityListMappings.ToList();
+
+                var recipients = await _activityRecipientRepository.GetByActivityId(item.Id);
+                item.ActivityRecipients = recipients.ToList();
+            }
+
+            return activities;
+        }
+        //GetCfpActivityById
+        public async Task<Activity> GetActivityById(int id)
 		{
 			return await _activityRepository.GetById(id);
 		}
+		public async Task<Activity> GetCfpActivityById(int id)
+        {
+            return await _activityRepository.GetCfpActivityById(id);
+        }
 
-		public async Task CreateActivity(Activity model, string userIdentifier)
+        public async Task CreateActivity(Activity model, string userIdentifier)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
@@ -1693,6 +1720,188 @@ namespace NPOMS.Services.Implementation
             model.UpdatedDateTime = DateTime.Now;
 
             await _objectiveRepository.UpdateEntity(model, loggedInUser.Id);
+        }
+
+        public async Task createCfpActivities(DtoActivity model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            var activityList = new ActivityList()
+            {
+                Name = model.ActivityName,
+                Description = model.ActivityDescription,
+                IsActive = true,
+                CreatedUserId = loggedInUser.Id,
+                CreatedDateTime = DateTime.Now,
+            };
+
+            await _activityListRepository.CreateAsync(activityList);
+					
+
+            var activity = new Activity()
+			{
+				ApplicationId = model.ApplicationId,
+				ObjectiveId = model.ObjectiveId,
+				ActivityListId = activityList.Id,
+				ActivityTypeId = model.ActivityTypeId,
+				Target = model.Target,
+				SuccessIndicator = model.SuccessIndicator,
+				FinancialYear = model.FinancialYear,
+				Quarter = model.Quarter,
+				IsActive = true,
+                CreatedUserId = loggedInUser.Id,
+                CreatedDateTime = DateTime.Now,
+            };
+
+            await _activityRepository.CreateAsync(activity);
+
+            var activityDistrict = new ActivityDistrict()
+            {
+                DemographicDistrictId = model.DemographicDistrictId,
+                Name = model.DemographicDistrictName,
+                ActivityId = activity.Id,
+                IsActive = true
+            };
+			
+            await _activityDistrictRepository.CreateAsync(activityDistrict);
+
+			var activityMunicipality = new ActivityManicipality()
+			{
+                DemographicDistrictId = model.DemographicDistrictId,
+                Name = model.MunicipalityName,
+                ActivityId = activity.Id,
+                IsActive = true
+            };
+
+			await _activityManicipalityRepository.CreateAsync(activityMunicipality);
+
+			var activitySubStructure = new ActivitySubStructure()
+			{
+				MunicipalityId = model.MunicipalityId,
+				Name = model.SubstructureName,
+				ActivityId = activity.Id,
+				IsActive = true
+			};
+
+			await _activitySubStructureRepository.CreateAsync(activitySubStructure);
+
+			var area = new ActivityArea()
+			{
+				DemographicDistrictId = model.DemographicDistrictId,
+                Name = model.AreaName,
+				IsActive = true,
+                ActivityId = activity.Id
+            };
+
+			await _areaRepository.CreateAsync(area);
+
+
+			var activitySubDistrict = new ActivitySubDistrict()
+			{
+				Name = model.ActivitySubDistrictsName,
+				IsActive = true,
+				ActivityId = activity.Id,
+				SubstructureId = activitySubStructure.Id,
+                AreaId = area.Id
+			};
+
+			await _activitySubDistrictRepository.CreateAsync(activitySubDistrict);
+        }
+
+        public async Task editCfpActivities(DtoActivity model, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+			var activityData = await _activityRepository.GetById(model.Id);
+
+			var activityListData = await _activityListRepository.GetById(activityData.ActivityListId);
+
+            var activityList = new ActivityList()
+            {
+				Id = activityData.ActivityListId,
+                Name = model.ActivityName,
+                Description = model.ActivityDescription,
+                IsActive = true,
+                CreatedUserId = activityListData.CreatedUserId,
+                CreatedDateTime = activityListData.CreatedDateTime,
+                UpdatedUserId = loggedInUser.Id,
+                UpdatedDateTime = DateTime.Now
+            };
+
+            await _activityListRepository.UpdateAsync1(activityList);
+
+
+            var activity = new Activity()
+            {
+				Id = model.Id,
+                ApplicationId = model.ApplicationId,
+                ObjectiveId = model.ObjectiveId,
+                ActivityListId = activityList.Id,
+                ActivityTypeId = model.ActivityTypeId,
+                Target = model.Target,
+                SuccessIndicator = model.SuccessIndicator,
+                FinancialYear = model.FinancialYear,
+                Quarter = model.Quarter,
+                IsActive = true,
+                CreatedUserId = activityData.CreatedUserId,
+                CreatedDateTime = activityData.CreatedDateTime,
+                UpdatedUserId = loggedInUser.Id,
+                UpdatedDateTime = DateTime.Now
+            };
+
+            await _activityRepository.UpdateAsync1(activity);
+
+            var activityDistrict = new ActivityDistrict()
+            {
+                DemographicDistrictId = model.DemographicDistrictId,
+                Name = model.DemographicDistrictName,
+                ActivityId = activity.Id,
+                IsActive = true
+            };
+
+            await _activityDistrictRepository.UpdateAsync1(activityDistrict);
+
+            var activityMunicipality = new ActivityManicipality()
+            {
+                DemographicDistrictId = model.DemographicDistrictId,
+                Name = model.MunicipalityName,
+                ActivityId = activity.Id,
+                IsActive = true
+            };
+
+            await _activityManicipalityRepository.UpdateAsync1(activityMunicipality);
+
+            var activitySubStructure = new ActivitySubStructure()
+            {
+                MunicipalityId = model.MunicipalityId,
+                Name = model.SubstructureName,
+                ActivityId = activity.Id,
+                IsActive = true
+            };
+
+            await _activitySubStructureRepository.UpdateAsync1(activitySubStructure);
+
+            var area = new ActivityArea()
+            {
+                DemographicDistrictId = model.DemographicDistrictId,
+                Name = model.AreaName,
+                IsActive = true,
+                ActivityId = activity.Id
+            };
+
+            await _areaRepository.UpdateAsync1(area);
+
+
+            var activitySubDistrict = new ActivitySubDistrict()
+            {
+                Name = model.ActivitySubDistrictsName,
+                IsActive = true,
+                ActivityId = activity.Id,
+                SubstructureId = activitySubStructure.Id,
+                AreaId = area.Id
+            };
+
+            await _activitySubDistrictRepository.UpdateAsync1(activitySubDistrict);
         }
 
         #endregion

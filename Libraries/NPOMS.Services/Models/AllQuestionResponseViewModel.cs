@@ -28,7 +28,7 @@ namespace NPOMS.Services.Models
 
 		public AllQuestionResponseViewModel(List<Question> questions, List<Response> responses)
 		{
-			var orderedQuestions = questions.OrderBy(x => x.QuestionSection.SortOrder).ThenBy(x => x.SortOrder).ToList();
+            var orderedQuestions = questions.OrderBy(x => x.QuestionSection.SortOrder).ThenBy(x => x.SortOrder).ToList();
 			orderedQuestions.ForEach(question => this._questionResponses
 							.Add(
 									new QuestionResponseViewModel
@@ -38,6 +38,7 @@ namespace NPOMS.Services.Models
 									)
 								)
 							);
-		}
+
+        }
 	}
 }

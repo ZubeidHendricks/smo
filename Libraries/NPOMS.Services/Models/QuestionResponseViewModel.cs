@@ -19,7 +19,7 @@ namespace NPOMS.Services.Models
 
 		public int QuestionId { get; set; }
 
-		public string QuestionName { get; set; }
+        public string QuestionName { get; set; }
 
 		public int QuestionSortOrder { get; set; }
 
@@ -33,9 +33,9 @@ namespace NPOMS.Services.Models
 
 		public int Weighting { get; set; }
 
-		public int ResponseId => Response == null ? 0 : Response.Id;
+        public int QaurterId => Response?.QaurterId ?? 0;
 
-		public int ResponseOptionId => Response == null ? 0 : Response.ResponseOptionId;
+        public int ResponseOptionId => Response == null ? 0 : Response.ResponseOptionId;
 
 		public string Comment => Response == null ? string.Empty : Response.Comment;
 
@@ -65,7 +65,7 @@ namespace NPOMS.Services.Models
 			this.QuestionSectionName = question.QuestionSection.Name;
 			this.ResponseTypeId = question.ResponseTypeId;
 			this.QuestionId = question.Id;
-			this.QuestionName = question.Name;
+            this.QuestionName = question.Name;
 			this.QuestionSortOrder = question.SortOrder;
 
 			if (question.QuestionProperty != null)
@@ -76,7 +76,7 @@ namespace NPOMS.Services.Models
 				this.DocumentRequired = question.QuestionProperty.DocumentRequired;
 				this.Weighting = question.QuestionProperty.Weighting;
 			}
-			this.Response = response;
+            this.Response = response;
 		}
 
         public QuestionResponseViewModel(Question question, List<Response> responses, bool v)
