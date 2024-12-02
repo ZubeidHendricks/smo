@@ -562,9 +562,10 @@ export interface IIndicator {
   
   export interface IVerifiedActuals {
     id: number; 
+    actualNpoValue: number;
     IndicatorReportId: number;
     quarterTargets: number;
-    npoReport: number;
+    actualValue: number;
     verified: number;
     notVerified : number;
     notVerifiedReason : string;
@@ -572,16 +573,21 @@ export interface IIndicator {
     targetVarianceReason: string;
     // indicatorId: number;
     // indicatorValue: string;
-    // applicationId: number;
+    applicationId: number;
     targetVariance: number,
     adjustedVariance: number,
-    // serviceDeliveryAreaId: number;
-    // qaurterId: number;
+    serviceDeliveryAreaId: number;
+    qaurterId: number;
     actual: number;
     isActive: boolean;
-    // statusId: number;
-    // status: IStatus  
-    
+    statusId: number;
+    status: IStatus   
+
+    subProgrammeId: number;
+    programmeId: number;
+    indicatorValue: number;
+    financialYearId: number;
+    subProgrammeTypeId: number;
   }
   
 
@@ -611,6 +617,7 @@ export interface IIndicator {
     status: IStatus;
     comments: string;   
     indicatorReportAudits: IActualsAudit[];
+    verifyActual: IVerifiedActuals[]
   }
 
   export interface IActualsAudit {

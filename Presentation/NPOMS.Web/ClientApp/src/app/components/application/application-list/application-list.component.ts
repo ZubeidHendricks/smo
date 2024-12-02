@@ -1116,15 +1116,15 @@ export class ApplicationListComponent implements OnInit {
         });
       }
 
-      // if (true) {
-      //   this.optionItems[0].items.push({
-      //     label: 'SubProgrammeType Report Summary',
-      //     icon: 'fa fa-file-text-o',
-      //     command: () => {
-      //       this._router.navigateByUrl('subprogramsummary/' + this.selectedApplication.id + '/' + this.selectedApplication.applicationPeriod.programmeId);  
-      //     }
-      //   });
-      // }
+      if (true) {
+        this.optionItems[0].items.push({
+          label: 'SubProgrammeType Report Summary',
+          icon: 'fa fa-file-text-o',
+          command: () => {
+            this._router.navigateByUrl('subprogramsummary/' + this.selectedApplication.id + '/' + this.selectedApplication.applicationPeriod.programmeId);  
+          }
+        });
+      }
 
       if (true) {
         this.optionItems[0].items.push({

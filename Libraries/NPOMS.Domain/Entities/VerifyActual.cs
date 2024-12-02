@@ -13,7 +13,7 @@ namespace NPOMS.Domain.Entities
     {
         public int IndicatorReportId { get; set; }
         public int StatusId { get; set; }
-        public int NPOReport { get; set; }
+        public int ActualNpoValue { get; set; }
         public int Verified { get; set; }
 
         public int NotVerified { get; set; }
@@ -45,6 +45,15 @@ namespace NPOMS.Domain.Entities
         public User CreatedUser { get; set; }
 
         public Status Status { get; set; }
+
+        public int SubProgrammeId { get; set; }
+        public int ProgrammeId { get; set; }
+
+        public int IndicatorValue { get; set; }
+
+        public int FinancialYearId { get; set; }
+
+        public int SubProgrammeTypeId { get; set; }
 
     }
 }

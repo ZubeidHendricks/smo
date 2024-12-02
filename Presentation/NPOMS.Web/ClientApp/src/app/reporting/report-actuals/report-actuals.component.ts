@@ -4,7 +4,7 @@ import { Table } from 'primeng/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ConfirmationService, MenuItem, Message, MessageService } from 'primeng/api';
 import { DepartmentEnum, DocumentUploadLocationsEnum, DropdownTypeEnum, EntityEnum, EntityTypeEnum, FacilityTypeEnum, PermissionsEnum, RecipientEntityEnum, RoleEnum, ServiceProvisionStepsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IActuals, IActualsAudit, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IDocumentType, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IFrequencyPeriod, IIndicator, IManicipalityDemographic, IndicatorReport, INpo, INPOIndicator, IObjective, IProgramme, IQuarterlyPeriod, IRecipientType, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { IActivity, IActivityDistrict, IActivityFacilityList, IActivityList, IActivityManicipality, IActivityRecipient, IActivitySubDistrict, IActivitySubProgramme, IActivitySubStructure, IActivityType, IActuals, IActualsAudit, IApplication, IApplicationComment, IApplicationPeriod, IApplicationReviewerSatisfaction, IApplicationType, IBaseCompleteViewModel, IDepartment, IDistrictDemographic, IDocumentType, IFacilityDistrict, IFacilityList, IFacilitySubDistrict, IFacilitySubStructure, IFinancialYear, IFrequencyPeriod, IIndicator, IManicipalityDemographic, IndicatorReport, INpo, INPOIndicator, IObjective, IProgramme, IQuarterlyPeriod, IRecipientType, IStatus, ISubDistrictDemographic, ISubProgramme, ISubProgrammeType, ISubstructureDemographic, IUser, IVerifiedActuals, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { NpoService } from 'src/app/services/api-services/npo/npo.service';
 import { DropdownService } from 'src/app/services/dropdown/dropdown.service';
@@ -573,7 +573,9 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
       statusId: 0,
       status: {} as IStatus,
       comments: '',
-      indicatorReportAudits: {} as IActualsAudit[]
+      indicatorReportAudits: {} as IActualsAudit[],
+      verifyActual: {} as IVerifiedActuals[]
+
     };
   }
 
@@ -1099,7 +1101,8 @@ addOther() {
     statusId: 0,
     status: {} as IStatus,
     comments: '',
-    indicatorReportAudits: [] as IActualsAudit[] 
+    indicatorReportAudits: [] as IActualsAudit[],
+    verifyActual: {} as IVerifiedActuals[]
   };
 
   // Add this new row to the actuals array

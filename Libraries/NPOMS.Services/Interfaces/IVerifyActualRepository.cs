@@ -14,7 +14,7 @@ namespace NPOMS.Services.Interfaces
 
         Task<VerifyActual> GetVerifiedActualsById(int id);
 
-        Task<VerifyActual> GetVerifiedActualsByPeriodId(int actualId);
+        Task<VerifyActual> GetVerifiedActualsByPeriodId(int actualId, int quarterId);
 
         Task<IEnumerable<VerifyActual>> GetVerifiedActualsByNpoId(int npoId);
 

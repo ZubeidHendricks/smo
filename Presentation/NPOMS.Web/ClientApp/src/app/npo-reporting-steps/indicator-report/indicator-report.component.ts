@@ -475,9 +475,6 @@ createMergedList() {
   // this.performPostMergeOperations();
 }
 
-
-
- 
 status(data: any) {
   return data?.status?.name || 'New';
 }
@@ -529,7 +526,8 @@ setTargetsBasedOnFrequency(actual: IActuals,indicator: INPOIndicator) {
       statusId: 0,
       status: {} as IStatus,
       comments: '',
-      indicatorReportAudits: {} as IActualsAudit[]
+      indicatorReportAudits: {} as IActualsAudit[],
+      verifyActual: {} as IVerifiedActuals[]
     };
   }
 
@@ -877,19 +875,22 @@ private GetIndicatorReportsByAppid() {
 
 private GetVerifiedActualByActualId(actualId: number, rowData: any) {
   this._spinner.show();
-  this._applicationRepo.GetVerifiedByAppid(actualId).subscribe(
+  this._applicationRepo.GetVerifiedByAppid(actualId, this.quarterId).subscribe(
     (result) => {
     this.verifiedActual = result;
     this._spinner.hide();
-    console.log('rowData',this.verifiedActual);
     if( this.verifiedActual === undefined || this.verifiedActual === null || this.verifiedActual.id === 0) 
     {
-       this.verifiedActual = {} as IVerifiedActuals;
+        this.verifiedActual = {} as IVerifiedActuals;
         this.verifiedActual.id = 0;
-        this.verifiedActual.quarterTargets = rowData.targets;
-        this.verifiedActual.npoReport = rowData.actual;
+        // this.verifiedActual.quarterTargets = rowData.targets;
+        this.verifiedActual.actualValue = rowData.actual;
         this.verifiedActual.IndicatorReportId = rowData.id;
+        this.verifiedActual.indicatorValue = rowData.indicatorValue;
+        // this.verifiedActual.actualNpoValue = rowData.actual;
     }
+
+    this.verifiedActual.actualNpoValue = rowData.actual;
 
    if(this.quarterId === 1)
     {
@@ -1122,7 +1123,8 @@ addOther() {
     statusId: 0,
     status: {} as IStatus,
     comments: '',
-    indicatorReportAudits: [] as IActualsAudit[] 
+    indicatorReportAudits: [] as IActualsAudit[],
+    verifyActual: {} as IVerifiedActuals[]
   };
 
   // Add this new row to the actuals array
@@ -1220,7 +1222,6 @@ if(rowData.group===null || rowData.group===undefined || rowData.group===''){
   }
 };   
 
-
 saveVerifiedActual() {
   let verifiedobj = {} as IVerifiedActuals;
   verifiedobj.id = this.verifiedActual.id;
@@ -1234,7 +1235,17 @@ saveVerifiedActual() {
   verifiedobj.targetVariance = this.verifiedActual.targetVariance;
   verifiedobj.IndicatorReportId = this.verifiedActual.IndicatorReportId;
   verifiedobj.isActive = true;
-  verifiedobj.npoReport= this.verifiedActual.npoReport;
+  
+  verifiedobj.actualValue= this.verifiedActual.actualValue;
+  verifiedobj.qaurterId = this.quarterId;
+  verifiedobj.applicationId = this.application.id;
+  verifiedobj.financialYearId = this.application.applicationPeriod.financialYear.id;
+  verifiedobj.serviceDeliveryAreaId = this.serviceDeliveryAreaId;
+
+  verifiedobj.actualNpoValue= this.verifiedActual.actualNpoValue;
+  verifiedobj.subProgrammeId = this.application.applicationPeriod.subProgrammeId;
+  verifiedobj.programmeId = this.application.applicationPeriod.programmeId;
+  verifiedobj.subProgrammeTypeId = this.application.applicationPeriod.subProgrammeTypeId;
 
   // Check if it's a new actual or an update
   if (this.verifiedActual.id === 0) {
@@ -1256,6 +1267,7 @@ createVerifiedActual(verifiedactual: IVerifiedActuals) {
     (resp) => {
       this._messageService.add({ severity: 'success', summary: 'Successful', detail: 'successfully added.' });
       //this.GetVerifiedActualByAppid()
+      this.displayVerifyActualDialog = false;
     },
     (err) => {
       this._loggerService.logException(err);

@@ -6,7 +6,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MegaMenuItem, MessageService } from 'primeng/api';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, FrequencyEnum, FrequencyPeriodEnum, PermissionsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActuals, IActualsAudit, IApplication, IFinancialYear, INPOIndicator, IProgramme, ISDA, IStatus, ISubProgramme, ISubProgrammeType, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { IActivity, IActuals, IActualsAudit, IApplication, IFinancialYear, INPOIndicator, IProgramme, ISDA, IStatus, ISubProgramme, ISubProgrammeType, IUser, IVerifiedActuals, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { IndicatorService } from 'src/app/services/api-services/indicator/indicator.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
@@ -32,6 +32,7 @@ export class ProgramSummaryComponent implements OnInit {
   yearSelectedId: number;
   selectedSubProgrammeTypeId: number;
   filteredActuals: IActuals[];
+  allVerifications: IVerifiedActuals[];
 
   /* Permission logic */
   public IsAuthorized(permission: PermissionsEnum): boolean {
@@ -137,10 +138,46 @@ export class ProgramSummaryComponent implements OnInit {
         this.loadFinancialYears()
         // this.MasterServiceDelivery();
         this.loadSubProgrammeTypes();
+        this.loadSubProgrammes();
       }
     });
   }
 
+  private loadVerifications() {
+    this._spinner.show();
+    this._applicationRepo.getVeifiedActuals().subscribe(
+      (results) => {
+        this.allVerifications = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
+  VerificationResults(rowData: any, qaurterId: number) {
+
+    console.log(' this.allVerifications',  this.allVerifications);
+    return (
+      this.allVerifications.find(
+          x =>
+              x.IndicatorReportId === rowData.id &&
+              x.qaurterId === qaurterId &&
+              x.applicationId === rowData.applicationId &&
+              x.programmeId === rowData.programmeId &&
+              x.subProgrammeId === rowData.subProgrammeId &&
+              // x.indicatorValue === rowData.indicatorValue &&
+              x.financialYearId === rowData.financialYearId &&
+              x.serviceDeliveryAreaId === rowData.serviceDeliveryAreaId
+      )
+  );
+    // const key = `${rowData.applicationId}-${rowData.programmeId}-${rowData.subProgrammeId}-${rowData.indicatorValue}-${rowData.financialYearId}-${rowData.serviceDeliveryAreaId}`;
+
+    // return this.allVerifications.find(x => x.IndicatorReportId === rowData.id && x.qaurterId === qaurterId);
+  }
+  
   private loadSubProgrammeTypes() {
     this._spinner.show();
     this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgrammeTypes, false).subscribe(
@@ -312,11 +349,26 @@ export class ProgramSummaryComponent implements OnInit {
     );
   }
 
+  private loadSubProgrammes() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, false).subscribe(
+      (results) => {
+        this.allSubProgrammes = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
   private loadIndicators() {
     this._dropdownRepo.getEntities(DropdownTypeEnum.HighLevelNPO, false).subscribe(
       (results) => {
         this.iNPOIndicatorsdata = results;
         this.iNPOIndicators = this.iNPOIndicatorsdata;
+        this.loadVerifications();
         //this.MasterServiceDelivery()
         //this.createMergedList();
       },
@@ -452,7 +504,6 @@ createMergedList() {
     actual => actual.serviceDeliveryAreaId === this.selectedOptionId
   );
 
-
   // Merge actuals and indicators
   this.filteredActuals.forEach(actual => {
     const indicator = this.iNPOIndicators.find(
@@ -469,6 +520,7 @@ createMergedList() {
       id: actual.id,
       quarterId: actual.qaurterId,
       actual: actual.actual,
+      verifiedfiedActuals: actual.verifyActual,
     };
 
     this.mergedList.push(mergedObject);
@@ -490,6 +542,7 @@ createMergedList() {
         financialYearId: row.financialYearId,
         serviceDeliveryAreaId: row.serviceDeliveryAreaId,
         ccode: row.ccode,
+        verifiedfiedActuals: row.verifiedfiedActuals,
         organisationName: row.organisationName,
         programme: row.programme,
         subprogrammeType: row.subprogrammeType,
@@ -504,6 +557,7 @@ createMergedList() {
         adjustedActual: row.adjustedActual,
         adjustedVariance: row.adjustedVariance,
         comments: row.comments,
+       // id : row.id, I want to add this
         quarters: [],
       });
     }
@@ -628,7 +682,8 @@ createEmptyActual(indicator: INPOIndicator): IActuals {
     statusId: 0,
     status: {} as IStatus,
     comments: '',
-    indicatorReportAudits: {} as IActualsAudit[]
+    indicatorReportAudits: {} as IActualsAudit[],
+    verifyActual: {} as IVerifiedActuals[]
   };
 }
 

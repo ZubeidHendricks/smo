@@ -763,12 +763,27 @@ namespace NPOMS.API.Controllers
         }
 
 
-        [HttpGet("GetVeifiedActualByActualId/actualId/{actualId}", Name = "GetVeifiedActualByActualId")]
-        public async Task<IActionResult> GetVeifiedActualByAppId(int actualId)
+        [HttpGet("GetVeifiedActualByActualId/actualId/{actualId}/quarterId/{quarterId}", Name = "GetVeifiedActualByActualId")]
+        public async Task<IActionResult> GetVeifiedActualByAppId(int actualId, int quarterId)
         {
             try
             {
-                var results = await _verifyActualService.GetVerifiedActualsByPeriodId(actualId);
+                var results = await _verifyActualService.GetVerifiedActualsByPeriodId(actualId, quarterId);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetVeifiedActualByAppIdQuarterId action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("getVeifiedActuals", Name = "GetVeifiedActuals")]
+        public async Task<IActionResult> GetVeifiedActuals()
+        {
+            try
+            {
+                var results = await _verifyActualService.GetVerifiedActuals();
                 return Ok(results);
             }
             catch (Exception ex)

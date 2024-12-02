@@ -62,9 +62,9 @@ namespace NPOMS.Services.Implementation
             return await _verifyActualRepository.GetByNpoId(npoId);
         }
 
-        public async    Task<VerifyActual> GetVerifiedActualsByPeriodId(int actualId)
+        public async    Task<VerifyActual> GetVerifiedActualsByPeriodId(int actualId, int quarterId)
         {
-            return await _verifyActualRepository.GetVerifiedActualsByPeriodId(actualId);
+            return await _verifyActualRepository.GetVerifiedActualsByPeriodId(actualId, quarterId);
         }
 
         public Task<IEnumerable<VerifyActual>> GetVerifiedActualsByPeriodIdQtrIId(int applicationPeriodId, int qtrId)

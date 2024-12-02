@@ -13,7 +13,7 @@ namespace NPOMS.Repository.Interfaces.Entities
 
         Task<VerifyActual> GetById(int id);
 
-        Task<VerifyActual> GetVerifiedActualsByPeriodId(int actualId);
+        Task<VerifyActual> GetVerifiedActualsByPeriodId(int actualId, int quarterId);
 
         Task<IEnumerable<VerifyActual>> GetByNpoId(int npoId);
 

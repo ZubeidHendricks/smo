@@ -44,17 +44,17 @@ namespace NPOMS.Repository.Implementation.Entities
             return null;
         }
 
-        public async Task<VerifyActual> GetVerifiedActualsByPeriodId(int actualId)
+        public async Task<VerifyActual> GetVerifiedActualsByPeriodId(int actualId, int quarterId)
         {
-            return await FindByCondition(x => x.IndicatorReportId == actualId && x.IsActive)
+            return await FindByCondition(x => x.IndicatorReportId == actualId && x.IsActive && x.QaurterId == quarterId)
                   .Include(x => x.Status)
                   .AsNoTracking()
                   .FirstOrDefaultAsync();
         }
 
-        public Task<IEnumerable<VerifyActual>> GetEntities()
+        public async Task<IEnumerable<VerifyActual>> GetEntities()
         {
-            throw new NotImplementedException();
+            return await FindByCondition(a =>a.IsActive).AsNoTracking().ToListAsync();
         }
 
         public async Task UpdateEntity(VerifyActual model, int currentUserId)

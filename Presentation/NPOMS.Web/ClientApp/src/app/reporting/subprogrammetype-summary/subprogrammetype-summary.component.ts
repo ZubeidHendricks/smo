@@ -6,7 +6,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MegaMenuItem, MessageService } from 'primeng/api';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ApplicationTypeEnum, DropdownTypeEnum, FrequencyEnum, FrequencyPeriodEnum, PermissionsEnum, StatusEnum } from 'src/app/models/enums';
-import { IActivity, IActuals, IActualsAudit, IApplication, IFinancialYear, IIndicator, INPOIndicator, IProgramme, ISDA, IStatus, ISubProgramme, IUser, IWorkplanIndicator } from 'src/app/models/interfaces';
+import { IActivity, IActuals, IActualsAudit, IApplication, IFinancialYear, IIndicator, INPOIndicator, IProgramme, ISDA, IStatus, ISubProgramme, IUser, IVerifiedActuals, IWorkplanIndicator } from 'src/app/models/interfaces';
 import { ApplicationService } from 'src/app/services/api-services/application/application.service';
 import { IndicatorService } from 'src/app/services/api-services/indicator/indicator.service';
 import { LoggerService } from 'src/app/services/logger/logger.service';
@@ -69,7 +69,7 @@ export class SubprogrammetypeSummaryComponent implements OnInit {
   filteredWorkplanIndicators: IWorkplanIndicator[];
 
   scrollableCols: any[];
-  frozenCols: any[];
+  indicatorCols: any[];
 
   lastWorkplanTarget: boolean;
   lastWorkplanActual: boolean;
@@ -122,12 +122,35 @@ export class SubprogrammetypeSummaryComponent implements OnInit {
         //this.loadApplications();
         this.buildMenu();
         this.getAllIndicatorReports();
-        // this.loadProgrammes();
+        this.loadProgrammes();
         this.loadFinancialYears()
         // this.MasterServiceDelivery();
+        this.loadIndicator();
+        this.loadSubProgrammes();
+        this.loadSubProgrammeTypes();
       }
     });
+
+    this.indicatorCols = [
+      // { header: 'Program', width: '14%' },
+      { header: 'SubProgramme Type', width: '15%' },
+      { header: 'Indicator Id', width: '5%' },
+      { header: 'IndicatorDesc', width: '15%' },
+      { header: 'OutputTitle', width: '15%' },
+      { header: 'FinYear', width: '6%' },
+      { header: 'Q1 Target', width: '6%' },
+      { header: 'Q1 Actual', width: '6%' },
+      { header: 'Q2 Target', width: '6%' },
+      { header: 'Q2 Actual', width: '6%' },
+      { header: 'Q3 Target', width: '6%' },
+      { header: 'Q3 Actual', width: '6%' },
+      { header: 'Q4 Target', width: '6%' },
+      { header: 'Q4 Actual', width: '6%' },
+      { header: 'Annual Target', width: '6%' },
+      { header: 'Annual Actual', width: '6%' },
+    ];
   }
+
 
   private loadFinancialYears() {
     this._spinner.show();
@@ -146,6 +169,15 @@ export class SubprogrammetypeSummaryComponent implements OnInit {
       }
     );
 }
+
+
+getTotalActualsByIndicatorAndQuarter(indicatorValue: string, quarterId: number): number {
+
+  return this.actuals
+      .filter(item => item.indicatorValue === indicatorValue && item.qaurterId === quarterId)
+      .reduce((total, item) => total + (item.actual || 0), 0);
+}
+
 
   // private loadApplications() {
   //   this._spinner.show();
@@ -213,6 +245,22 @@ export class SubprogrammetypeSummaryComponent implements OnInit {
   //   );
   // }
 
+
+
+  private loadSubProgrammes() {
+    this._spinner.show();
+    this._dropdownRepo.getEntities(DropdownTypeEnum.SubProgramme, false).subscribe(
+      (results) => {
+        this.allSubProgrammes = results;
+        this._spinner.hide();
+      },
+      (err) => {
+        this._loggerService.logException(err);
+        this._spinner.hide();
+      }
+    );
+  }
+
   private loadApplication() {
     this._spinner.show();
     this._applicationRepo.getApplicationById(Number(this.appId)).subscribe(
@@ -235,6 +283,7 @@ export class SubprogrammetypeSummaryComponent implements OnInit {
     this._dropdownRepo.getEntities(DropdownTypeEnum.Indicator, false).subscribe(
       (results) => {
         this.indicators = results;
+        console.log('indicators', this.indicators); 
       },
       (err) => {
         this._loggerService.logException(err);
@@ -351,6 +400,7 @@ private getAllIndicatorReports() {
   this._applicationRepo.getAllIndicatorReports().subscribe(
     (results) => {
      this.actuals = results;
+     console.log('actuals', this.actuals); 
       this._spinner.hide();
       this.loadIndicators();
     },
@@ -620,7 +670,9 @@ createEmptyActual(indicator: INPOIndicator): IActuals {
     statusId: 0,
     status: {} as IStatus,
     comments: '',
-    indicatorReportAudits: {} as IActualsAudit[]
+    indicatorReportAudits: {} as IActualsAudit[],
+    verifyActual: {} as IVerifiedActuals[]
+  
   };
 }
 

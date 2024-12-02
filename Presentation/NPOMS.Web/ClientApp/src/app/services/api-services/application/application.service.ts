@@ -25,6 +25,12 @@ export class ApplicationService {
     return this._http.get<IApplication[]>(url, httpOptions);
   }
 
+  getVeifiedActuals() {
+    const url = `${this._envUrl.urlAddress}/api/applications/getVeifiedActuals`;
+    return this._http.get<IVerifiedActuals[]>(url, httpOptions);
+  }
+
+
   public getApplicationById(applicationId: number) {
     const url = `${this._envUrl.urlAddress}/api/applications/applicationId/${applicationId}`;
     return this._http.get<IApplication>(url, httpOptions);
@@ -181,8 +187,8 @@ export class ApplicationService {
 
   }
 
-  public GetVerifiedByAppid(actualId: number) {
-    const url = `${this._envUrl.urlAddress}/api/applications/GetVeifiedActualByActualId/actualId/${actualId}`;
+  public GetVerifiedByAppid(actualId: number, quarterId: number) {
+    const url = `${this._envUrl.urlAddress}/api/applications/GetVeifiedActualByActualId/actualId/${actualId}/quarterId/${quarterId}`;
     return this._http.get<IVerifiedActuals>(url, httpOptions);
 
   }

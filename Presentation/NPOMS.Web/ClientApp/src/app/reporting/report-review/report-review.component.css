@@ -1,0 +1,43 @@
+.form-label {
+    width: 25%;
+    text-align: right;
+    align-self: center;
+}
+
+.mandatory-content::after {
+    content: "*";
+    color: rgb(195, 17, 47);
+}
+
+.mandatory-content, .non-mandatory-content {
+    font-size: 12px;
+}
+
+.form-text {
+    width: 100%;
+}
+.grey-button {
+    background-color: #ccc !important; /* Light grey background */
+    color: #333 !important; /* Dark grey text */
+    border-color: #ccc !important; /* Grey border */
+    /* Optional: Override any padding, margin, or border-radius here if needed */
+}
+.button-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Adds spacing between buttons */
+  }
+  
+  .modal-button {
+    margin-left: auto; /* Pushes the modal button to the far right */
+  }
+
+  .answer-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .form-text {
+    flex: 1;
+  }
