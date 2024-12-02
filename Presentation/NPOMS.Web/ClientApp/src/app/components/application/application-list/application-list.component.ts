@@ -654,7 +654,7 @@ export class ApplicationListComponent implements OnInit {
         this.optionItemExists('Quartery Perfomance Capture'); 
         this.optionItemExists('Program Report Summary');
         this.optionItemExists('SubProgrammeType Report Summary')
-        this.optionItemExists('Review Report Summary')
+        this.optionItemExists('Review Report')
     }
 
     if (this.selectedApplication.statusId === StatusEnum.Approved && this.selectedApplication.applicationPeriod.departmentId === 7)
