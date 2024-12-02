@@ -102,6 +102,11 @@ export class DocumentTypeComponent implements OnInit {
       {
         name: DocumentUploadLocationsEnum.FundedNpo,
         value: DocumentUploadLocationsEnum.FundedNpo
+      } 
+      , 
+      {
+        name: DocumentUploadLocationsEnum.CallForProposal,
+        value: DocumentUploadLocationsEnum.CallForProposal
       }
     ]
   }

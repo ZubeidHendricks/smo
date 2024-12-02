@@ -23,7 +23,8 @@ export enum ApplicationTypeEnum {
     FA = 1,
     SP = 2,
     QC = 3,
-    BP = 4
+    BP = 4,
+    CFP = 5
 }
 
 export enum DocumentTypeEnum {
@@ -540,7 +541,8 @@ export enum DocumentUploadLocationsEnum {
     FundApp = "FundApp",
     QuickCapture = "QuickCapture",
     FundedNpo = "FundedNpo",
-    ReportActuals = "ReportActuals"
+    ReportActuals = "ReportActuals",
+    CallForProposal = "CallForProposal"
 }
 
 //export enum FundingTemplateTypeEnum {
