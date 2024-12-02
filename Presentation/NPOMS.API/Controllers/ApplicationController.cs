@@ -40,6 +40,7 @@ namespace NPOMS.API.Controllers
         private IUserRepository _userRepository;
         private IProjectInformationRepository _projectInformationRepository;
         private IObjectiveRepository _objectiveRepository;
+        private IActivityRepository _activityRepository;
         #endregion
 
         #region Constructors
@@ -62,7 +63,8 @@ namespace NPOMS.API.Controllers
             IApplicationRepository applicationRepository,
             IUserRepository userRepository,
             IProjectInformationRepository projectInformationRepository,
-            IObjectiveRepository objectiveRepository
+            IObjectiveRepository objectiveRepository,
+            IActivityRepository activityRepository
             )
         {
             _logger = logger;
@@ -81,6 +83,7 @@ namespace NPOMS.API.Controllers
             _applicationRepository = applicationRepository;
             _userRepository = userRepository;
             _objectiveRepository = objectiveRepository;
+            _activityRepository = activityRepository;
             projectInformationRepository = _projectInformationRepository;
         }
 
@@ -1428,6 +1431,21 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpGet("activities/applicationId/{applicationId}", Name = "GetAllActivitiesByApplicationId")]
+        public async Task<IActionResult> GetAllActivitiesByApplicationId(int applicationId)
+        {
+            try
+            {
+                var results = await _applicationService.GetAllActivitiesByApplicationIdAsync(applicationId);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetAllActivities action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpGet("allactivities", Name = "allactivities")]
         public async Task<IActionResult> allactivities()
         {
@@ -1450,6 +1468,22 @@ namespace NPOMS.API.Controllers
             try
             {
                 var results = await _applicationService.GetActivityById(activityId);
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetActivityById action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        
+
+        [HttpGet("getCfpActivityById/activityId/{activityId}", Name = "GetCfpActivityById")]
+        public async Task<IActionResult> GetCfpActivityById(int activityId)
+        {
+            try
+            {
+                var results = await _applicationService.GetCfpActivityById(activityId);
                 return Ok(results);
             }
             catch (Exception ex)
@@ -2158,6 +2192,52 @@ namespace NPOMS.API.Controllers
             {
                 var model = await _objectiveRepository.GetById(id);
                 await _objectiveRepository.DeleteAsync(model);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateObjective action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("createCfpActivities", Name = "CreateCfpActivities")]
+        public async Task<IActionResult> CreateCfpActivities([FromBody] DtoActivity model)
+        {
+            try
+            {
+                await _applicationService.createCfpActivities(model, base.GetUserIdentifier());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside Create CFP Activity action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("editCfpActivities", Name = "EditCfpActivities")]
+        public async Task<IActionResult> EditCfpActivities([FromBody] DtoActivity model)
+        {
+            try
+            {
+                await _applicationService.editCfpActivities(model, base.GetUserIdentifier());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateObjective action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("deleteActivity/id/{id}", Name = "DeleteActivity")]
+        public async Task<IActionResult> DeleteActivity(int id)
+        {
+            try
+            {
+                var model = await _activityRepository.GetById(id);
+                await _activityRepository.DeleteAsync(model);
                 return Ok();
             }
             catch (Exception ex)

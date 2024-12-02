@@ -9,8 +9,9 @@ namespace NPOMS.Repository.Interfaces.Lookup
 		Task<IEnumerable<ActivityList>> GetEntities(bool returnInactive);
 
 		Task<IEnumerable<ActivityList>> SearchByName(string name);
+		Task<ActivityList> GetById(int id);
 
-		Task CreateEntity(ActivityList model);
+        Task CreateEntity(ActivityList model);
 
 		Task UpdateEntity(ActivityList model, int currentUserId);
 
