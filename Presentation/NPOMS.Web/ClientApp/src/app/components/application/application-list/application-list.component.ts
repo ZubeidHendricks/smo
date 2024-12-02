@@ -719,6 +719,39 @@ export class ApplicationListComponent implements OnInit {
       option.visible = true;
     });
 
+    if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.CFP) {
+      this.buttonItemExists('Edit Application', 'Funding Application');
+      this.buttonItemExists('Pre-Evaluate Application', 'Funding Application');
+      this.buttonItemExists('Adjudicate Application', 'Funding Application');
+      this.buttonItemExists('Evaluate Application', 'Funding Application');
+      this.buttonItemExists('Approve Application', 'Funding Application');
+      this.buttonItemExists('Download Application', 'Funding Application');
+      this.buttonItemExists('View Application', 'Funding Application');
+      this.buttonItemExists('Delete Application', 'Funding Application');
+      this.buttonItemExists('Download Assessment', 'Workflow Application');
+      this.buttonItemExists('Edit Application', 'Funded Npo');
+      this.buttonItemExists('Review Application', 'Funded Npo');
+      this.buttonItemExists('Delete Application', 'Funded Npo');
+      this.buttonItemExists('View Application', 'Funded Npo');
+      this.buttonItemExists('Download Application', 'Funded Npo');
+      this.optionItemExists('Adjudicate Funded Npo');  
+      this.optionItemExists('Review Adjudicated Funded Npo'); 
+      this.buttonItemExists('Edit Application', 'Service Provision');
+      this.buttonItemExists('Review Application', 'Service Provision');
+      this.buttonItemExists('Approve Application', 'Service Provision');
+      this.buttonItemExists('Upload SLA', 'Service Provision');
+      this.buttonItemExists('View Application', 'Service Provision');
+      this.buttonItemExists('Delete Application', 'Service Provision');
+
+      this.buttonItemExists('Edit Application', 'Funded Npo');
+      this.buttonItemExists('Review Application', 'Funded Npo');
+      this.buttonItemExists('Delete Application', 'Funded Npo');
+      this.buttonItemExists('View Application', 'Funded Npo');
+      this.buttonItemExists('Download Application', 'Funded Npo');
+      this.buttonItemExists('Download Workplan', 'Workplan');
+      this.buttonItemExists('Select Reviewers', 'Work Plan');      
+    }
+
     // Hide buttons based on status
     if (this.selectedApplication.applicationPeriod.applicationTypeId === ApplicationTypeEnum.SP) {
 

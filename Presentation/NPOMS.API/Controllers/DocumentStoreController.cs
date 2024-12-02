@@ -1,8 +1,10 @@
 ﻿using Azure.Identity;
 using Azure.Storage.Files.DataLake;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
+using Microsoft.Graph.TermStore;
 using NPOMS.Domain.Core;
 using NPOMS.Domain.Dropdown;
 using NPOMS.Domain.Entities;
@@ -12,6 +14,7 @@ using NPOMS.Repository.Interfaces.Dropdown;
 using NPOMS.Repository.Interfaces.Entities;
 using NPOMS.Services.Extensions;
 using NPOMS.Services.Interfaces;
+using NPOMS.Services.Models;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -19,6 +22,8 @@ using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace NPOMS.API.Controllers
 {
@@ -224,7 +229,28 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpGet("entitytypes/{entityType}/entities/{entityId}", Name = "GetFromDocumentStore")]
+        [HttpPost("upload")]
+        public async Task<IActionResult> Upload([FromForm] string documentStoreViewModelArray, [FromForm] IFormFile file)
+        {
+            // Deserialize the JSON array
+            var formDataModels = JsonSerializer.Deserialize<List<DocumentStoreViewModel>>(documentStoreViewModelArray);
+
+            // Handle file upload (e.g., save to disk)
+            if (file != null && file.Length > 0)
+            {
+                var filePath = Path.Combine("path/to/save", file.FileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+            }
+
+            // You can process formDataModels here as needed
+            return Ok(new { message = "Upload successful!" });
+        }
+
+
+        [HttpGet("entitytypes/{entityType}/entities/{entityId}", Name = "GetFromDocumentStore")]
 		public async Task<IActionResult> GetFromDocumentStore(EntityTypeEnum entityType, int entityId, [FromQuery] DocumentStoreResourceParameters documentStoreResourceParameters)
 		{
 			try
