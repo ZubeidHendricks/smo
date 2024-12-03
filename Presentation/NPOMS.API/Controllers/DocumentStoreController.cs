@@ -286,6 +286,24 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpGet("entitytypes/{entityType}/entities/{entityId}/refNo/{refNo}", Name = "GetCfpDocumentStore")]
+        public async Task<IActionResult> GetCfpDocumentStore(EntityTypeEnum entityType, int entityId, string refNo, [FromQuery] DocumentStoreResourceParameters documentStoreResourceParameters)
+        {
+            try
+            {
+                documentStoreResourceParameters.EntityType = entityType;
+                documentStoreResourceParameters.EntityId = entityId;
+
+                var viewModel = await this._documentStoreService.GetByRefNo(documentStoreResourceParameters, refNo);
+                return Ok(viewModel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside GetFromDocumentStore action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpDelete("{resourceId}", Name = "DeleteFromDocumentStore")]
 		public async Task<IActionResult> DeleteFromDocumentStore(string resourceId)
 		{
@@ -301,7 +319,7 @@ namespace NPOMS.API.Controllers
 			}
 		}
 
-		[HttpGet("{resourceId}", Name = "GetFileFromDocumentStore")]
+        [HttpGet("{resourceId}", Name = "GetFileFromDocumentStore")]
 		public async Task<IActionResult> GetFileFromDocumentStore(string resourceId)
 		{
 			try
