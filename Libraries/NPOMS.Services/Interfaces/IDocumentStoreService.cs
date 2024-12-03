@@ -21,9 +21,8 @@ namespace NPOMS.Services.Interfaces
         Task<List<DocumentStore>> GetAllDocuments();
         Task<List<DocumentStore>> GetDocumnetByRefNo(string refNo);
 
-
         Task<PagedList<DocumentStoreViewModel>> Get(DocumentStoreResourceParameters documentStoreResourceParameters);
-
+        Task<PagedList<DocumentStoreViewModel>> GetByRefNo(DocumentStoreResourceParameters documentStoreResourceParameters, string refNo);
         Task<PagedList<DocumentStoreViewModel>> GetFundApp(DocumentStoreResourceParameters documentStoreResourceParameters, int docTypeId);
 
 
