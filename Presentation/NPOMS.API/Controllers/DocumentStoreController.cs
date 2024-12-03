@@ -38,6 +38,7 @@ namespace NPOMS.API.Controllers
 
         private IFundAppDocumentService _documentStore1Service;
         private IFundAppDocumentRepository _fundAppDocumentRepository;
+        private IApplicationRepository _applicationRepository;
         private dtoBlobConfig _blobConfiguration;
         private IFundingApplicationDetailsRepository _fundingApplicationDetailsRepository;
         private IIndicatorService _indicatorService;
@@ -50,6 +51,7 @@ namespace NPOMS.API.Controllers
 			ILogger<DocumentStoreController> logger,
 			IDocumentStoreService documentStoreService,
             IFundAppDocumentRepository fundAppDocumentRepository,
+            IApplicationRepository applicationRepository,
             IFundingApplicationDetailsRepository fundingApplicationDetailsRepository,
 			dtoBlobConfig blobConfiguration,
             IIndicatorService indicatorService
@@ -59,6 +61,7 @@ namespace NPOMS.API.Controllers
 			_documentStoreService = documentStoreService;
             _fundAppDocumentRepository = fundAppDocumentRepository;
             _fundingApplicationDetailsRepository = fundingApplicationDetailsRepository;
+            _applicationRepository = applicationRepository;
 			_blobConfiguration = blobConfiguration;
             _indicatorService = indicatorService;
 		}
@@ -286,15 +289,16 @@ namespace NPOMS.API.Controllers
             }
         }
 
-        [HttpGet("entitytypes/{entityType}/entities/{entityId}/refNo/{refNo}", Name = "GetCfpDocumentStore")]
-        public async Task<IActionResult> GetCfpDocumentStore(EntityTypeEnum entityType, int entityId, string refNo, [FromQuery] DocumentStoreResourceParameters documentStoreResourceParameters)
+        [HttpGet("entitytypes/{entityType}/entities/{entityId}/appId/{appId}", Name = "GetCfpDocumentStore")]
+        public async Task<IActionResult> GetCfpDocumentStore(EntityTypeEnum entityType, int entityId, int appId, [FromQuery] DocumentStoreResourceParameters documentStoreResourceParameters)
         {
+            var application = await _applicationRepository.GetById(appId);
             try
             {
                 documentStoreResourceParameters.EntityType = entityType;
                 documentStoreResourceParameters.EntityId = entityId;
 
-                var viewModel = await this._documentStoreService.GetByRefNo(documentStoreResourceParameters, refNo);
+                var viewModel = await this._documentStoreService.GetByRefNo(documentStoreResourceParameters, application.RefNo);
                 return Ok(viewModel);
             }
             catch (Exception ex)
@@ -303,6 +307,24 @@ namespace NPOMS.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        //[HttpGet("entitytypes/{entityType}/entities/{entityId}/refno/{refNo}", Name = "GetCfpDocumentStore")]
+        //public async Task<IActionResult> GetCfpDocumentStore(EntityTypeEnum entityType, int entityId, string refNo, [FromQuery] DocumentStoreResourceParameters documentStoreResourceParameters)
+        //{
+        //    try
+        //    {
+        //        documentStoreResourceParameters.EntityType = entityType;
+        //        documentStoreResourceParameters.EntityId = entityId;
+
+        //        var viewModel = await this._documentStoreService.GetByRefNo(documentStoreResourceParameters, refNo);
+        //        return Ok(viewModel);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Something went wrong inside GetFromDocumentStore action: {ex.Message} Inner Exception: {ex.InnerException}");
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
 
         [HttpDelete("{resourceId}", Name = "DeleteFromDocumentStore")]
 		public async Task<IActionResult> DeleteFromDocumentStore(string resourceId)
