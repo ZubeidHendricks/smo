@@ -41,6 +41,7 @@ namespace NPOMS.Services.Interfaces
 		Task UpdateApplication(Application model, string userIdentifier);
 
 		Task DeleteApplicationById(int id, string userIdentifier);
+        Task SubmitCfpApplication(int id, string userIdentifier);
         Task UpdateInitiateScorecardValue(int id, string userIdentifier);
         Task UpdateCloseScorecardValue(int id, string userIdentifier);
 

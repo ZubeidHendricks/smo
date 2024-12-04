@@ -252,20 +252,20 @@ namespace NPOMS.Services.Implementation
             try
             {
                 List<DocumentStoreViewModel> viewModel = new List<DocumentStoreViewModel>();
-                if (documentStoreResourceParameters == null)
-                {
-                    throw new ArgumentNullException(nameof(documentStoreResourceParameters));
-                }
+                //if (documentStoreResourceParameters == null)
+                //{
+                //    throw new ArgumentNullException(nameof(documentStoreResourceParameters));
+                //}
 
                 var query = _documentStoreRepository.GetDocumentByRefNo(refNo);
 
-                if (Enum.IsDefined(typeof(EntityTypeEnum), documentStoreResourceParameters.EntityType))
-                {
-                    int entityTypeId = (int)documentStoreResourceParameters.EntityType;
-                    query = query.Where(x => x.EntityTypeId == entityTypeId);
-                }
+                //if (Enum.IsDefined(typeof(EntityTypeEnum), documentStoreResourceParameters.EntityType))
+                //{
+                //    int entityTypeId = (int)documentStoreResourceParameters.EntityType;
+                //    query = query.Where(x => x.EntityTypeId == entityTypeId);
+                //}
 
-                query = query.Where(x => x.EntityId == documentStoreResourceParameters.EntityId);
+                //query = query.Where(x => x.EntityId == documentStoreResourceParameters.EntityId);
 
                 var pageList = await PagedList<DocumentStore>.Create(query, documentStoreResourceParameters.PageNumber, documentStoreResourceParameters.PageSize);
                 var viewModelItems = _mapper.Map<List<DocumentStoreViewModel>>(pageList.Items);

@@ -578,8 +578,8 @@ namespace NPOMS.Services.Implementation
 
 			await _applicationRepository.UpdateEntity(model, loggedInUser.Id);
 		}
-
-		public async Task DeleteApplicationById(int id, string userIdentifier)
+        
+        public async Task DeleteApplicationById(int id, string userIdentifier)
 		{
 			var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
 
@@ -591,6 +591,19 @@ namespace NPOMS.Services.Implementation
 
 			await _applicationRepository.UpdateEntity(model, loggedInUser.Id);
 		}
+
+        public async Task SubmitCfpApplication(int id, string userIdentifier)
+        {
+            var loggedInUser = await _userRepository.GetByUserNameWithDetails(userIdentifier);
+
+            var model = await _applicationRepository.GetById(id);
+            model.IsActive = true;
+            model.UpdatedUserId = loggedInUser.Id;
+            model.UpdatedDateTime = DateTime.Now;
+            model.StatusId = 3;
+
+            await _applicationRepository.UpdateEntity(model, loggedInUser.Id);
+        }
 
         public async Task UpdateInitiateScorecardValue(int id, string userIdentifier)
         {
@@ -1795,17 +1808,17 @@ namespace NPOMS.Services.Implementation
 
 			await _areaRepository.CreateAsync(area);
 
-
-			var activitySubDistrict = new ActivitySubDistrict()
-			{
-				Name = model.ActivitySubDistrictsName,
-				IsActive = true,
-				ActivityId = activity.Id,
-				SubstructureId = activitySubStructure.Id,
+            var activitySubDistrict = new ActivitySubDistrict()
+            {
+                Name = model.ActivitySubDistrictsName,
+                IsActive = true,
+                ActivityId = activity.Id,
+                SubstructureId = activitySubStructure.Id,
                 AreaId = area.Id
-			};
+            };
 
-			await _activitySubDistrictRepository.CreateAsync(activitySubDistrict);
+            await _activitySubDistrictRepository.CreateAsync(activitySubDistrict);
+
         }
 
         public async Task editCfpActivities(DtoActivity model, string userIdentifier)
