@@ -858,6 +858,21 @@ namespace NPOMS.API.Controllers
             }
         }
 
+        [HttpPut("submitCfpApplication/applicationId/{applicationId}", Name = "SubmitCfpApplication")]
+        public async Task<IActionResult> SubmitCfpApplication([FromBody] int applicationId)
+        {
+            try
+            {
+                await _applicationService.SubmitCfpApplication(applicationId, base.GetUserIdentifier());
+                return Ok(applicationId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside DeleteApplicationById action: {ex.Message} Inner Exception: {ex.InnerException}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         private async Task CreateApplicationAudit(Application model)
         {
             try
@@ -1930,20 +1945,6 @@ namespace NPOMS.API.Controllers
             {
                 var applicationPeriod = await _applicationService.GetApplicationPeriodById(model.applicationPeriodId);
 
-                // var application = 
-
-                //   var application = await _applicationService.GetApplicationByNpoIdAndPeriodIdAndYear(model.npoId, model.applicationPeriodId, applicationPeriod.FinancialYear.Name);
-
-                //if (application == null)
-                //{
-                //    await _applicationService.CreateApplication(model, base.GetUserIdentifier());
-                //    await CreateApplicationAudit(model);
-
-                //    var modelToReturn = application == null ? model : application;
-                //    return Ok(modelToReturn);
-
-                //}
-
                 var loggedInUser = await _userRepository.GetByUserNameWithDetails(base.GetUserIdentifier());
                 var application = new Application()
                 {
@@ -1971,20 +1972,9 @@ namespace NPOMS.API.Controllers
                 };
 
                 await _applicationService.CreateProjectInformation(projectInformation);
-                // await _projectInformationRepository.CreateEntity(projectInformation);
-
-                //  await _applicationService.CreateCfpApplication(model, base.GetUserIdentifier());
-                //  await CreateApplicationAudit(application);
-
-                // var modelToReturn = application == null ? application : application;
-                //application = await GetApplicationById(application.Id);
-
-                // return CreatedAtAction(nameof(GetApplicationById), new { id = application.Id }, application.Id);
-
+                
                 return Ok(application.Id);
-                // return CreatedAtAction(nameof(GetApplicationById), new { id = application.Id }, application.Id);
-
-                //return Ok(model);
+                
 
             }
             catch (Exception ex)
