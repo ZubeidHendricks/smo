@@ -1,0 +1,46 @@
+<div class="actuals-tab" *ngIf="showActualsTab">
+    <div class="p-grid">
+        <div class="p-col-12 p-md-3">
+            <label>Quarter</label>
+            <p-dropdown 
+                [options]="quarters" 
+                [(ngModel)]="selectedQuarter"
+                (onChange)="onQuarterChange()"
+                optionLabel="name" 
+                placeholder="Select Quarter"
+                [style]="{'width':'100%'}">
+            </p-dropdown>
+        </div>
+    </div>
+
+    <p-table [value]="indicators">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Indicator</th>
+                <th>Target</th>
+                <th>Actual</th>
+                <th>Actions</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-indicator>
+            <tr>
+                <td>{{indicator.name}}</td>
+                <td>{{indicator.target}}</td>
+                <td>
+                    <input type="number" 
+                           pInputText
+                           [(ngModel)]="indicator.actual"
+                           (change)="updateIndicator(indicator)"
+                           [disabled]="indicator.captured">
+                </td>
+                <td>
+                    <button pButton icon="pi pi-check" 
+                            class="p-button-rounded p-button-text"
+                            (click)="captureActual(indicator)"
+                            [disabled]="indicator.captured || !indicator.actual">
+                    </button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
