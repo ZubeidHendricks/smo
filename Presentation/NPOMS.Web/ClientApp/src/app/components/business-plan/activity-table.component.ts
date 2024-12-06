@@ -26,7 +26,6 @@ export class ActivityTableComponent implements OnInit {
   }
 
   loadDistricts() {
-    // Load districts from dropdown service
     this.dropdownService.getEntities('District', false).subscribe(
       data => this.districts = data,
       error => console.error('Error loading districts:', error)
@@ -34,7 +33,6 @@ export class ActivityTableComponent implements OnInit {
   }
 
   loadMunicipalities() {
-    // Load all municipalities
     this.dropdownService.getEntities('Municipality', false).subscribe(
       data => {
         this.municipalities = data;
