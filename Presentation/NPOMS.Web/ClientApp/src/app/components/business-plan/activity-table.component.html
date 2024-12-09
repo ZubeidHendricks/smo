@@ -1,0 +1,63 @@
+<div class="p-grid">
+    <div class="p-col-12 p-md-6">
+        <label class="mandatory-content">District</label>
+        <p-dropdown 
+            [options]="districts" 
+            [(ngModel)]="selectedDistrict"
+            (onChange)="onDistrictChange($event)"
+            optionLabel="name"
+            placeholder="Select a District"
+            [style]="{'width':'100%'}">
+        </p-dropdown>
+    </div>
+
+    <div class="p-col-12 p-md-6">
+        <label class="mandatory-content">Municipality</label>
+        <p-dropdown 
+            [options]="filteredMunicipalities" 
+            [(ngModel)]="selectedMunicipality"
+            [disabled]="municipalityDisabled"
+            optionLabel="name"
+            placeholder="Select a Municipality"
+            [style]="{'width':'100%'}">
+        </p-dropdown>
+    </div>
+</div>
+
+<!-- Activity Table -->
+<div class="p-grid">
+    <div class="p-col-12">
+        <p-table [value]="activities" [scrollable]="true">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Activity</th>
+                    <th>Target</th>
+                    <th>Actual</th>
+                    <th>Actions</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-activity>
+                <tr>
+                    <td>{{activity.name}}</td>
+                    <td>{{activity.target}}</td>
+                    <td>
+                        <input type="number" 
+                               pInputText 
+                               [(ngModel)]="activity.actual" 
+                               [disabled]="!showActualsTab">
+                    </td>
+                    <td>
+                        <button pButton icon="pi pi-pencil" 
+                                class="p-button-rounded p-button-text"
+                                (click)="editActivity(activity)">
+                        </button>
+                        <button pButton icon="pi pi-trash" 
+                                class="p-button-rounded p-button-text p-button-danger"
+                                (click)="deleteActivity(activity)">
+                        </button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>

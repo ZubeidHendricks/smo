@@ -14,9 +14,9 @@ export class ActivityTableComponent implements OnInit {
   selectedMunicipality: any;
   municipalityDisabled: boolean = false;
 
-  // Constants
-  private readonly CITY_OF_CAPE_TOWN_ID = 1; // Update with actual ID
-  private readonly CHS_DISTRICT_ID = 2; // Update with actual ID
+  // Updated IDs - replace these with actual values from your database
+  private readonly CITY_OF_CAPE_TOWN_ID = 1;  
+  private readonly CHS_DISTRICT_ID = 2;  
 
   constructor(private dropdownService: DropdownService) {}
 
@@ -28,7 +28,13 @@ export class ActivityTableComponent implements OnInit {
   loadDistricts() {
     // Load districts from dropdown service
     this.dropdownService.getEntities('District', false).subscribe(
-      data => this.districts = data,
+      data => {
+        this.districts = data;
+        // If CHS is preselected, handle it
+        if (this.selectedDistrict?.id === this.CHS_DISTRICT_ID) {
+          this.handleCHSDistrictSelection();
+        }
+      },
       error => console.error('Error loading districts:', error)
     );
   }
@@ -39,20 +45,28 @@ export class ActivityTableComponent implements OnInit {
       data => {
         this.municipalities = data;
         this.filteredMunicipalities = [...data];
+        // If CHS is selected, find and set Cape Town
+        if (this.selectedDistrict?.id === this.CHS_DISTRICT_ID) {
+          this.handleCHSDistrictSelection();
+        }
       },
       error => console.error('Error loading municipalities:', error)
     );
+  }
+
+  handleCHSDistrictSelection() {
+    const capeWown = this.municipalities.find(m => m.id === this.CITY_OF_CAPE_TOWN_ID);
+    if (capeWown) {
+      this.selectedMunicipality = capeWown;
+      this.municipalityDisabled = true;
+    }
   }
 
   onDistrictChange(event: any) {
     const selectedDistrictId = event.value?.id;
     
     if (selectedDistrictId === this.CHS_DISTRICT_ID) {
-      // If CHS is selected, set to City of Cape Town
-      this.selectedMunicipality = this.municipalities.find(
-        m => m.id === this.CITY_OF_CAPE_TOWN_ID
-      );
-      this.municipalityDisabled = true;
+      this.handleCHSDistrictSelection();
     } else {
       // Filter municipalities based on district
       this.filteredMunicipalities = this.municipalities.filter(
